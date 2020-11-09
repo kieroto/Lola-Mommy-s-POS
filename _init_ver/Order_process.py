@@ -39,7 +39,7 @@ class order_process(ttk.Frame, Tk):
         _list=[]
         for i in range(22):
             _list.append('<item> '+ str(i))
-        for item in friend_list:
+        for item in _list:
         # insert each new item to the end of the listbox
             self.listbox.insert('end', item)
         # optionally scroll to the bottom of the listbox
