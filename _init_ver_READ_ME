@@ -1,0 +1,29 @@
+# READ ME
+# Uploaded _init_ver 9/11/2020
+
+# Description
+  _init_ver directory contains the initial source codes for the POS mockup.
+  Please note everything here is for prototyping. Final source codes will be
+  lifted here for the final product.
+  
+# Libraries Used
+  Python 3.8.0
+  Tkinter for python
+  SqLite3 <standard python library>
+ 
+# IDEs and Programs used
+  Visual Studio Code
+  Github Desktop
+  
+# Learning resources and documentations
+  #Python  :
+  #Sqlite3 :
+  #Tkinter :
+      Python and Tkinter Programming (by John E Grayson) see: <learning resources> folder
+      https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/text.html
+      https://effbot.org/tkinterbook/grid.html
+      
+      links to more documentations: https://docs.python.org/3/library/tkinter.html#module-tkinter
+      Videos: https://www.youtube.com/watch?v=YXPyB4XeYLA&t=38s
+              https://www.youtube.com/watch?v=yQSEXcf6s2I&list=PLCC34OHNcOtoC6GglhF3ncJ5rLwQrLGnV :playlist
+  
