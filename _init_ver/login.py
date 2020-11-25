@@ -7,6 +7,8 @@ from Window import window
 class login_user(prompt_box):
 	def __init__(self, promptType):
 		self.promptWindow = Tk()
+		self.promptWindow.resizable(False, False)
+		
 		super().__init__(promptType, self.promptWindow)
 
 		self.promptWindow.title("LOGIN SCREEN")
