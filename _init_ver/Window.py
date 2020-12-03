@@ -53,4 +53,3 @@ class window:
             self.menubar_buttons = main_(self.root, self.menu, self.body, admin, menuFont)
         
     pass
-   
