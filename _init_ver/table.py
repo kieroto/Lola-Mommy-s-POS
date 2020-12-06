@@ -1,15 +1,12 @@
 from tkinter import *
 from tkinter import ttk
 
-class test():
-    def __init__(self, **kwargs):
-        print1 = kwargs['rock']
-        print2 = kwargs['plant']
-
-        print(print1)
-
+# To use <table class>
+# Declare as table_name = table(frame = aTkFrame, tree_row = 0, tree_col = 0, column_id = ('ColumnLabel1', 'ColumnLabel2'), height = 20)
+# frame: (ttk.Frame), tree_row, tree_col: table position(int,int), column_id: List of column headings/Label(list), height: height of the table(int)
 class table():
     def __init__(self, **kwargs):
+        # Default values incase argument doesn't exist
         frame = ttk.Frame()
         tree_row = 0
         tree_col = 0
@@ -47,44 +44,20 @@ class table():
         
         # initialize column heads
         tree['columns'] = column_id
-        # tree['columns'] = ("Name", "ID")#, "Address", "Mobile Number", "Bus Name")
-        
     
+        # Configure column weights
         for i in range(0, (len(column_id)-1)):
             tree.columnconfigure(i, weight=1)
 
-        # tree.rowconfigure(0, weight=1)
-        # for i in range(0, rows-1):
-        #     tree.rowconfigure(i, weight=1)
-
-            
-        # tree.column("#0", minwidth=75, stretch = 0)
-        # tree.column("Name", anchor = W, minwidth=75, stretch = 0)
-        # tree.column("ID", anchor = CENTER, minwidth=75, stretch = 0)
-        # tree.column("Address", anchor = W, minwidth=75, stretch = 0)
-        # tree.column("Mobile Number", anchor = W, minwidth=75, stretch = 0)
-        # tree.column("Bus Name", anchor = W, minwidth=75, stretch = 0)
-        
         # Initialize headings
-        # tree.heading("#0", text="Label", anchor=W)
-        # tree.heading("Name", text="Name", anchor=W)
-        # tree.heading("ID", text="ID", anchor=CENTER)    
-        # tree.heading("Address", text="Address", anchor=W)
-        # tree.heading("Mobile Number", text="Mobile #", anchor=W)
-        # tree.heading("Bus Name", text="Bus Name", anchor=W)
-
         for label in tree['columns']:
             if (label == "ID"):
                 tree.heading(label, anchor = CENTER, text=label)
             else: 
                 tree.heading(label, anchor = W, text=label)
 
-
-        # for i in range(0, 30):
-        #     tree.insert('', 'end',
-        #         values=('aaaaaaaaaaaaaa'+ str(i),'bbbbbbbbbbbbbbbbbb'+ str(i),
-        #         'cccccccccccccccc'+ str(i),'ddddddddddddddddd'+ str(i),
-        #         'eeeeeeeeeeeeeeeeee'+ str(i)))
+        # tree.column("Name", anchor = W, minwidth=75, stretch = 0)
+        # tree.insert('', 'end', values=('literal'+ str(var), var_int)
 
     # def handle_click(event):
     #     if (treeview.identify_region(event.x, event.y) == "separator"):
