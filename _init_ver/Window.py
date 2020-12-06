@@ -9,7 +9,7 @@ class window:
  
             #create tk window
             self.root= Tk()
-            self.root.geometry("1280x720")
+            self.root.geometry("1366x768")
             self.root.title("Lola Mommy's Point of Sale System")
             
         
@@ -32,15 +32,15 @@ class window:
 
 
             # Configure grid system
-            self.root.columnconfigure(0, weight=1)
+            self.root.columnconfigure(0, weight=1)  
             self.root.rowconfigure(0, weight=1)
 
-            for i in range(14):
+            for i in range(0,14):
                 self.mainframe.columnconfigure(i, weight=1)
                 self.menu.columnconfigure(i, weight=1)
                 self.body.columnconfigure(i, weight=1)
 
-            for i in range(25):
+            for i in range(0,25):
                 self.mainframe.rowconfigure(i, weight=1)
                 if (i>=23):
                     continue    
