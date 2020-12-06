@@ -3,6 +3,8 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 from prompt import prompt_box
 from Window import window
+import os
+
 
 class login_user(prompt_box):
 	def __init__(self, promptType):
@@ -11,8 +13,9 @@ class login_user(prompt_box):
 		
 		super().__init__(promptType, self.promptWindow)
 
+		path = os.path.dirname(os.path.abspath(__file__)) + '\logo1.png'
+		self.photo = Image.open(r""+path)
 		self.promptWindow.title("LOGIN SCREEN")
-		self.photo = Image.open('logo1.png')
 		self.photo = self.photo.resize((489, 178), Image.ANTIALIAS)
 		self.photoImg =  ImageTk.PhotoImage(self.photo)
 		self.logo = Label(self.body, image = self.photoImg)
@@ -65,3 +68,4 @@ class login_user(prompt_box):
 		else:
 			self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
 			self.label3.grid(column=0, row=6)
+
