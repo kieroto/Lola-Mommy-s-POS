@@ -17,13 +17,16 @@ class table():
 
         # Create style for tree
         style = ttk.Style()
+        style.theme_use("vista") # clam, alt
         style.configure("Treeview",
             background = "silver",
             foreground = "black",
-            rowheight = self.rowheight_  ,
-            fieldbackground = "silver"
+            rowheight = self.rowheight_, 
+            font=(self.font, self.font_size)
             )
         
+        style.map("Treeview",
+                    background=[('selected', 'green')])
 
         # initialize treeview 
         tree = ttk.Treeview(self.frame, columns= self.column_id, show="headings", height=self.height_)
@@ -43,6 +46,9 @@ class table():
                 tree.heading(label, anchor = CENTER, text=label)
             else: 
                 tree.heading(label, anchor = W, text=label)
+
+        for head in tree['columns']:
+            tree.column(head, width = self.tablecol_width)
 
         # tree.column("Name", anchor = W, minwidth=75, stretch = 0)
         # tree.insert('', 'end', values=('literal'+ str(var), var_int)
@@ -65,8 +71,9 @@ class table():
             self.column_id = ('Name', 'ID')
             self.height_ = 20
             self.rowheight_ = 20
-            self.font_size = 15
+            self.font_size = 10
             self.font = "Helvetica"
+            self.tablecol_width = 20
 
             try:
                 self.frame = kwargs['frame']
@@ -101,12 +108,18 @@ class table():
             try:
                 self.font_size = kwargs['font_size']
             except KeyError:
-                print("Argument is missing6")
+                print("Argument is missing7")
 
             try:
                 self.font = kwargs['font']
             except KeyError:
-                print("Argument is missing6")
+                print("Argument is missing8")
+
+            try:
+                self.tablecol_width = kwargs['tablecol_width']
+            except KeyError:
+                print("Argument is missing9")
+
 
 ######
 '''

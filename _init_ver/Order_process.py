@@ -44,16 +44,16 @@ class order_process(ttk.Frame, Tk):
 
 
         #
-        self.Ready_cook = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Ready_cook = Button(self.scrollpane, text='Ready \nto Cook', font=('Helvetica', 20, 'bold'), command = self.choose_item)
         self.Ready_cook.grid(column=0, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Cooked = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Cooked = Button(self.scrollpane, text='Cooked', font=('Helvetica', 30, 'bold'), command = self.choose_item)
         self.Cooked.grid(column=4, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Chicken = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Chicken = Button(self.scrollpane, text='Chicken', font=('Helvetica', 25, 'bold'), command = self.choose_item)
         self.Chicken.grid(column=0, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Pork = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Pork = Button(self.scrollpane, text='Pork', font=('Helvetica', 30, 'bold'), command = self.choose_item)
         self.Pork.grid(column=4, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
         # Create frame for scrollpane 
@@ -73,9 +73,11 @@ class order_process(ttk.Frame, Tk):
 
         # Create table
         row_place = 10
-        col_place = 2
-        self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, column_id=("Item", "Quantity", "Price", "Total"), 
-                        rowheight = 80, fontsize = 20, height = 5)
+        col_place = 1
+        self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, 
+                        column_id=("Item", "Quantity", "Price", "Total"), 
+                        rowheight = 80, fontsize = 20, height = 5, font_size = 20, font = 'Helvetica',
+                        tablecol_width = 175)
         self.Table_.test()
 
        # Total
