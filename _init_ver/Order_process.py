@@ -13,44 +13,52 @@ class order_process(ttk.Frame, Tk):
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
 
-        # Create frame for scrollpane 
-        self.scrollpane = ttk.Frame(self.body)
-        self.scrollpane.grid(column = 0, row = 0, rowspan=23, columnspan=8, sticky=N+S+E+W)
+        # Create frame for scrollpane/buttons and label
+        self.labels = ttk.Frame(self.body)
+        self.labels.grid(column = 0, row = 0, rowspan=8, columnspan=6, sticky=N+S+E+W)
 
-        # Configure Grid system for scrollpane
-        for i in range(0,23):
+        self.scrollpane = ttk.Frame(self.body)
+        self.scrollpane.grid(column = 0, row = 8, rowspan=12, columnspan=6, sticky=N+S+E+W)
+
+        # Configure Grid system for scrollpane/buttons and label
+        for i in range(0,8):
+            self.labels.rowconfigure(i, weight=1)
+      
+        for i in range(0,6):
+            self.labels.columnconfigure(i, weight=1)
+       # self.labels.columnconfigure(8, weight=1)
+
+        for i in range(0,12):
             self.scrollpane.rowconfigure(i, weight=1)
       
-        #
-        for i in range(0,8):
-            self.scrollpane.columnconfigure(0, weight=30)
-        self.scrollpane.columnconfigure(8, weight=1)
+        for i in range(0,6):
+            self.scrollpane.columnconfigure(i, weight=1)
 
         # Labels
-        ordernum = Label(self.scrollpane, text='Order : #8000', font=('Helvetica', 30, 'bold'))
-        ordernum.grid(column=0, row=0, rowspan=3, sticky=N+W)
-        cust = Label(self.scrollpane, text='Customer : Cole Ang', font=('Helvetica', 30, 'bold'))
-        cust.grid(column=0, row=3, rowspan=3, sticky=N+W)
-        Items = Label(self.scrollpane, text='Items', font=('Helvetica', 20, 'bold'))
-        Items.grid(column=0, row=7, rowspan=1, sticky=N+W)
+        ordernum = Label(self.labels, text='Order : #8000', font=('Helvetica', 25, 'bold'))
+        ordernum.grid(column=0, row=0, rowspan=3, columnspan=6, sticky=N+W)
+        cust = Label(self.labels, text='Customer : Cole Ang', font=('Helvetica', 25, 'bold'))
+        cust.grid(column=0, row=3, rowspan=3,  columnspan=6,  sticky=N+W)
+        Items = Label(self.labels, text='Items', font=('Helvetica', 25, 'bold'))
+        Items.grid(column=0, row=7, rowspan=1, columnspan=6,  sticky=N+W)
 
 
         #
-        self.Ready_cook = Button(self.body, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
-        self.Ready_cook.grid(column=0, row=11 , columnspan=4, rowspan=6, sticky=N+S+E+W)
+        self.Ready_cook = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Ready_cook.grid(column=0, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Cooked = Button(self.body, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
-        self.Cooked.grid(column=4, row=11 , columnspan=4, rowspan=6, sticky=N+S+E+W)
+        self.Cooked = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Cooked.grid(column=4, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Chicken = Button(self.body, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
-        self.Chicken.grid(column=0, row=17 , columnspan=4, rowspan=6, sticky=N+S+E+W)
+        self.Chicken = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Chicken.grid(column=0, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Pork = Button(self.body, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
-        self.Pork.grid(column=4, row=17 , columnspan=4, rowspan=6, sticky=N+S+E+W)
+        self.Pork = Button(self.scrollpane, text='Ready', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Pork.grid(column=4, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
         # Create frame for scrollpane 
         self.tableframe = ttk.Frame(self.body)
-        self.tableframe.grid(column = 8, row = 2, rowspan=23, columnspan=5,sticky=N+S+E+W)
+        self.tableframe.grid(column = 7, row = 2, rowspan=23, columnspan=8,sticky=N+S+E+W)
 
         # Button
         Place_order = Button(self.body, text='Place Order ', font=('Helvetica', 30, 'bold'), command = self.place_order)
@@ -66,7 +74,8 @@ class order_process(ttk.Frame, Tk):
         # Create table
         row_place = 10
         col_place = 2
-        self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, column_id=("Item", "Quantity", "Price", "Total"), height = 15)
+        self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, column_id=("Item", "Quantity", "Price", "Total"), 
+                        rowheight = 80, fontsize = 20, height = 5)
         self.Table_.test()
 
        # Total
@@ -92,13 +101,13 @@ class order_process(ttk.Frame, Tk):
         self.destroy_button()
         # Create scrollbar widget
         self.scrollbar = Scrollbar(self.scrollpane, orient="vertical")
-        self.scrollbar.grid(row=11, column=8, rowspan=12, sticky=N+S+E+W)
+        self.scrollbar.grid(row=0, column=7, rowspan=12, sticky=N+S+E+W)
         
         # Create Listbox widget
-        self.listbox = Listbox(self.scrollpane, width=8)
+        self.listbox = Listbox(self.scrollpane, width=10)
         # Attach scrollbar to the listbox widget
         self.listbox.config(yscrollcommand=self.scrollbar.set)
-        self.listbox.grid(row=11, column=0, columnspan=2, rowspan=23, sticky=N+S+E+W)    
+        self.listbox.grid(row=0, column=0, columnspan=7, rowspan=12, sticky=N+S+E+W)    
         self.scrollbar.config(command=self.listbox.yview)
 
         # Populate listbox with _list
