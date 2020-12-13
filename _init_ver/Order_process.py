@@ -76,8 +76,8 @@ class order_process(ttk.Frame, Tk):
         col_place = 1
         self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, 
                         column_id=("Item", "Quantity", "Price", "Total"), 
-                        rowheight = 80, fontsize = 20, height = 5, font_size = 20, font = 'Helvetica',
-                        tablecol_width = 175)
+                        rowheight = 80, height = 5, font_size = 20, font = 'Helvetica',
+                        tablecol_width = 175, headingfont= 30)
         self.Table_.test()
 
        # Total
