@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from Order_process import order_process
+from cs_entry import cs_page
 
 class orderselect(ttk.Frame, Tk):
     
@@ -43,7 +44,11 @@ class orderselect(ttk.Frame, Tk):
     def click(self, i, pages):
         for widget in self.body.winfo_children():
             widget.destroy()
-
-        self.orderprocess_= order_process(self.root, self.body, pages)
+        
+        self.i = i
+        if(self.i == 1):
+            self.cspage_ = cs_page(self.root, self.body, pages)
+        else:
+            self.orderprocess_= order_process(self.root, self.body, pages)
         pass
         pass
