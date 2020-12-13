@@ -28,6 +28,9 @@ class table():
         style.map("Treeview",
                     background=[('selected', 'green')])
 
+        style_heading = ttk.Style()
+        style_heading.configure("Treeview.Heading", font = ('Helvetica', self.heading_font))
+
         # initialize treeview 
         tree = ttk.Treeview(self.frame, columns= self.column_id, show="headings", height=self.height_)
         tree.grid(row=self.tree_row, column=self.tree_col, columnspan=len(self.column_id), sticky=N+S+E+W)
@@ -74,6 +77,7 @@ class table():
             self.font_size = 10
             self.font = "Helvetica"
             self.tablecol_width = 20
+            self.heading_font = 15
 
             try:
                 self.frame = kwargs['frame']
@@ -119,6 +123,12 @@ class table():
                 self.tablecol_width = kwargs['tablecol_width']
             except KeyError:
                 print("Argument is missing9")
+
+            try:
+                self.heading_font = kwargs['heading_fontsize']
+            except KeyError:
+                print("Argument is missing10")
+
 
 
 ######
