@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from PIL import ImageTk, Image
+from Order_process import order_process
 
 # Default settings for prompts
 class prompt_box():
@@ -48,9 +49,10 @@ class prompt_box():
 
 class confirm_customer(prompt_box):
 		
-	def __init__(self, promptType, btn, customerDetails, body):
+	def __init__(self, promptType, btn, customerDetails, root, body, pages):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body)
+		self.root = root
 
 		self.promptWindow.title("Confirm Customer")
 		customerName = customerDetails['customerFirst'] + " " + customerDetails['customerLast']
@@ -62,7 +64,7 @@ class confirm_customer(prompt_box):
 		lb4 = Label(self.body, text = customerDetails['address'], font=('Helvetica', 10))
 		lb5 = Label(self.body, text = " ")
 		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
-		okBtn = Button(self.body, text="OK")
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
 
 		# Place Labels and Buttons on grid
 		lb1.grid(column=0, row=0, columnspan=9, rowspan=2, sticky=(N, S, E, W))
@@ -72,6 +74,12 @@ class confirm_customer(prompt_box):
 		lb5.grid(column=0, row=5, columnspan=9, rowspan=1, sticky=(N, S, E, W))
 		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
 		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+	def confirm(self, pages):
+		for widget in self.master.winfo_children():
+			widget.destroy()
+		self.promptWindow.destroy()
+		self.orderprocess_= order_process(self.root, self.master, pages)
 
 #IGNORE THIS SECTION
 #3-------------------------------------------------------------#		
