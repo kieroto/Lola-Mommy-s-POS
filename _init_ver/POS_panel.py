@@ -7,6 +7,7 @@ from Inventory import i_page
 from Customers import cs_page
 from Home import home_page
 from order import orderselect
+from Add_User import au_page
 
 class main_(ttk.Frame, Tk):
     
@@ -30,7 +31,7 @@ class main_(ttk.Frame, Tk):
         History = Button(self.menu, text=' History ', command= lambda: self.click(3))
         Order = Button(self.menu, text=' Orders ', command= lambda: self.click(4))
         
-        Add_user = Button(self.menu, text='Add User', command= lambda: self.test)
+        Add_user = Button(self.menu, text='Add User', command= lambda: self.click(5))
         Adj_priv = Button(self.menu, text='Adjust Privileges', command= lambda: self.test)
         Log_out = Button(self.menu, text='Logout', command= self.test)
         Back = Button(self.menu, text='Back', command= lambda: self.click(7))
@@ -108,8 +109,7 @@ class main_(ttk.Frame, Tk):
                 pass
                 #self.sales = s_page(self.root, self.body, 'Sales')
             elif (i == 5):
-                pass
-                #self.sales = s_page(self.root, self.body, 'Sales')
+                self.adduser = au_page(self.root, self.body, self.pages, 'Add User')
             elif (i == 6):
                 pass
             elif (i == 7):

@@ -3,6 +3,7 @@ from tkinter import ttk
 import tkinter.font as font
 from PIL import ImageTk, Image
 from Order_process import order_process
+from Home import home_page
 
 # Default settings for prompts
 class prompt_box():
@@ -65,6 +66,7 @@ class confirm_customer(prompt_box):
 		lb5 = Label(self.body, text = " ")
 		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
 		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		# dropdown = OptionMenu()
 
 		# Place Labels and Buttons on grid
 		lb1.grid(column=0, row=0, columnspan=9, rowspan=2, sticky=(N, S, E, W))
@@ -81,6 +83,30 @@ class confirm_customer(prompt_box):
 		self.promptWindow.destroy()
 		self.orderprocess_= order_process(self.root, self.master, pages)
 
+class add_user(prompt_box):
+
+	def __init__(self, promptType, btn, userDetails, root, body, pages):
+		super().__init__(promptType, body)
+		self.root = root
+
+		self.promptWindow.title("User Added")
+
+		lb1 = Label(self.body, text = userDetails['username'], font=('Helvetica', 15, 'bold'))
+		lb2 = Label(self.body, text = "has been added to list of", font=('Helvetica', 10))
+		lb3 = Label(self.body, text = userDetails['role'] + "s", font=('Helvetica', 10, 'bold'))
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		# lb2 = Label(self.body, text = customerName, font=('Helvetica', 10))
+
+		lb1.grid(column=0, row=0, columnspan=9, rowspan=2, sticky=(N, S, E, W))
+		lb2.grid(column=0, row=2, columnspan=9, rowspan=1, sticky=(N, S, E, W))
+		lb3.grid(column=0, row=3, columnspan=9, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+	def confirm(self, pages):
+		for widget in self.master.winfo_children():
+			widget.destroy()
+		self.promptWindow.destroy()
+		self.backhome= home_page(self.root, self.master,'Home', pages)
 #IGNORE THIS SECTION
 #3-------------------------------------------------------------#		
 # class select_quantity(prompt_box):
