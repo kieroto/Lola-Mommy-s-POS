@@ -32,32 +32,32 @@ class table():
         style_heading.configure("Treeview.Heading", font = ('Helvetica', self.heading_font))
 
         # initialize treeview 
-        tree = ttk.Treeview(self.frame, columns= self.column_id, show="headings", height=self.height_)
-        tree.grid(row=self.tree_row, column=self.tree_col, columnspan=len(self.column_id), sticky=N+S+E+W)
+        self.tree = ttk.Treeview(self.frame, columns= self.column_id, show="headings", height=self.height_)
+        self.tree.grid(row=self.tree_row, column=self.tree_col, columnspan=len(self.column_id), sticky=N+S+E+W)
 
         
         # initialize column heads
-        tree['columns'] = self.column_id
+        self.tree['columns'] = self.column_id
     
         # Configure column weights
         for i in range(0, (len(self.column_id)-1)):
-            tree.columnconfigure(i, weight=1)
+            self.tree.columnconfigure(i, weight=1)
 
         # Initialize headings
-        for label in tree['columns']:
+        for label in self.tree['columns']:
             if (label == "ID"):
-                tree.heading(label, anchor = CENTER, text=label)
+                self.tree.heading(label, anchor = CENTER, text=label)
             else: 
-                tree.heading(label, anchor = W, text=label)
+                self.tree.heading(label, anchor = W, text=label)
 
-        for head in tree['columns']:
-            tree.column(head, width = self.tablecol_width)
+        for head in self.tree['columns']:
+            self.tree.column(head, width = self.tablecol_width)
 
         # tree.column("Name", anchor = W, minwidth=75, stretch = 0)
         # tree.insert('', 'end', values=('literal'+ str(var), var_int)
 
         for i in range(0, 15):
-            tree.insert('', 'end', values=('literal'+ str(i), 'item_' +str(i)))
+            self.tree.insert('', 'end', values=('literal'+ str(i), 'item_' +str(i)))
 
     # def handle_click(event):
     #     if (treeview.identify_region(event.x, event.y) == "separator"):

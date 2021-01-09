@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from table import table
+from prompt import *
 class h_page(ttk.Frame, Tk):
     
     def __init__(self, root, body, title):
@@ -36,14 +37,20 @@ class h_page(ttk.Frame, Tk):
         Date =  Label(self.title, text='Date 8/10/20', font=('Helvetica', 20, 'bold'))
         Date.grid(column=0, row=0 , columnspan=2, rowspan=1, sticky=(N+S+E+W))
 
-        Orderonly =  Button(self.title, text='Show orders only', font=('Helvetica', 13, 'bold'))
-        Orderonly.grid(column=12, row=0 , columnspan=1, rowspan=1, sticky=(N+S+E+W))
+        self.Orderonly =  Button(self.title, text='Show orders only', font=('Helvetica', 13, 'bold'))
+        self.Orderonly.grid(column=12, row=0 , columnspan=1, rowspan=1, sticky=(N+S+E+W))
 
         self.Table_ = table(frame= self.table_frame, tree_row=3, tree_col=5, 
                         column_id=("ID", "Username", "Action", "Action ID", "Dates"), 
                         rowheight = 40 ,height = 10, font_size = 12, font = 'Helvetica',
                         tablecol_width = 250, headingfont= 30)   
+        self.body = body
+        self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
 
+    def OnDoubleClick(self, event):
+        item = self.Table_.tree.selection()[0]
+        print("you clicked on", self.Table_.tree.item(item,"text"))
+        history(1, self.body)
 
     def page_id(self):
         return 3
