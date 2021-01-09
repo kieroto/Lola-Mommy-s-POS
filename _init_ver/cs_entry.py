@@ -11,6 +11,7 @@ class cs_page(ttk.Frame, Tk):
 
         self.root = root
         self.body = body
+        self.pages = pages
        
         # Customer Search Label and Autocomplete Entry
         self.Userlbl = Label(self.body, text="Search Customer", font=('Helvetica', 16))
@@ -51,11 +52,15 @@ class cs_page(ttk.Frame, Tk):
 
         self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get()}
 
-        customerConfirmBtn = Button(self.body, text="Confirm", font = ("Helvetica", 16), command=lambda:confirm_customer(1, customerConfirmBtn, self.customerDetails, self.root, self.body, pages))
-        customerConfirmBtn.grid(column=4, row=10 , columnspan=6, rowspan=2, sticky=(N))
-       
+        self.customerConfirmBtn = Button(self.body, text="Confirm", font = ("Helvetica", 16), command=self.confirm_click)
+        self.customerConfirmBtn.grid(column=4, row=10 , columnspan=6, rowspan=2, sticky=(N))
+        
     def page_id(self):
         return 1
+
+    def confirm_click(self):
+        Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, self.pages)
+        
 
     def click(self, i):
         pass
