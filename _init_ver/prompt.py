@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from PIL import ImageTk, Image
+from Order_process import order_process
+
 # Default settings for prompts
 class prompt_box():
 
@@ -44,18 +46,7 @@ class prompt_box():
 			self.body.columnconfigure(i, weight=1)
 			self.body.rowconfigure(i, weight=1)
 		#1end-------------------------------------------------------------#
-class history(prompt_box):
-		
-	def __init__(self, promptType, body):
-		# btn.configure(state="disabled")
-		super().__init__(promptType, body)
-		self.promptWindow.title("Confirm Customer")
 
-
-	def confirm(self, pages):
-		for widget in self.master.winfo_children():
-			widget.destroy()
-		self.promptWindow.destroy()
 class confirm_customer(prompt_box):
 		
 	def __init__(self, promptType, btn, customerDetails, root, body, pages):
@@ -88,7 +79,6 @@ class confirm_customer(prompt_box):
 		for widget in self.master.winfo_children():
 			widget.destroy()
 		self.promptWindow.destroy()
-		from Order_process import order_process
 		self.orderprocess_= order_process(self.root, self.master, pages)
 
 #IGNORE THIS SECTION
