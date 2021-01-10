@@ -4,7 +4,7 @@ import tkinter.font as font
 from prompt import *
 from table import table
 
-class cs_page(ttk.Frame, Tk):
+class c_page(ttk.Frame, Tk):
     
     def __init__(self, root, body, title):
 

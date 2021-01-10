@@ -50,7 +50,7 @@ class h_page(ttk.Frame, Tk):
     def OnDoubleClick(self, event):
         item = self.Table_.tree.selection()[0]
         print("you clicked on", self.Table_.tree.item(item,"text"))
-        history(1, self.body)
+        history(1, self.body, self.root)
 
     def page_id(self):
         return 3

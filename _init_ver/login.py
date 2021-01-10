@@ -11,7 +11,7 @@ class login_user(prompt_box):
 		self.promptWindow = Tk()
 		self.promptWindow.resizable(False, False)
 		
-		super().__init__(promptType, self.promptWindow)
+		super().__init__(promptType, self.promptWindow, self.promptWindow)
 
 		path = os.path.dirname(os.path.abspath(__file__)) + '\logo1.png'
 		self.photo = Image.open(r""+path)

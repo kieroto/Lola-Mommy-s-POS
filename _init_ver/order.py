@@ -10,6 +10,7 @@ class orderselect(ttk.Frame, Tk):
         
         self.root = root
         self.body = body
+        self.pages = pages
 
         # Virtual pixels to help resize button in pixels
         #pixelVirtual = PhotoImage(width=1, height=1)
@@ -17,8 +18,8 @@ class orderselect(ttk.Frame, Tk):
         menuFont = font.Font(family='Helvetica', size=20, weight='bold')
  
         # Create button objects for top bar
-        Short = Button(self.body, text='Short Order', command= lambda: self.click(0, pages))
-        Bulk = Button(self.body, text='Bulk', width = 10, command= lambda: self.click(1, pages))
+        Short = Button(self.body, text='Short Order', command= lambda: self.click(0, self.pages))
+        Bulk = Button(self.body, text='Bulk', width = 10, command= lambda: self.click(1, self.pages))
 
         # List buttons
         self.buttons = [Short, Bulk]
@@ -47,8 +48,10 @@ class orderselect(ttk.Frame, Tk):
         
         self.i = i
         if(self.i == 1):
+            self.pages.append(9)
             self.cspage_ = cs_page(self.root, self.body, pages)
         else:
+            self.pages.append(10)
             self.orderprocess_= order_process(self.root, self.body, pages)
         pass
         pass

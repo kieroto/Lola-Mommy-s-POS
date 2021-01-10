@@ -56,7 +56,7 @@ class cs_page(ttk.Frame, Tk):
         self.customerConfirmBtn.grid(column=4, row=10 , columnspan=6, rowspan=2, sticky=(N))
         
     def page_id(self):
-        return 1
+        return 9
 
     def confirm_click(self):
         Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, self.pages)
