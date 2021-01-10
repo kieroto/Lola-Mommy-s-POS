@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 
 # Default settings for prompts
 class prompt_box():
-	def __init__(self, promptType, master):
+	def __init__(self, promptType, master, root):
 		# if prompt is login, make root window
 		if(promptType==0):
 			# self.promptWindow = Tk()
@@ -16,7 +16,13 @@ class prompt_box():
 		# else, make toplevel window instead 	
 		else:
 			self.master = master
+			self.root = root
+			self.var = IntVar()
+			self.var.set(0)
+
 			self.promptWindow = Toplevel(self.master, padx=10, pady=10)
+			self.promptWindow.protocol("WM_DELETE_WINDOW", self.callback)
+			self.root.protocol("WM_DELETE_WINDOW", self.callback_root)
 			prompt_width = 400
 			prompt_height = 300
 			# root.eval(f'tk::PlaceWindow {str(second_win)} center')
@@ -41,21 +47,111 @@ class prompt_box():
 		for i in range(9):
 			self.body.columnconfigure(i, weight=1)
 			self.body.rowconfigure(i, weight=1)
+
+	def callback_root(self):
+		self.callback()
+		self.root.destroy()
+	def callback(self):
+		self.var.set(1)
+		self.promptWindow.destroy()
 		#1end-------------------------------------------------------------#
 
 class history(prompt_box):
 		
-	def __init__(self, promptType, body):
+	def __init__(self, promptType, body, root):
 		# btn.configure(state="disabled")
-		super().__init__(promptType, body)
+		super().__init__(promptType, body, root)
 		self.promptWindow.title("Confirm Customer")
 
+class place_order(prompt_box):
+		
+	def __init__(self, promptType, root, body, pages,):
+		# btn.configure(state="disabled")
+		super().__init__(promptType, body, root)
+		self.body_ = body
+		self.pages = pages
+		self.root = root
 
+		self.promptWindow.title("Confirm Customer")
+		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		# dropdown = OptionMenu()
+
+		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+	def confirm(self, pages):
+		for widget in self.master.winfo_children():
+			widget.destroy()
+		self.promptWindow.destroy()
+		self.var.set(1)
+		from Home import home_page
+		self.home = home_page(self.root, self.body_, 'title', pages)
+
+class confirm_inv(prompt_box):
+		
+	def __init__(self, promptType, body, labels, root):
+		# btn.configure(state="disabled")
+		super().__init__(promptType, body, root)
+		self.body_ = body
+		self.confirm_bool=FALSE
+		self.promptWindow.title("Confirm Customer")
+	
+		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(labels))
+		# dropdown = OptionMenu()
+		
+		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+		print("waiting...")
+		self.promptWindow.wait_variable(self.var)
+		print("done waiting./")
+
+	def confirm(self, labels):
+		for widget in labels.winfo_children():
+			widget.destroy()
+		self.confirm_bool=TRUE
+		self.var.set(1)
+		self.promptWindow.destroy()
+	
+	def cancel(self):
+		self.var.set(1)
+		self.promptWindow.destroy()
+
+	
+class quantity(prompt_box):
+		
+	def __init__(self, promptType, root, body, pages):
+		# btn.configure(state="disabled")
+		super().__init__(promptType, body, root)
+		self.body_ = body
+		self.pages = pages
+		self.root = root
+
+		self.promptWindow.title("Confirm Customer")
+		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		# dropdown = OptionMenu()
+
+
+		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+
+		print("waiting...")
+		self.promptWindow.wait_variable(self.var)
+		print("done waiting./")
+
+	def confirm(self, pages):
+		self.var.set(1)
+		self.promptWindow.destroy()
+		pass
 class confirm_customer(prompt_box):
 		
 	def __init__(self, promptType, btn, customerDetails, root, body, pages):
 		# btn.configure(state="disabled")
-		super().__init__(promptType, body)
+		super().__init__(promptType, body, root)
 		self.root = root
 		self.promptWindow.title("Confirm Customer")
 		customerName = customerDetails['customerFirst'] + " " + customerDetails['customerLast']
@@ -77,17 +173,23 @@ class confirm_customer(prompt_box):
 		lb5.grid(column=0, row=5, columnspan=9, rowspan=1, sticky=(N, S, E, W))
 		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
 		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+		print("waiting...")
+		self.promptWindow.wait_variable(self.var)
+		print("done waiting./")
+
 	def confirm(self, pages):
 		for widget in self.master.winfo_children():
 			widget.destroy()
 		self.promptWindow.destroy()
+		self.var.set(1)
 		from Order_process import order_process
 		self.orderprocess_= order_process(self.root, self.master, pages)
 
 class add_user(prompt_box):
 
 	def __init__(self, promptType, btn, userDetails, root, body, pages):
-		super().__init__(promptType, body)
+		super().__init__(promptType, body, root)
 		self.root = root
 
 		self.promptWindow.title("User Added")
@@ -103,10 +205,16 @@ class add_user(prompt_box):
 		lb3.grid(column=0, row=3, columnspan=9, rowspan=1, sticky=(N, S, E, W))
 		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
 
+
+		print("waiting...")
+		self.promptWindow.wait_variable(self.var)
+		print("done waiting./")
+
 	def confirm(self, pages):
 		for widget in self.master.winfo_children():
 			widget.destroy()
 		self.promptWindow.destroy()
+		self.var.set(1)
 		from Home import home_page
 		self.backhome= home_page(self.root, self.master,'Home', pages)
 
