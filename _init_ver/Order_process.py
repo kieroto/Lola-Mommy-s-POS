@@ -66,7 +66,7 @@ class order_process(ttk.Frame, Tk):
                         rowheight = 80, height = 5, font_size = 20, font = 'Helvetica',
                         tablecol_width = 175, headingfont= 30)
         self.Table_.test()
-
+        self.Table_.tree.insert('', '0', values=('sddsd'))
        # Total
         Total = Label(self.tableframe, text='Total:    <>', font=('Helvetica', 20, 'bold'))
         Total.grid(column=2, row=23, columnspan=5, rowspan =1, sticky=N+S+E)
@@ -75,7 +75,7 @@ class order_process(ttk.Frame, Tk):
         
     def OnDoubleClick(self, event):
         item = self.Table_.tree.selection()[0]
-        self.Table_.tree.insert('', 'end', values=('sddsd'))
+        self.Table_.tree.insert('', '0', values=('sddsd'))
         print("you clicked on", self.Table_.tree.item(item,"text"))
         history(1, self.body, self.root)
 
