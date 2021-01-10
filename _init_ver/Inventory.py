@@ -49,13 +49,13 @@ class i_page(ttk.Frame, Tk):
         row_place = 10
         col_place = 1
         self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, 
-                        column_id=("ID", "Item Name", "Category", "Price","WSPrice", "Min WS", "Stock"), 
+                        column_id=("ID", "Item Name", "Category", "Price", "WS Price", "Min WS", "Stock"), 
                         rowheight = 80, height = 7, font_size = 18, font = 'Helvetica',
                         tablecol_width = 120, headingfont= 30)
         self.Table_.tree.column("Stock", width = 90)
         self.Table_.tree.column("Price", width = 90)
+        self.Table_.tree.column("WS Price", width = 90)
         self.Table_.tree.column("Min WS", width = 90)
-        self.Table_.tree.column("WS price", width = 90)
 
         for row in self._list_inv:
             self.Table_.tree.insert('', '0', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
@@ -136,54 +136,54 @@ class i_page(ttk.Frame, Tk):
 
 
         self.id = Label(self.labels, text = "ID", font = ("Helvetica", 25, 'bold'))
-        self.id.grid(column=0, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.id.grid(column=0, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
         self.id_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
-        self.id_e.grid(column=1, row=1 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.id_e.grid(column=1, row=1 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.itemname = Label(self.labels, text = "Item name", font = ("Helvetica", 25, 'bold'))
-        self.itemname.grid(column=0, row=2 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.itemname.grid(column=0, row=2 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.itemname_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
-        self.itemname_e.grid(column=1, row=2 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.itemname_e.grid(column=1, row=2 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.item_cat_list = ["Ready to cook", "Cooked", "Pork", "Chicken"]
 
         self.item_cate = ttk.Combobox(self.labels, width=12, values=self.item_cat_list, font = ("Helvetica", 22, 'bold'), state='readonly')
-        self.item_cate.grid(column=1, row=3 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.item_cate.grid(column=1, row=3 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
         self.item_cat = Label(self.labels, text = "Category", font = ("Helvetica", 25, 'bold'))
-        self.item_cat.grid(column=0, row=3 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.item_cat.grid(column=0, row=3 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.current_st = Label(self.labels, text = "Current Stock", font = ("Helvetica", 25, 'bold'))
-        self.current_st.grid(column=0, row=4 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.current_st.grid(column=0, row=4 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.current_ste = Entry(self.labels,width=12, font = ("Helvetica", 25, 'bold'))
-        self.current_ste.grid(column=1, row=4 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.current_ste.grid(column=1, row=4 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_prc = Label(self.labels, text = "Enter Price", font = ("Helvetica", 25, 'bold'))
-        self.enter_prc.grid(column=0, row=5 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_prc.grid(column=0, row=5 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_prce= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
-        self.enter_prce.grid(column=1, row=5 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_prce.grid(column=1, row=5 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_WSprc = Label(self.labels, text = "WS Price", font = ("Helvetica", 25, 'bold'))
-        self.enter_WSprc.grid(column=0, row=6 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_WSprc.grid(column=0, row=6 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_WSprce= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'))
-        self.enter_WSprce.grid(column=1, row=6 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_WSprce.grid(column=1, row=6 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_minWS = Label(self.labels, text = "Min WS Qty", font = ("Helvetica", 25, 'bold'))
-        self.enter_minWS.grid(column=0, row=7 , columnspan=1, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_minWS.grid(column=0, row=7 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_minWSe= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'))
-        self.enter_minWSe.grid(column=1, row=7 , columnspan=5, rowspan=1, sticky=(E), pady=(15,15), padx=(10,10))
+        self.enter_minWSe.grid(column=1, row=7 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.cancel_ = Button(self.labels, width=15, text='Cancel', font=('Helvetica', 25, 'bold'), command = self.cancel)
-        self.cancel_.grid(column=0, row=8 , columnspan=3, rowspan=1,  pady=(15,15), padx=(10,10))
+        self.cancel_.grid(column=0, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
 
         self.confirm_ = Button(self.labels, width=15, text='Confirm', font=('Helvetica', 25, 'bold'), command= lambda: self.confirm(type))
-        self.confirm_.grid(column=3, row=8 , columnspan=3, rowspan=1,  pady=(15,15), padx=(10,10))
+        self.confirm_.grid(column=3, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
  
     def cancel(self):
         # for widget in self.labels.winfo_children():
