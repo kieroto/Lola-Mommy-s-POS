@@ -222,7 +222,7 @@ def delete_database_name(id):
     con.commit()
     con.close()
 
-def delete_prouct(productID):
+def delete_product(productID):
     con = sqlite3.connect('product.db')
     c = con.cursor()
     c.execute("DELETE FROM product WHERE productID = " + productID)

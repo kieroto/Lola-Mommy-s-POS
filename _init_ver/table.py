@@ -35,7 +35,6 @@ class table():
         self.tree = ttk.Treeview(self.frame, columns= self.column_id, show="headings", height=self.height_)
         self.tree.grid(row=self.tree_row, column=self.tree_col, columnspan=len(self.column_id), sticky=N+S+E+W, pady=(20,20), padx=(20,20))
 
-        
         # initialize column heads
         self.tree['columns'] = self.column_id
     
@@ -55,10 +54,8 @@ class table():
 
         # tree.column("Name", anchor = W, minwidth=75, stretch = 0)
         # tree.insert('', 'end', values=('literal'+ str(var), var_int)
-
-
-        for i in range(0, 15):
-            self.tree.insert('', 'end', values=('literal'+ str(i), 'item_' +str(i)))
+        # for i in range(0, 15):
+        #     self.tree.insert('', 'end', values=('literal'+ str(i), 'item_' +str(i)))
 
     # def handle_click(event):
     #     if (treeview.identify_region(event.x, event.y) == "separator"):
