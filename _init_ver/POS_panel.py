@@ -4,12 +4,12 @@ import tkinter.font as font
 from Sales import s_page
 from History import h_page
 from Inventory import i_page
-from Customers import cs_page
+from Customers import c_page
 from Home import home_page
 from order import orderselect
 from Add_User import au_page
 from Adj_Priv import adj_priv
-
+from cs_entry import cs_page
 class main_(ttk.Frame, Tk):
     
     def __init__(self, root, menu, body, admin, menuFont):
@@ -100,7 +100,7 @@ class main_(ttk.Frame, Tk):
             if (i == 0):
                 self.sales = s_page(self.root, self.body, 'Sales')
             elif (i == 1):
-                self.customer = cs_page(self.root, self.body, 'Customer')
+                self.customer = c_page(self.root, self.body, 'Customer')
             elif (i == 2):
                 self.inventory = i_page(self.root, self.body, 'Inventory')
             elif (i == 3):
@@ -118,6 +118,13 @@ class main_(ttk.Frame, Tk):
                 #self.sales = s_page(self.root, self.body, 'Sales')
             elif (i == 8):
                 self.order_.click(0, self.pages)
+                pass
+            elif (i == 9):
+                self.cspage_ = cs_page(self.root, self.body, self.pages)
+                pass
+            elif (i == 10):
+                self.pages.pop()
+                self.shift_(-2, 7)
                 pass
                 #self.sales = s_page(self.root, self.body, 'Sales')
     
