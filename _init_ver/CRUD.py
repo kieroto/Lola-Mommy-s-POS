@@ -202,10 +202,69 @@ def retrieve_history():
 
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
-#TEMPLATE TO UPDATE ENTRY
-def update_database_name():
-    con = sqlite3.connect('database_name.db')
+def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
+    con = sqlite3.connect('product.db')
     c = con.cursor()
+    c.execute("""UPDATE product SET
+        productName = :productName,
+        category = :category,
+        price = :price,
+        wholesaleprice = :wholesaleprice,
+        minWholesale = :minWholesale,
+        stock = :stock
+        
+        WHERE productID = :productID""",
+        {
+            'productID ': productID,
+            'productName': productName,
+            'category': category,
+            'price': price,
+            'wholesaleprice': wholesaleprice,
+            'minWholesale': minWholesale,
+            'stock': stock
+        }
+    )
+    con.commit()
+    con.close()
+
+def update_customer(customerID, customerFirst, customerLast, mobile, address):
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("""UPDATE customer SET
+           customerFirst = :customerFirst,
+           customerLast = :customerLast,
+           mobile = :mobile,
+           address = :address,
+
+           WHERE customerID = :customerID""",
+              {
+                  'customerID': customerID,
+                  'customerFirst': customerFirst,
+                  'customerLast': customerLast,
+                  'mobile': mobile,
+                  'address': address
+              }
+    )
+    con.commit()
+    con.close()
+
+def update_employee(userID, username, password, role):
+    con = sqlite3.connect('employee.db')
+    c = con.cursor()
+    c.execute("""UPDATE employee SET
+               username = :username,
+               password = :password,
+               role = :role,
+
+               WHERE userID = :userID""",
+              {
+                'userID': userID,
+                'username': username,
+                'password': password,
+                'role': role,
+              }
+    )
+    con.commit()
     con.close()
 
 # ----------------------------------------------- SEARCH ELEMENT ------------------------------------------------------------------------------------------ #
