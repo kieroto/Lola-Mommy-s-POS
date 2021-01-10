@@ -5,10 +5,16 @@ from table import table
 from prompt import *
 class order_process(ttk.Frame, Tk):
     
+    # Populate listbox with _list
+    _list=[]
+    for i in range(22):
+        _list.append('<item> '+ str(i))
+
     def __init__(self, root, body, pages):
         
         self.root = root
         self.body = body
+        self.pages = pages
 
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -69,17 +75,15 @@ class order_process(ttk.Frame, Tk):
         
     def OnDoubleClick(self, event):
         item = self.Table_.tree.selection()[0]
+        self.Table_.tree.insert('', 'end', values=('sddsd'))
         print("you clicked on", self.Table_.tree.item(item,"text"))
-        history(1, self.body)
+        history(1, self.body, self.root)
 
     def page_id(self):
-        return 4
+        return 10
 
     def click(self, i):
         pass
-
-    def place_order(self):
-        print('prompt')
 
     def create_cat(self):
          # Labels
@@ -118,25 +122,45 @@ class order_process(ttk.Frame, Tk):
         # Create scrollbar widget
         self.scrollbar_ = Scrollbar(self.scrollpane, orient="vertical")
         self.scrollbar_.grid(row=0, column=7, rowspan=12, sticky=N+S+E+W)
-
+        
+        self.create_listbox()
         # Back button
         self.Back_items = Button(self.labels, text='back', font=('Helvetica', 20, 'bold'), command = self.choose_cat)
-        self.Back_items.grid(column=3, row=7 , columnspan=3, rowspan=6)
+        self.Back_items.grid(column=3, row=7 , columnspan=3, rowspan=6)   
 
-        
+    def create_listbox(self):
         # Create Listbox widget
-        self.listbox_ = Listbox(self.scrollpane, width=10)
+        self.list_var = StringVar(value=self._list)    
+        self.listbox_ = Listbox(self.scrollpane, width=10, listvariable=self.list_var)
         # Attach scrollbar to the listbox widget
         self.listbox_.config(yscrollcommand=self.scrollbar_.set)
         self.listbox_.grid(row=0, column=0, columnspan=7, rowspan=12, sticky=N+S+E+W)    
         self.scrollbar_.config(command=self.listbox_.yview)
 
-        # Populate listbox with _list
-        self._list=[]
-        for i in range(22):
-            self._list.append('<item> '+ str(i))
-        for item in self._list:
-        # insert each new item to the end of the listbox
-            self.listbox_.insert('end', item)
+        self.list_var.set(self._list)
+        # for item in self._list:
+        # # insert each new item to the end of the listbox
+        #     self.listbox_.insert('end', item)
         # optionally scroll to the bottom of the listbox
         self.listbox_['font']=self.menuFont
+
+        self.listbox_.bind("<Double-Button-1>", self.OnDouble_listbox)
+
+    def OnDouble_listbox(self, event):
+        widget = event.widget
+        selection=widget.curselection()
+        #value = widget.get(selection[0])
+        quantity(1, self.root, self.body, self.pages)
+        self._list[selection[0]]='test'
+        self.list_var.set(self._list)
+
+        
+
+    def place_order(self):
+        # self._list.append('<item> ')
+        # self.listbox_.yview_moveto(1)
+        # self.scrollbar_.destroy()
+        # self.listbox_.destroy()
+        # self.choose_item()
+        place_order(1, self.root, self.body, self.pages)
+        pass
