@@ -2,13 +2,14 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from prompt import *
+import CRUD
 
 import sqlite3
 import re
 import itertools
 
 # Dictionary list for testing
-lista = ['Abba', 'Cole', 'Franz', 'Gab', 'Kaye','Zian']
+lista = ['Abba', 'Cole', 'Franz', 'Gab', 'Kaye', 'Zian']
 
 # Ambot para asa ni, basta kailangan ni siya
 def matches(fieldValue, acListEntry):
@@ -17,26 +18,21 @@ def matches(fieldValue, acListEntry):
 
 class cs_page(ttk.Frame, Tk):
 
+    # Populate listbox with _list
+    _list_cus = CRUD.retrieve_customer()
+
     def __init__(self, root, body, pages):
 
         self.root = root
         self.body = body
-        self.pages = pages
-
-        # Create/Connect to database
-        conn = sqlite3.connect('customer.db')
-
-        # Create cursor
-        c = conn.cursor()
-
-        # Get records from database
-        c.execute("SELECT * FROM customer")
-        records = c.fetchall()
+        self.pages = pages 
 
         # Loop thru results
         customerList=[]
-        for record in records:
-            customerList.append(str(record[1]) + " " + str(record[2]))                            
+        # customerListSwitch=[]
+        for row in self._list_cus:
+            customerList.append(str(row[1]) + " " + str(row[2]))
+            # customerListSwitch.append(str(row[2]) + " " + str(row[1]))   
 
         # Customer Search Label and Autocomplete Entry
         self.Userlbl = Label(self.body, text="Search Customer", font=('Helvetica', 16))
@@ -74,7 +70,7 @@ class cs_page(ttk.Frame, Tk):
         # self.cmobile.insert(0, "09123456789")
 
         # Autocomplete class widget
-        self.entry = AutocompleteEntry(customerList, records, self.cfirst, self.clast, self.caddr, self.cmobile, self.body, listboxLength=6, width=20, matchesFunction=matches, font=('Helvetica', 16))
+        self.entry = AutocompleteEntry(customerList, self._list_cus, self.cfirst, self.clast, self.caddr, self.cmobile, self.body, listboxLength=6, width=20, matchesFunction=matches, font=('Helvetica', 16))
         self.entry.grid(column=5, row=2)
 
 
@@ -86,17 +82,15 @@ class cs_page(ttk.Frame, Tk):
 
         # Label for Error Message
         self.error_lb = Label(self.body, fg = "red", font = ("Helvetica", 14))
-
-        # Commit Changes
-        conn.commit()
-
-        # Close Connection
-        conn.close()
         
     def page_id(self):
         return 9
 
     def confirm_click(self):
+        self.entry.listbox.destroy()
+        self.entry.listboxUp = False
+        self.entry.icursor(END)
+
         if(self.cfirst.get() != '' or self.clast.get() != ''):
             self.error_lb.configure(text=" ")
             self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get()}
@@ -115,14 +109,12 @@ class cs_page(ttk.Frame, Tk):
     def click(self, i):
         pass
 
-  
 # New source, Autocomplete class taken from : https://gist.github.com/uroshekic/11078820
 # Remaining Bugs:
-# 1) Skips first entry
-# 2) Can't search based on last name
-# 3) Leaving suggestions open and clicking 'Confirm', does not destroy suggestion box 
+# - First entry is defaultly selected, but not highlighted
+# - Cant search based on last name
 class AutocompleteEntry(Entry):
-    def __init__(self, customerList, records, cfirst, clast, caddr, cmobile, *args, **kwargs):
+    def __init__(self, customerList, _list_cus, cfirst, clast, caddr, cmobile, *args, **kwargs):
 
         if 'listboxLength' in kwargs:
             self.listboxLength = kwargs['listboxLength']
@@ -149,7 +141,7 @@ class AutocompleteEntry(Entry):
         self.clast = clast
         self.caddr = caddr
         self.cmobile = cmobile
-        self.records = records
+        self._list_cus = _list_cus
         
         self.var = self["textvariable"]
         if self.var == '':
@@ -159,6 +151,7 @@ class AutocompleteEntry(Entry):
         self.bind("<Right>", self.selection)
         self.bind("<Up>", self.moveUp)
         self.bind("<Down>", self.moveDown)
+        self.bind("<Return>", self.selection)
 
         self.listboxUp = False
 
@@ -176,6 +169,7 @@ class AutocompleteEntry(Entry):
                     self.listbox.bind("<Right>", self.selection)
                     self.listbox.place(x=self.winfo_x(), y=self.winfo_y() + self.winfo_height())
                     self.listboxUp = True
+                    # self.listbox.selection_set(first=0) #this is the olonemdosjkmpkmsodkvnsokvnfkbmfbmfoskbmkgobmkgombkgomd,lbmg,blmdkobmg,bmlsdsdsdsdsdsdsdsdsdsdfrff
                 
                 self.listbox.delete(0, END)
                 for w in words:
@@ -190,12 +184,12 @@ class AutocompleteEntry(Entry):
             self.var.set(self.listbox.get(ACTIVE))
             # print(self.listbox.get(ACTIVE))
 
-            for record in self.records:
-                if str(str(record[1]) + " " + str(record[2])) == str(self.listbox.get(ACTIVE)):
-                    customer_id = record[0]
+            for row in self._list_cus:
+                if str(str(row[1]) + " " + str(row[2])) == str(self.listbox.get(ACTIVE)):
+                    customer_id = row[0]
 
             detailList=[]
-            for rec in self.records[customer_id - 1]:
+            for rec in self._list_cus[customer_id - 1]:
                 detailList.append(rec)
 
             self.listbox.destroy()
@@ -244,13 +238,15 @@ class AutocompleteEntry(Entry):
 
 
     def comparison(self):
+
+        # self.splitAll=[]
+        # for c in self.customerList:
+        #     splitName = c.split(" ")
+        #     for s in splitName:
+        #         self.splitAll.append(s)
+        # print(self.splitAll)
+
         return [ w for w in self.customerList if self.matchesFunction(self.var.get(), w) ]
-
-
-
-
-
-
 
 # Autocomplete class and def taken from https://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
 # Temp sa ni, kay stylize pa langman. Not sure how this works v: 
