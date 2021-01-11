@@ -3,6 +3,8 @@ from tkinter import ttk
 import tkinter.font as font
 from prompt import *
 from table import table
+import sqlite3
+import CRUD
 
 # All options for roles 
 ROLEOPTIONS=["Admin", "Cashier", "Inventory Staff"]
@@ -17,35 +19,45 @@ class adj_priv(ttk.Frame, Tk):
         # Font styles
         menuFont = font.Font(family='Helvetica', size=15, weight='bold')
 
+        self.records = CRUD.retrieve_privileges()
+
+        # Assign roles and privileges to lists
+        self.roleList=[]
+        self.privList=[]
+        for row in self.records:
+            self.roleList.append(row[1])
+            self.privList.append(row[2])      
+
         lbl = Label(self.body, text=title, font=('Helvetica', 20, 'bold'))
         lbl.grid(column=3, row=0 , columnspan=6, rowspan=1, sticky=(N+S+E+W))
 
         #Dropdown menu for roles
         self.lb = Label(self.body, text="Role:", font=('Helvetica', 16))
         self.lb.grid(column=1, row=3)
-        self.role = ttk.Combobox(self.body, width=15,font=("Helvetica, 16"), values=ROLEOPTIONS)
+        self.role = ttk.Combobox(self.body, width=15,font=("Helvetica, 16"), values=self.roleList)
+        self.role.bind("<<ComboboxSelected>>", self.selection)
         self.role.grid(column=2, row=3)
 
-        Checkbutton1 = IntVar()
-        Checkbutton2 = IntVar()
-        Checkbutton3 = IntVar()
-        Checkbutton4 = IntVar()
-        Checkbutton5 = IntVar()
-        Checkbutton6 = IntVar()
-        Checkbutton7 = IntVar()
-        Checkbutton8 = IntVar()
-        Checkbutton9 = IntVar()
+        self.Checkbutton1 = IntVar()
+        self.Checkbutton2 = IntVar()
+        self.Checkbutton3 = IntVar()
+        self.Checkbutton4 = IntVar()
+        self.Checkbutton5 = IntVar()
+        self.Checkbutton6 = IntVar()
+        self.Checkbutton7 = IntVar()
+        self.Checkbutton8 = IntVar()
+        self.Checkbutton9 = IntVar()
 
         #Checkbuttons for privileges
-        self.btn1 = Checkbutton(self.body, text="View inventory", variable=Checkbutton1, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn2 = Checkbutton(self.body, text="Edit inventory", variable=Checkbutton2, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn3 = Checkbutton(self.body, text="View history", variable=Checkbutton3, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn4 = Checkbutton(self.body, text="View sales", variable=Checkbutton4, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn5 = Checkbutton(self.body, text="Process orders", variable=Checkbutton5, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn6 = Checkbutton(self.body, text="View customer database", variable=Checkbutton6, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=20)
-        self.btn7 = Checkbutton(self.body, text="Edit customer", variable=Checkbutton7, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn8 = Checkbutton(self.body, text="View orders", variable=Checkbutton8, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
-        self.btn9 = Checkbutton(self.body, text="Void/Edit orders", variable=Checkbutton9, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=20)
+        self.btn1 = Checkbutton(self.body, text="View inventory", variable=self.Checkbutton1, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn2 = Checkbutton(self.body, text="Edit inventory", variable=self.Checkbutton2, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn3 = Checkbutton(self.body, text="View history", variable=self.Checkbutton3, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn4 = Checkbutton(self.body, text="View sales", variable=self.Checkbutton4, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn5 = Checkbutton(self.body, text="Process orders", variable=self.Checkbutton5, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn6 = Checkbutton(self.body, text="View customer database", variable=self.Checkbutton6, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=20)
+        self.btn7 = Checkbutton(self.body, text="Edit customer", variable=self.Checkbutton7, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn8 = Checkbutton(self.body, text="View orders", variable=self.Checkbutton8, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
+        self.btn9 = Checkbutton(self.body, text="Void/Edit orders", variable=self.Checkbutton9, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=20)
 
         self.btn1.grid(column=4, row=2)
         self.btn2.grid(column=4, row=3)
@@ -58,6 +70,59 @@ class adj_priv(ttk.Frame, Tk):
         self.btn9.grid(column=5, row=5)
 
         #Save button
-        self.savebtn = Button(self.body, text="Save Changes", font = ("Helvetica", 16), command=lambda:self.test) 
+        self.savebtn = Button(self.body, text="Save Changes", font = ("Helvetica", 16), command=self.save_changes) 
         self.savebtn.config(height=1, width=15, background='#93c47d')
         self.savebtn.grid(column=5, row=7)
+
+    # function for when a role is selected
+    def selection(self, event):
+        self.roleActive = self.role.get()
+
+        # take id of selected role
+        for row in self.records:
+            if row[1] == self.roleActive:
+                role_id = row[0]
+
+        # take privilege binary and split it into nine character. Assign them to toggle list
+        self.toggleList=[char for char in self.privList[role_id - 1]]
+
+        # Change toggle of each checkbutton
+        self.Checkbutton1.set(self.toggleList[0])
+        self.Checkbutton2.set(self.toggleList[1])
+        self.Checkbutton3.set(self.toggleList[2])
+        self.Checkbutton4.set(self.toggleList[3])
+        self.Checkbutton5.set(self.toggleList[4])
+        self.Checkbutton6.set(self.toggleList[5])
+        self.Checkbutton7.set(self.toggleList[6])
+        self.Checkbutton8.set(self.toggleList[7])
+        self.Checkbutton9.set(self.toggleList[8])
+
+    def save_changes(self):
+
+        role = self.role.get()
+        result = [] #array of privileges
+        c1=self.Checkbutton1.get()
+        c2=self.Checkbutton2.get()
+        c3=self.Checkbutton3.get()
+        c4=self.Checkbutton4.get()
+        c5=self.Checkbutton5.get()
+        c6=self.Checkbutton6.get()
+        c7=self.Checkbutton7.get()
+        c8=self.Checkbutton8.get()
+        c9=self.Checkbutton9.get()
+        result.append(c1)
+        result.append(c2)
+        result.append(c3)
+        result.append(c4)
+        result.append(c5)
+        result.append(c6)
+        result.append(c7)
+        result.append(c8)
+        result.append(c9)
+
+        #convert array to string
+        listToStr = ' '.join([str(elem) for elem in result])
+        role_priv = ''.join(listToStr.split())
+
+        #updates database
+        CRUD.update_priv(role, role_priv)

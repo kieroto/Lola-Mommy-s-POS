@@ -74,6 +74,17 @@ def history():
     con.commit()
     con.close()
 
+def adjust():
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS privileges (
+                    role_id INTEGER PRIMARY KEY,
+                    role text,
+                    privileges_bin text,
+                ) """)
+    con.commit()
+    con.close()
+
 
 # ----------------------------------------------- ADD ----------------------------------------------------------------------------------------- #
 
@@ -219,6 +230,14 @@ def retrieve_history():
     con.close()
     return rows
 
+def retrieve_privileges():
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM privileges")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
@@ -278,6 +297,21 @@ def update_employee(userID, username, password, role):
                 'password': password,
                 'role': role,
               }
+    )
+    con.commit()
+    con.close()
+
+def update_priv(role, privileges_bin):
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("""UPDATE privileges SET
+                privileges_bin = :privileges_bin
+
+                WHERE role = :role""",
+                {
+                    'role':role,
+                    'privileges_bin':privileges_bin,
+                }
     )
     con.commit()
     con.close()
