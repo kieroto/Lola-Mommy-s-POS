@@ -121,16 +121,18 @@ def add_customer(customerID, customerFirst, customerLast, mobile, address):
     con.commit()
     con.close()
 
-def add_employee(userID, username, password, role):
+def add_employee(username, password, role):
     con = sqlite3.connect('employee.db')
     c = con.cursor()
-    c.execute("INSERT INTO employee VALUES (:userID, :username, :password, :role)",
-            {
-                'userID': userID,
-                'username': username,
-                'password': password,
-                'role': role,
-            })
+    # c.execute("INSERT INTO employee VALUES (:username, :password, :role)",
+    c.execute("INSERT INTO employee (username, password, role) VALUES (?, ?, ?)", (username, password, role))
+        
+            # {
+            #     # 'userID': userID,
+            #     'username': username,
+            #     'password': password,
+            #     'role': role,
+            # })
 
     con.commit()
     con.close()

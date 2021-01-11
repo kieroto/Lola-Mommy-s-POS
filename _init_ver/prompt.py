@@ -257,12 +257,16 @@ class add_user(prompt_box):
 		print("done waiting./")
 
 	def confirm(self, pages):
-		for widget in self.master.winfo_children():
-			widget.destroy()
+		# for widget in self.master.winfo_children():
+		# 	widget.destroy()
+
 		self.promptWindow.destroy()
-		self.var.set(1)
-		from Home import home_page
-		self.backhome= home_page(self.root, self.master,'Home', pages)
+
+		# self.var.set(1)
+		# from Home import home_page
+		# self.backhome= home_page(self.root, self.master,'Home', pages)
+		from Users import u_page
+		self.user = u_page(self.root, self.master, pages, 'Users')
 
 
 #IGNORE THIS SECTION

@@ -7,9 +7,10 @@ from Inventory import i_page
 from Customers import c_page
 from Home import home_page
 from order import orderselect
-from Add_User import au_page
+from Users import u_page
 from Adj_Priv import adj_priv
 from cs_entry import cs_page
+
 class main_(ttk.Frame, Tk):
     
     def __init__(self, root, menu, body, admin, menuFont):
@@ -32,18 +33,18 @@ class main_(ttk.Frame, Tk):
         History = Button(self.menu, text=' History ', command= lambda: self.click(3))
         Order = Button(self.menu, text=' Orders ', command= lambda: self.click(4))
         
-        Add_user = Button(self.menu, text='Add User', command= lambda: self.click(5))
+        User = Button(self.menu, text='Users', command= lambda: self.click(5))
         Adj_priv = Button(self.menu, text='Adjust Privileges', command= lambda: self.click(6))
         Log_out = Button(self.menu, text='Logout', command= self.test)
         Back = Button(self.menu, text='Back', command= lambda: self.click(7))
 
         # List buttons
-        self.buttons = [Sales, Customer, Inventory, History, Order, Add_user, Adj_priv, Log_out, Back]
+        self.buttons = [Sales, Customer, Inventory, History, Order, User, Adj_priv, Log_out, Back]
 
         # Assign button properties
         for bttn in self.buttons:
             #bttn.configure(background='#93c47d', image=pixelVirtual, width=190, height=65, compound="c")
-            if (bttn == Add_user or bttn == Adj_priv):
+            if (bttn == User or bttn == Adj_priv):
                 bttn.configure(background='#89aae0')
             else :
                 bttn.configure(background='#93c47d')
@@ -59,7 +60,7 @@ class main_(ttk.Frame, Tk):
 
         # Admin privileges
         if (admin== TRUE):
-            Add_user.grid(column=10, row=0, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+            User.grid(column=10, row=0, columnspan=2, rowspan=1, sticky=(N, S, E, W))
             Adj_priv.grid(column=10, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
             Log_out.grid(column=13, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
             Back.grid(column=13, row=2, columnspan=2, rowspan=1, sticky=(N, S, E, W))
@@ -110,7 +111,7 @@ class main_(ttk.Frame, Tk):
                 pass
                 #self.sales = s_page(self.root, self.body, 'Sales')
             elif (i == 5):
-                self.adduser = au_page(self.root, self.body, self.pages, 'Add User')
+                self.user = u_page(self.root, self.body, self.pages, 'Users')
             elif (i == 6):
                 self.adjpriv = adj_priv(self.root, self.body, self.pages, 'Adjust Privileges')
             elif (i == 7):
