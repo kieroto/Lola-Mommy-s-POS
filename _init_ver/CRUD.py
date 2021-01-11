@@ -80,7 +80,7 @@ def adjust():
     c.execute("""CREATE TABLE IF NOT EXISTS privileges (
                     role_id INTEGER PRIMARY KEY,
                     role text,
-                    privileges_bin text,
+                    privileges_bin text
                 ) """)
     con.commit()
     con.close()
@@ -240,6 +240,14 @@ def retrieve_privileges():
     con.close()
     return rows
 
+def retrieve_lastorder():
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM orderx ORDER BY primaryID DESC LIMIT 1")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
@@ -336,5 +344,12 @@ def delete_product(productID):
     con = sqlite3.connect('product.db')
     c = con.cursor()
     c.execute("DELETE FROM product WHERE productID = " + productID)
+    con.commit()
+    con.close()
+
+def delete_records():
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    c.execute("DELETE FROM orderx ")
     con.commit()
     con.close()
