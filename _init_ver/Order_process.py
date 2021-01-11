@@ -5,6 +5,23 @@ from table import table
 from prompt import *
 import CRUD
 import util
+
+_customerID = 8
+_userID = 1
+
+class order_cred():
+    def __init__(self, ids, row, pn):
+
+        self.pid = ids[0]
+        self.oid = ids[1]
+        self.userID = _userID
+        self.customerID = _customerID
+        self.productid = CRUD.retreive_name('"'+pn+'"')[0][0]
+        self.pn = pn
+        self.qty = row[1]
+        self.ttl = row[3]
+        self.date = 'mm/yy/dd'
+        self.time = 'mm/yy/dd'
 class quantity_change():
     def __init__(self, flag, qty_s, qty_c):
         self.confirm_flag = flag
@@ -19,6 +36,7 @@ class order_process(ttk.Frame, Tk):
         self.body = body
         self.order_list = []
         self.order_qty = []
+        self.order_price = []
         self.item_list = []
         self.pages= pages
 
@@ -72,7 +90,8 @@ class order_process(ttk.Frame, Tk):
                         column_id=("Item", "Quantity", "Price", "Total"), 
                         rowheight = 80, height = 5, font_size = 20, font = 'Helvetica',
                         tablecol_width = 175, headingfont= 30)
-        self.Table_.test()
+        #self.Table_.test()
+        print(type(self.Table_))
         # self.Table_.tree.insert('', '0', values=('sddsd'))
        # Total
         Total = Label(self.tableframe, text='Total:    <>', font=('Helvetica', 20, 'bold'))
@@ -232,7 +251,7 @@ class order_process(ttk.Frame, Tk):
             util.focus_item(util.get_index(product, self.order_list), self.Table_)
             qty_c =  int(self.Table_.tree.item(self.Table_.tree.selection())['values'][1])
             self.r = 0
-        else:
+        else:   
             qty_c = 1
             self.r = 1
         self.Tracker = quantity_change(False, qty-self.r, qty_c)
@@ -274,11 +293,32 @@ class order_process(ttk.Frame, Tk):
             product=(product+" "+str(qty)+" " + str(price) + " "+ str(total))
             self.Table_.tree.insert('', s, values=(product))
 
+        print(self.order_list)
+
     def place_order(self):
-        # self._list.append('<item> ')
-        # self.listbox_.yview_moveto(1)
-        # self.scrollbar_.destroy()
-        # self.listbox_.destroy()
-        # self.choose_item()
-        place_order(1, self.root, self.body)
-        pass
+        if not self.order_list:
+            print("No item")
+            return
+        self.Tracker=quantity_change(False, 0, 0)
+        place_order(1, self.root, self.body, self.pages, self.Tracker)
+        if(self.Tracker.confirm_flag == True):
+            ids=util.extract_orderprev()
+            ids[1] = ids[1] + 1
+            try:
+                for i in range(0, len(self.order_list)):
+                    ids[0] = ids[0] + 1
+                    util.focus_item(0, self.Table_)
+                    row=self.Table_.tree.item(self.Table_.tree.selection())['values']
+                    pn = self.order_list.pop(0)
+                    _order_cred = order_cred(ids, row, pn)
+                    util.update_order(_order_cred)
+                    self.Table_.tree.delete(self.Table_.tree.selection())
+                for widget in self.body.winfo_children():
+                    widget.destroy()
+                from Home import home_page
+                self.home_ = home_page(self.root, self.body, 'Home', self.pages)
+            except IndexError:
+                print("No item")
+
+
+            

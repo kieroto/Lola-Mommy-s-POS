@@ -66,29 +66,41 @@ class history(prompt_box):
 
 class place_order(prompt_box):
 		
-	def __init__(self, promptType, root, body, pages,):
+	def __init__(self, promptType, root, body, pages, Tracker):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body, root)
 		self.body_ = body
 		self.pages = pages
 		self.root = root
+		self.Tracker = Tracker
 
+		self.promptWindow.grab_set()
 		self.promptWindow.title("Confirm Customer")
-		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
-		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages, Tracker))
 		# dropdown = OptionMenu()
 
 		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
 		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
 
-	def confirm(self, pages):
-		for widget in self.master.winfo_children():
-			widget.destroy()
-		self.promptWindow.destroy()
-		self.var.set(1)
-		from Home import home_page
-		self.home = home_page(self.root, self.body_, 'title', pages)
+		print("waiting...")
+		okBtn.wait_variable(self.var)
+		print("done waiting./")
 
+	def confirm(self, pages, Tracker):
+		# for widget in self.master.winfo_children():
+		# 	widget.destroy()
+		self.var.set(1)
+		Tracker.confirm_flag = True
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+		
+		
+
+	def cancel(self):
+		self.var.set(1)
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
 class confirm_inv(prompt_box):
 		
 	def __init__(self, promptType, body, labels, root):
@@ -155,7 +167,6 @@ class quantity(prompt_box):
 
 		print("waiting...")
 		okBtn.wait_variable(self.var)
-	
 		print("done waiting./")
 
 	def callback_entry(self, P):
