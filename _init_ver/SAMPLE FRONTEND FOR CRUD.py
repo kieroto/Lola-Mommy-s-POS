@@ -5,7 +5,6 @@ import CRUD         #IMPORT CRUD.py TO FRONTEND
 import util
 
 root = Tk()
-root.geometry("500x300")
 root.title("Sample Frontend")
 
 CRUD.product() #CREATE OR CONNECT DATABASE
@@ -18,14 +17,27 @@ category = StringVar()
 price = StringVar()
 stock = StringVar()
 
+
 #ADD ENTRY TO DATABASE
-def add_data():
+def view_cs():
+    #a
+    rows = CRUD.retrieve_customer()
+    for item in rows:
+        print(item)
+#PRINT TABLE ELEMENTS IN CONSOLE
+def view_o():
+    rows = CRUD.retrieve_order()
+    for item in rows:
+        print(item)
+
+def del_cs():
+    CRUD.delete_customer()
+
+def del_o():
     CRUD.delete_records()
 
-#PRINT TABLE ELEMENTS IN CONSOLE
-def view_table():
-    rows = CRUD.retrieve_order()
-    print(rows)
+def dummy():
+    CRUD.add_customer(0, '-', '-', 0, '-')
 CRUD.product()
 CRUD.customer()
 CRUD.employee()
@@ -33,43 +45,15 @@ CRUD.order()
 CRUD.history()
 CRUD.adjust()
 
-label1 = Label(root, text="Add Product", relief="solid", width=20, font=("arial", 16, "bold"))
-label1.place(x=90,y=23)
-
-label2 = Label(root, text="Product: ", font=("arial", 12, "bold"))
-label2.place(x=90,y=60)
-
-entry1 = Entry(textvar=productName)
-entry1.place(x=200,y=60)
-
-label3 = Label(root, text="Category: ", font=("arial", 12, "bold"))
-label3.place(x=90,y=83)
-
-entry2 = Entry(textvar=category)
-entry2.place(x=200,y=83)
-
-label4 = Label(root, text="Price: ", font=("arial", 12, "bold"))
-label4.place(x=90,y=106)
-
-entry3 = Entry(textvar=price)
-entry3.place(x=200,y=106)
-
-label5 = Label(root, text="Stock: ", font=("arial", 12, "bold"))
-label5.place(x=90,y=129)
-
-entry4 = Entry(textvar=stock)
-entry4.place(x=200,y=129)
-
-label6 = Label(root, text="ID: ", font=("arial", 12, "bold"))
-label6.place(x=90,y=152)
-
-entry5 = Entry(textvar=productID)
-entry5.place(x=200,y=152)
-
-button1 = Button(root, text="Add Product", width=12,bg="red", command=add_data, font=("arial", 12, "bold"))
-button1.place(x=160,y=200)
-
-button2 = Button(text="View in console", width=12, bg="red", command=view_table, font=("arial", 12, "bold"))
-button2.place(x=160,y=250)
+button1 = Button(root, text="View customers", width=12,bg="red", command=view_cs, font=("arial", 12, "bold"))
+button1.grid(column=0, row=0)
+button2 = Button(text="View in orders", width=12, bg="red", command=view_o, font=("arial", 12, "bold"))
+button2.grid(column=2, row=0)
+button2 = Button(text="Delete Customers", width=12, bg="red", command=del_cs, font=("arial", 12, "bold"))
+button2.grid(column=0, row=1)
+button2 = Button(text="Delete Orders", width=12, bg="red", command=del_o, font=("arial", 12, "bold"))
+button2.grid(column=2, row=1)
+button2 = Button(text="dummy", width=12, bg="red", command=dummy, font=("arial", 12, "bold"))
+button2.grid(column=2, row=3)
 
 root.mainloop()
