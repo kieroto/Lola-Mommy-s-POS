@@ -208,6 +208,14 @@ def retrieve_customer():
     con.close()
     return rows
 
+def retrieve_customer_search(key):
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM customer WHERE " + key)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 def retrieve_employee():
     con = sqlite3.connect('employee.db')
     c = con.cursor()
@@ -248,6 +256,13 @@ def retrieve_lastorder():
     con.close()
     return rows
 
+def retrieve_lastcustomer():
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM customer ORDER BY customerID DESC LIMIT 1")
+    rows = c.fetchall()
+    con.close()
+    return rows
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
@@ -351,5 +366,12 @@ def delete_records():
     con = sqlite3.connect('order.db')
     c = con.cursor()
     c.execute("DELETE FROM orderx ")
+    con.commit()
+    con.close()
+
+def delete_customer():
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("DELETE FROM customer ")
     con.commit()
     con.close()

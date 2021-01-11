@@ -1,4 +1,36 @@
 import CRUD
+def search_cs(key):
+    fname = 'customerFirst = "' + key['customerFirst']+'" '
+    lname = 'customerLast = "' + key['customerLast']+'" '
+    mob = 'mobile = ' + str(key['mobile'])+ ' '
+    add = 'address = "' + key['address']+'" '
+    key_line = fname + 'AND ' + lname + 'AND ' + mob + 'AND ' + add
+
+    row = CRUD.retrieve_customer_search(key_line)
+    if not row:
+        return 0
+    else:
+        return row[0][0]
+
+def customer_check(cs_details):
+    if(cs_details['type']=='short'):
+        return -1
+    else:
+        key = search_cs(cs_details)
+    
+    if (key!=0):
+        return key
+    else:
+        try:
+            s = CRUD.retrieve_lastcustomer()
+            last_id = s[0][0]
+            new_id = int(last_id) + 1
+        except IndexError:
+            new_id = 0
+        CRUD.add_customer(new_id, cs_details['customerFirst'], cs_details['customerLast'], 
+                        cs_details['mobile'], cs_details['address'])
+        return new_id
+
 
 def replace(index, Table_):
     focus_item(index, Table_)

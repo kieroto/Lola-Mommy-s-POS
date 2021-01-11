@@ -5,23 +5,24 @@ from table import table
 from prompt import *
 import CRUD
 import util
+from datetime import date, datetime
 
-_customerID = 8
+_customerID = 0
 _userID = 1
 
 class order_cred():
-    def __init__(self, ids, row, pn):
-
+    def __init__(self, ids, row, pn, details):
         self.pid = ids[0]
         self.oid = ids[1]
         self.userID = _userID
-        self.customerID = _customerID
+        self.customerID = details['id']
         self.productid = CRUD.retreive_name('"'+pn+'"')[0][0]
         self.pn = pn
         self.qty = row[1]
         self.ttl = row[3]
-        self.date = 'mm/yy/dd'
-        self.time = 'mm/yy/dd'
+        self.date = details['date']
+        self.time = details['time']
+    
 class quantity_change():
     def __init__(self, flag, qty_s, qty_c):
         self.confirm_flag = flag
@@ -30,7 +31,7 @@ class quantity_change():
         self.qty_ref = qty_c
 class order_process(ttk.Frame, Tk):
 
-    def __init__(self, root, body, pages):
+    def __init__(self, root, body, pages, details):
         
         self.root = root
         self.body = body
@@ -38,6 +39,7 @@ class order_process(ttk.Frame, Tk):
         self.order_qty = []
         self.order_price = []
         self.item_list = []
+        self.cs_details = details
         self.pages= pages
 
         #################################################
@@ -299,6 +301,10 @@ class order_process(ttk.Frame, Tk):
         if not self.order_list:
             print("No item")
             return
+        self.csid = util.customer_check( self.cs_details)
+        details={"id": self.csid, "date": date.today().strftime("%m/%d/%y"),
+                "time": datetime.now().strftime("%H:%M:%S")}
+
         self.Tracker=quantity_change(False, 0, 0)
         place_order(1, self.root, self.body, self.pages, self.Tracker)
         if(self.Tracker.confirm_flag == True):
@@ -310,7 +316,7 @@ class order_process(ttk.Frame, Tk):
                     util.focus_item(0, self.Table_)
                     row=self.Table_.tree.item(self.Table_.tree.selection())['values']
                     pn = self.order_list.pop(0)
-                    _order_cred = order_cred(ids, row, pn)
+                    _order_cred = order_cred(ids, row, pn, details)
                     util.update_order(_order_cred)
                     self.Table_.tree.delete(self.Table_.tree.selection())
                 for widget in self.body.winfo_children():

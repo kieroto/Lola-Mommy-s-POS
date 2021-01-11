@@ -52,6 +52,7 @@ class orderselect(ttk.Frame, Tk):
             self.cspage_ = cs_page(self.root, self.body, pages)
         else:
             self.pages.append(10)
-            self.orderprocess_= order_process(self.root, self.body, pages)
+            cs = {"type": 'short'}
+            self.orderprocess_= order_process(self.root, self.body, pages, cs)
         pass
         pass
