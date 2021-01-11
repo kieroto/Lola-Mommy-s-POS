@@ -168,6 +168,23 @@ def retrieve_product():
     con.close()
     return rows
 
+def retrieve_category(cat):
+    con = sqlite3.connect('product.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM product WHERE category = " + cat +" AND stock > 0")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+def retreive_name(pname):
+    con = sqlite3.connect('product.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM product WHERE productName = " + pname)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+
 def retrieve_customer():
     con = sqlite3.connect('customer.db')
     c = con.cursor()
@@ -205,24 +222,20 @@ def retrieve_history():
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
     con = sqlite3.connect('product.db')
     c = con.cursor()
-    c.execute("""UPDATE product SET
-        productName = :productName,
-        category = :category,
-        price = :price,
-        wholesaleprice = :wholesaleprice,
-        minWholesale = :minWholesale,
-        stock = :stock
-        
-        WHERE productID = :productID""",
-        {
-            'productID ': productID,
-            'productName': productName,
-            'category': category,
-            'price': price,
-            'wholesaleprice': wholesaleprice,
-            'minWholesale': minWholesale,
-            'stock': stock
-        }
+    c.execute(
+        'UPDATE product SET productName=?, category=?, price=?, wholesaleprice=?, minWholesale=?, stock=? WHERE productID=?', 
+        (productName, category, price, 
+        wholesaleprice, minWholesale, stock, int(productID))
+    )
+    con.commit()
+    con.close()
+
+def update_stock(productName, stock):
+    con = sqlite3.connect('product.db')
+    c = con.cursor()
+    c.execute(
+        'UPDATE product SET stock=? WHERE productName=?', 
+        (int(stock), str(productName))
     )
     con.commit()
     con.close()
