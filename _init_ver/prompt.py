@@ -142,14 +142,15 @@ class quantity(prompt_box):
 		self.pages = pages
 		self.root = root
 		self.Tracker = Tracker
-
+		self.past = Tracker.qty_change
+		self.max = self.Tracker.qty_s + self.Tracker.qty_change
 		vcmd = (self.body.register(self.callback_entry))
 
 		self.promptWindow.grab_set()
 		self.promptWindow.title("Confirm Customer")
 		plus = Button(self.body, text="-", command=lambda:self.add(0))
 		minus = Button(self.body, text="+", command=lambda:self.add(1))
-		self.qty_e= Entry(self.body, validate='all', validatecommand=(vcmd, '%P'))
+		self.qty_e= Entry(self.body, validate='key', validatecommand=(vcmd, '%P'))
 
 
 		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
@@ -171,7 +172,10 @@ class quantity(prompt_box):
 
 	def callback_entry(self, P):
 		if str.isdigit(P) or P == "":
-			return True
+			if P != "":
+				return True if int(P) <= self.max and int(P) >= 0 else False
+			else:
+				return True
 		else:
 			return False
 
@@ -189,7 +193,11 @@ class quantity(prompt_box):
 		self.promptWindow.destroy()
 
 	def add(self, op):
-		s=int(self.qty_e.get())
+		try:
+			s=int(self.qty_e.get())
+			self.past=s
+		except ValueError:
+			s=self.past
 		max = self.Tracker.qty_s + self.Tracker.qty_change
 		self.qty_e.delete(0, "end")
 		if (op==0):
