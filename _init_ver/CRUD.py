@@ -47,7 +47,8 @@ def order():
     con = sqlite3.connect('order.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS orderx (
-                orderID INTEGER PRIMARY KEY,
+                primaryID INTEGER PRIMARY KEY,
+                orderID INTEGER,
                 userID INTEGER,
                 customerID INTEGER,
                 productID INTEGER,
@@ -123,11 +124,12 @@ def add_employee(userID, username, password, role):
     con.commit()
     con.close()
 
-def add_order(orderID, userID, customerID, productID, productName, quantity, totalAmount, date, time):
+def add_order(primaryID, orderID, userID, customerID, productID, productName, quantity, totalAmount, date, time):
     con = sqlite3.connect('order.db')
     c = con.cursor()
-    c.execute("INSERT INTO orderx VALUES (:orderID, :userID, :customerID, :productID, :productName, :quantity, :totalAmount, :date, :time)",
+    c.execute("INSERT INTO orderx VALUES (:primaryID, :orderID, :userID, :customerID, :productID, :productName, :quantity, :totalAmount, :date, :time)",
               {
+                  'primaryID': primaryID,
                   'orderID': orderID,
                   'userID': userID,
                   'customerID': customerID,
