@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from PIL import ImageTk, Image
-
+import tkinter.messagebox
 # Default settings for prompts
 class prompt_box():
 	def __init__(self, promptType, master, root):
@@ -49,6 +49,7 @@ class prompt_box():
 			self.body.rowconfigure(i, weight=1)
 
 	def callback_root(self):
+		self.var.set(1)
 		self.callback()
 		self.root.destroy()
 	def callback(self):
@@ -122,31 +123,76 @@ class confirm_inv(prompt_box):
 	
 class quantity(prompt_box):
 		
-	def __init__(self, promptType, root, body, pages):
+	def __init__(self, promptType, root, body, pages, Tracker):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body, root)
 		self.body_ = body
 		self.pages = pages
 		self.root = root
+		self.Tracker = Tracker
 
+		vcmd = (self.body.register(self.callback_entry))
+
+		self.promptWindow.grab_set()
 		self.promptWindow.title("Confirm Customer")
-		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
-		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages))
+		plus = Button(self.body, text="-", command=lambda:self.add(0))
+		minus = Button(self.body, text="+", command=lambda:self.add(1))
+		self.qty_e= Entry(self.body, validate='all', validatecommand=(vcmd, '%P'))
+
+
+		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(pages, Tracker))
 		# dropdown = OptionMenu()
 
 
 		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
-		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
-
+		okBtn.grid(column=4, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		
+		plus.grid(column=1, row=4, columnspan=3, rowspan=1, sticky=(N, S, E, W))
+		minus.grid(column=5, row=4, columnspan=3, rowspan=1, sticky=(N, S, E, W))
+		self.qty_e.grid(column=4, row=4 , columnspan=1, rowspan=1, sticky=(N+S+E+W))
+		self.qty_e.insert(0, Tracker.qty_change)
 
 		print("waiting...")
-		self.promptWindow.wait_variable(self.var)
+		okBtn.wait_variable(self.var)
+	
 		print("done waiting./")
 
-	def confirm(self, pages):
+	def callback_entry(self, P):
+		if str.isdigit(P) or P == "":
+			return True
+		else:
+			return False
+
+	def confirm(self, pages, Tracker):
 		self.var.set(1)
+		Tracker.confirm_flag = True
+		Tracker.qty_change = int(self.qty_e.get())
+		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
 		pass
+
+	def cancel(self):
+		self.var.set(1)
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+
+	def add(self, op):
+		s=int(self.qty_e.get())
+		max = self.Tracker.qty_s + self.Tracker.qty_change
+		self.qty_e.delete(0, "end")
+		if (op==0):
+			if((s-1<0)):
+				self.qty_e.insert(0, s)
+			else:
+				self.qty_e.insert(0, s-1)
+		else:
+			if (s+1>max): 
+				self.qty_e.insert(0, s)
+			else:
+				self.qty_e.insert(0, s+1)
+		pass
+
 class confirm_customer(prompt_box):
 		
 	def __init__(self, promptType, btn, customerDetails, root, body, pages):
