@@ -2,6 +2,7 @@
 
 from tkinter import *
 import CRUD         #IMPORT CRUD.py TO FRONTEND
+import util
 
 root = Tk()
 root.geometry("500x300")
@@ -19,15 +20,18 @@ stock = StringVar()
 
 #ADD ENTRY TO DATABASE
 def add_data():
-    if (len(productName.get()) != 0):
-        CRUD.add_product(productID.get(), productName.get(), category.get(), price.get(), stock.get())
-
+    CRUD.delete_records()
 
 #PRINT TABLE ELEMENTS IN CONSOLE
 def view_table():
-    rows = CRUD.retrieve_product()
+    rows = CRUD.retrieve_order()
     print(rows)
-
+CRUD.product()
+CRUD.customer()
+CRUD.employee()
+CRUD.order()
+CRUD.history()
+CRUD.adjust()
 
 label1 = Label(root, text="Add Product", relief="solid", width=20, font=("arial", 16, "bold"))
 label1.place(x=90,y=23)
