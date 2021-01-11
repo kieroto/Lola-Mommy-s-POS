@@ -44,7 +44,10 @@ class login_user(prompt_box):
 		# Label for Error Message
 		self.label3 = Label(self.body, fg = "red", font = ("Helvetica", 14))
 
-	def validate(self):
+		# Press enter to login
+		self.promptWindow.bind("<Return>", self.validate)
+
+	def validate(self, event=None):
 		#Dictionary for list of users (username : password)
 		users = {'admin': 'admin', 'dev': '2000', 'client': '3000', 'employee': '4000'}
 
