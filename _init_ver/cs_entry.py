@@ -91,16 +91,16 @@ class cs_page(ttk.Frame, Tk):
             self.entry.listbox.destroy()
         except AttributeError:
             pass
-        
+
         self.entry.listboxUp = False
         self.entry.icursor(END)
 
         if(self.cfirst.get() != '' or self.clast.get() != ''):
             self.error_lb.configure(text=" ")
-            self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get()}
+            self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get(), "type": 'bulk'}
             Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, self.pages)
             from Order_process import order_process
-            self.orderprocess_= order_process(self.root, self.body, self.pages)
+            self.orderprocess_= order_process(self.root, self.body, self.pages, self.customerDetails)
         else:
             self.error_lb.configure(text="Fill up first and last name")       # Displays error if incomplete
             self.error_lb.grid(column=5, row=14)
@@ -173,7 +173,8 @@ class AutocompleteEntry(Entry):
                     self.listbox = Listbox(width=self["width"], height=self.listboxLength)
                     self.listbox.bind("<Button-1>", self.selection)
                     self.listbox.bind("<Right>", self.selection)
-                    self.listbox.place(x=self.winfo_x(), y=self.winfo_y() + self.winfo_height())
+                    self.listbox.place(relwidth = 0.10, relheight = 0.06, relx = 0.400, rely = 0.330)
+                    #self.listbox.grid(column=5, row=3)
                     self.listboxUp = True
                     # self.listbox.selection_set(first=0) #this is the olonemdosjkmpkmsodkvnsokvnfkbmfbmfoskbmkgobmkgombkgomd,lbmg,blmdkobmg,bmlsdsdsdsdsdsdsdsdsdsdfrff
                 
