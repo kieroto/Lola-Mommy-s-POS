@@ -4,7 +4,7 @@ import tkinter.font as font
 from table import table
 from prompt import *
 import CRUD
-
+import util
 class quantity_change():
     def __init__(self, flag, qty_s, qty_c):
         self.confirm_flag = flag
@@ -12,15 +12,15 @@ class quantity_change():
         self.qty_change = qty_c
         self.qty_ref = qty_c
 class order_process(ttk.Frame, Tk):
-    
 
     def __init__(self, root, body, pages):
         
         self.root = root
         self.body = body
-        self.pages = pages
         self.order_list = []
         self.order_qty = []
+        self.item_list = []
+        self.pages= pages
 
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -28,6 +28,7 @@ class order_process(ttk.Frame, Tk):
         # Create frame for scrollpane/buttons and label
         self.labels = ttk.Frame(self.body)
         self.labels.grid(column = 0, row = 0, rowspan=8, columnspan=6, sticky=N+S+E+W)
+        self.labels.bind("<Destroy>", self.callback)
 
         self.scrollpane = ttk.Frame(self.body)
         self.scrollpane.grid(column = 0, row = 8, rowspan=12, columnspan=6, sticky=N+S+E+W)
@@ -78,6 +79,9 @@ class order_process(ttk.Frame, Tk):
         Total.grid(column=2, row=23, columnspan=5, rowspan =1, sticky=N+S+E)
 
         self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
+
+    def callback(self, event):
+        print("stop")
         
     def OnDoubleClick(self, event):
         selected_item = self.Table_.tree.selection()[0]
@@ -162,21 +166,34 @@ class order_process(ttk.Frame, Tk):
     def retrieve_list(self,cat):
         if (cat == 'rdy'):
             self.current_cat='Ready to cook'
-            row=CRUD.retrieve_category("'Ready to cook'")
         elif (cat == 'ckd'):
             self.current_cat='Cooked'
-            row=CRUD.retrieve_category("'Cooked'")
         elif (cat == 'chc'):
             self.current_cat='Chicken'
-            row=CRUD.retrieve_category("'Chicken'")
         elif (cat == 'prk'):
             self.current_cat='Pork'
-            row=CRUD.retrieve_category("'Pork'")
 
-        for i in range(0, len(row)):
-            self._list.append("(" + str(row[i][6]) + ")" +  row[i][1] )
-            
-        
+        row=CRUD.retrieve_category('"'+self.current_cat+'"')
+        ylist = []
+        flag = 0
+
+        for i in range(0, len(self.item_list)): 
+         
+            if(util.check_if_exists(self.current_cat, self.item_list[i])):
+                flag=1
+                for j in range(1, len(self.item_list[i])):
+                    row=CRUD.retreive_name("'"+self.item_list[i][j]+"'")
+                    print(len(self.item_list[i]))
+                    self._list.append("(" + str(row[0][6]) + ")" +  row[0][1] )
+                break
+        if(flag==0):
+            for i in range(0, len(row) + 1):
+                ylist.append(self.current_cat) if (i<1) else ylist.append(row[i-1][1] )
+                try: self._list.append("(" + str(row[i][6]) + ")" +  row[i][1] )
+                except IndexError: pass
+            self.item_list.append(ylist)
+
+
     def create_listbox(self, cat):
         # Create Listbox widget
         self._list=[]
@@ -211,8 +228,8 @@ class order_process(ttk.Frame, Tk):
         qty=(re.findall('\d+', self._list[selection[0]] ))
         qty=int(qty[0])
 
-        if(self.check_if_exists(product)):
-            self.focus_item(self.get_index(product))
+        if(util.check_if_exists(product, self.order_list)):
+            util.focus_item(util.get_index(product, self.order_list), self.Table_)
             qty_c =  int(self.Table_.tree.item(self.Table_.tree.selection())['values'][1])
             self.r = 0
         else:
@@ -230,10 +247,10 @@ class order_process(ttk.Frame, Tk):
     def add_to_cart(self, product):
         product_ = CRUD.retreive_name("'"+product+"'")
 
-        if(self.check_if_exists(product)):
-            index = self.get_index(product)
+        if(util.check_if_exists(product, self.order_list)):
+            index = util.get_index(product, self.order_list)
             self.order_qty[index] = self.Tracker.qty_change
-            self.replace(index)
+            util.replace(index, self.Table_)
             s = str(index)
         else:
             self.order_list.append(product)
@@ -241,13 +258,13 @@ class order_process(ttk.Frame, Tk):
             s = 'end'
 
         qty = self.Tracker.qty_change
-        price = self.wholesale_check(qty, product_)
+        price = util.wholesale_check(qty, product_)
         total = price * qty
         stock = self.Tracker.qty_s - (self.Tracker.qty_change - self.Tracker.qty_ref)
         CRUD.update_stock(str(product), int(stock))
         
         if(qty == 0):
-            a = int(self.get_index(product))
+            a = int(util.get_index(product, self.order_list))
             self.order_list.pop(a)
             self.order_qty.pop(a)
             # self.focus_item(a)
@@ -256,34 +273,6 @@ class order_process(ttk.Frame, Tk):
             product=product.replace(" ", "")
             product=(product+" "+str(qty)+" " + str(price) + " "+ str(total))
             self.Table_.tree.insert('', s, values=(product))
-        
-
-    def replace(self, index):
-        self.focus_item(index)
-        self.Table_.tree.delete(self.Table_.tree.selection())
-    
-    def focus_item(self, index):
-        child_id = self.Table_.tree.get_children()[index]
-        self.Table_.tree.focus(child_id)
-        self.Table_.tree.selection_set(child_id)
-
-    def wholesale_check(self, qty, product_):
-        if ( qty >= product_[0][5]):
-            price = int(product_[0][4])
-        else:
-            price = int(product_[0][3])
-        return price
-
-    def check_if_exists(self, product):
-        for i in range(0, len(self.order_list)):
-            if( self.order_list[i] == product):
-                return 1
-        return 0
-
-    def get_index(self, product):
-        for i in range(0, len(self.order_list)):
-            if( self.order_list[i] == product):
-                return i
 
     def place_order(self):
         # self._list.append('<item> ')
@@ -291,5 +280,5 @@ class order_process(ttk.Frame, Tk):
         # self.scrollbar_.destroy()
         # self.listbox_.destroy()
         # self.choose_item()
-        place_order(1, self.root, self.body, self.pages)
+        place_order(1, self.root, self.body)
         pass
