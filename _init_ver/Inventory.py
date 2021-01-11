@@ -8,15 +8,25 @@ import CRUD
 class i_page(ttk.Frame, Tk):
     
     # Populate listbox with _list
-    
+    def callback_entry(self, P):
+        if str.isdigit(P) or P == "":
+            if P != "":
+                return True if int(P) >= 0 else False
+            else:
+                return True
+            return True
+        else:
+            return False
 
     def __init__(self, root, body, Page_tracker):
         self._list_inv = CRUD.retrieve_product()
         self.root = root
         self.body = body
-      
+        self.vcmd = (self.body.register(self.callback_entry))
+
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
+        
 
         # Create frame for scrollpane/buttons and label
         self.labels = ttk.Frame(self.body)
@@ -108,7 +118,9 @@ class i_page(ttk.Frame, Tk):
 
     def click(self, i):
         pass
-
+    def cancel(self):
+        pass
+    
     def choose_item(self, type):
         #self.destroy_button()
 
@@ -138,7 +150,7 @@ class i_page(ttk.Frame, Tk):
         self.id = Label(self.labels, text = "ID", font = ("Helvetica", 25, 'bold'))
         self.id.grid(column=0, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
-        self.id_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
+        self.id_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.id_e.grid(column=1, row=1 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.itemname = Label(self.labels, text = "Item name", font = ("Helvetica", 25, 'bold'))
@@ -158,25 +170,25 @@ class i_page(ttk.Frame, Tk):
         self.current_st = Label(self.labels, text = "Current Stock", font = ("Helvetica", 25, 'bold'))
         self.current_st.grid(column=0, row=4 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.current_ste = Entry(self.labels,width=12, font = ("Helvetica", 25, 'bold'))
+        self.current_ste = Entry(self.labels,width=12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.current_ste.grid(column=1, row=4 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_prc = Label(self.labels, text = "Enter Price", font = ("Helvetica", 25, 'bold'))
         self.enter_prc.grid(column=0, row=5 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_prce= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
+        self.enter_prce= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.enter_prce.grid(column=1, row=5 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_WSprc = Label(self.labels, text = "WS Price", font = ("Helvetica", 25, 'bold'))
         self.enter_WSprc.grid(column=0, row=6 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_WSprce= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'))
+        self.enter_WSprce= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.enter_WSprce.grid(column=1, row=6 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.enter_minWS = Label(self.labels, text = "Min WS Qty", font = ("Helvetica", 25, 'bold'))
         self.enter_minWS.grid(column=0, row=7 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_minWSe= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'))
+        self.enter_minWSe= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.enter_minWSe.grid(column=1, row=7 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.cancel_ = Button(self.labels, width=15, text='Cancel', font=('Helvetica', 25, 'bold'), command = self.cancel)
@@ -184,13 +196,8 @@ class i_page(ttk.Frame, Tk):
 
         self.confirm_ = Button(self.labels, width=15, text='Confirm', font=('Helvetica', 25, 'bold'), command= lambda: self.confirm(type))
         self.confirm_.grid(column=3, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
- 
-    def cancel(self):
-        # for widget in self.labels.winfo_children():
-        #     widget.destroy()
-        # print(Toplevel.winfo_exists(self.prompt_.promptWindow))
-        # self.choose_item()
-        pass
+
+
 
     def confirm(self, type):
         pid=self.id_e.get()
