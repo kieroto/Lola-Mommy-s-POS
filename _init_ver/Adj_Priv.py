@@ -26,7 +26,7 @@ class adj_priv(ttk.Frame, Tk):
         self.privList=[]
         for row in self.records:
             self.roleList.append(row[1])
-            self.privList.append(row[2])      
+            self.privList.append(row[2])
 
         lbl = Label(self.body, text=title, font=('Helvetica', 20, 'bold'))
         lbl.grid(column=3, row=0 , columnspan=6, rowspan=1, sticky=(N+S+E+W))
@@ -126,3 +126,12 @@ class adj_priv(ttk.Frame, Tk):
 
         #updates database
         CRUD.update_priv(role, role_priv)
+
+        self.records = CRUD.retrieve_privileges()
+
+        # Assign roles and privileges to lists
+        self.roleList = []
+        self.privList = []
+        for row in self.records:
+            self.roleList.append(row[1])
+            self.privList.append(row[2])
