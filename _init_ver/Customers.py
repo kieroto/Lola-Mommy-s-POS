@@ -6,7 +6,7 @@ from table import table
 
 class c_page(ttk.Frame, Tk):
     
-    def __init__(self, root, body, title):
+    def __init__(self, root, body, title, Page_tracker):
 
         self.root = root
         self.body = body

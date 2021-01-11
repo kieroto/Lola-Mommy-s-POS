@@ -11,10 +11,7 @@ ROLEOPTIONS=["Admin", "Cashier", "Inventory Staff"]
 
 class u_page(ttk.Frame, Tk):
 
-    
-    
-
-    def __init__(self, root, body, pages, title):
+    def __init__(self, root, body, Page_tracker, title):
 
         self.root = root
         self.body = body
@@ -99,14 +96,14 @@ class u_page(ttk.Frame, Tk):
         self.role_cb = ttk.Combobox(self.add_user_frame, width=20, font=("Helvetica, 16"), values=self.roleList)
         self.role_cb.grid(column=12, row=12, pady=20)
 
-        self.userAddBtn = Button(self.add_user_frame, text="Add", font = ("Helvetica", 16), command=lambda:self.validate(pages))
+        self.userAddBtn = Button(self.add_user_frame, text="Add", font = ("Helvetica", 16), command=lambda:self.validate(Page_tracker))
         self.userAddBtn.config(height=1, width=8, background='#93c47d')
         self.userAddBtn.grid(column=11, row=13 , columnspan=6, rowspan=2, sticky=(N))
 
        	# Label for Error Message
         self.error_lb = Label(self.add_user_frame, fg = "red", font = ("Helvetica", 14))
 
-    def validate(self, pages):
+    def validate(self, Page_tracker):
         us = self.username_en.get()
         pw1 = self.pass_en.get()
         pw2 = self.cpass_en.get()
@@ -123,9 +120,11 @@ class u_page(ttk.Frame, Tk):
         else:
             if (pw1 == pw2):
                 update_employee = CRUD.add_employee(us, pw1, role)
-                add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body, pages)
+                add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body)
                 # update_employee = CRUD.add_employee(us, pw1, role)
-
+                for widget in self.body.winfo_children():
+                    widget.destroy()
+                self.user = u_page(self.root, self.body, Page_tracker, 'Users')
             else:
                 self.error_lb.configure(text="Password mismatch")		# Displays error if incomplete
                 self.error_lb.grid(column=12, row=20)

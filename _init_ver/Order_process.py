@@ -31,8 +31,12 @@ class quantity_change():
         self.qty_ref = qty_c
 class order_process(ttk.Frame, Tk):
 
-    def __init__(self, root, body, pages, details):
-        
+    def callback(self, event):
+        print('updated')
+        util.undo_order(self.order_list, self.order_qty)
+    
+    def __init__(self, root, body, Page_tracker, details):
+        Page_tracker.pages.append(10)
         self.root = root
         self.body = body
         self.order_list = []
@@ -40,8 +44,7 @@ class order_process(ttk.Frame, Tk):
         self.order_price = []
         self.item_list = []
         self.cs_details = details
-        self.pages= pages
-
+    
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
 
@@ -74,7 +77,7 @@ class order_process(ttk.Frame, Tk):
         self.tableframe.grid(column = 7, row = 2, rowspan=23, columnspan=8,sticky=N+S+E+W)
 
         # Button
-        Place_order = Button(self.body, text='Place Order ', font=('Helvetica', 30, 'bold'), command = self.place_order)
+        Place_order = Button(self.body, text='Place Order ', font=('Helvetica', 30, 'bold'), command = lambda: self.place_order(Page_tracker))
         Place_order.grid(column=8, row=0 , columnspan=3, rowspan=1, sticky=N+S+E+W)
 
 
@@ -100,9 +103,6 @@ class order_process(ttk.Frame, Tk):
         Total.grid(column=2, row=23, columnspan=5, rowspan =1, sticky=N+S+E)
 
         self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
-
-    def callback(self, event):
-        print("stop")
         
     def OnDoubleClick(self, event):
         selected_item = self.Table_.tree.selection()[0]
@@ -113,7 +113,7 @@ class order_process(ttk.Frame, Tk):
         product_ = CRUD.retreive_name("'"+product+"'")
         qty_s =  product_[0][6]
         self.Tracker = quantity_change(False, qty_s ,int(self.Table_.tree.item(selected_item)['values'][1]))
-        quantity(1, self.root, self.body, self.pages, self.Tracker)
+        quantity(1, self.root, self.body, self.Tracker)
                 
         if (self.Tracker.confirm_flag == True):
             for i in range(0, len(product)):
@@ -257,7 +257,7 @@ class order_process(ttk.Frame, Tk):
             qty_c = 1
             self.r = 1
         self.Tracker = quantity_change(False, qty-self.r, qty_c)
-        quantity(1, self.root, self.body, self.pages, self.Tracker)
+        quantity(1, self.root, self.body, self.Tracker)
         
         if (self.Tracker.confirm_flag == True):
             self.add_to_cart(product)
@@ -297,16 +297,17 @@ class order_process(ttk.Frame, Tk):
 
         print(self.order_list)
 
-    def place_order(self):
+    def place_order(self, Page_tracker):
         if not self.order_list:
             print("No item")
             return
         self.csid = util.customer_check( self.cs_details)
         details={"id": self.csid, "date": date.today().strftime("%m/%d/%y"),
                 "time": datetime.now().strftime("%H:%M:%S")}
-
+        print(self.order_list)
+        print(self.order_qty)
         self.Tracker=quantity_change(False, 0, 0)
-        place_order(1, self.root, self.body, self.pages, self.Tracker)
+        place_order(1, self.root, self.body, self.Tracker)
         if(self.Tracker.confirm_flag == True):
             ids=util.extract_orderprev()
             ids[1] = ids[1] + 1
@@ -322,7 +323,9 @@ class order_process(ttk.Frame, Tk):
                 for widget in self.body.winfo_children():
                     widget.destroy()
                 from Home import home_page
-                self.home_ = home_page(self.root, self.body, 'Home', self.pages)
+                Page_tracker.pages=[]
+                Page_tracker.pages.append(-1)
+                self.home_ = home_page(self.root, self.body, 'Home', Page_tracker)
             except IndexError:
                 print("No item")
 

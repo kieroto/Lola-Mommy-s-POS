@@ -5,14 +5,14 @@ from table import table
 from prompt import *
 class h_page(ttk.Frame, Tk):
     
-    def __init__(self, root, body, title):
+    def __init__(self, root, body, title, Page_tracker):
 
         # Virtual pixels to help resize button in pixels
         #pixelVirtual = PhotoImage(width=1, height=1)
         
         # Font styles
         menuFont = font.Font(family='Helvetica', size=15, weight='bold')
-
+        Page_tracker.pages.append(11)
         self.title = ttk.Frame(body)
         self.title.grid(row=0, column=0, columnspan=14, rowspan=1, sticky=N+S+E+W)
 

@@ -5,7 +5,7 @@ import tkinter.font as font
 
 class s_page(ttk.Frame, Tk):
     
-    def __init__(self, root, body, title):
+    def __init__(self, root, body, title, Page_tracker):
 
         # Virtual pixels to help resize button in pixels
         #pixelVirtual = PhotoImage(width=1, height=1)

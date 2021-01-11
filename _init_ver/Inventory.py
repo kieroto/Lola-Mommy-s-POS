@@ -10,12 +10,11 @@ class i_page(ttk.Frame, Tk):
     # Populate listbox with _list
     
 
-    def __init__(self, root, body, pages):
+    def __init__(self, root, body, Page_tracker):
         self._list_inv = CRUD.retrieve_product()
         self.root = root
         self.body = body
-        self.pages = pages
-
+      
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
 

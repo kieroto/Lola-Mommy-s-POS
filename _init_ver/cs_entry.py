@@ -21,11 +21,10 @@ class cs_page(ttk.Frame, Tk):
     # Populate listbox with _list
     _list_cus = CRUD.retrieve_customer()
 
-    def __init__(self, root, body, pages):
+    def __init__(self, root, body, Page_tracker):
 
         self.root = root
         self.body = body
-        self.pages = pages 
 
         # Loop thru results
         customerList=[]
@@ -74,7 +73,7 @@ class cs_page(ttk.Frame, Tk):
         self.entry.grid(column=5, row=2)
 
 
-        self.customerConfirmBtn = Button(self.body, text="Confirm", font = ("Helvetica", 16), command=self.confirm_click)
+        self.customerConfirmBtn = Button(self.body, text="Confirm", font = ("Helvetica", 16), command=lambda:self.confirm_click(Page_tracker))
         self.customerConfirmBtn.grid(column=4, row=10 , columnspan=6, rowspan=2, sticky=(N))
 
         self.customerClearBtn = Button(self.body, text="Clear", font = ("Helvetica", 16), command=self.clear_click)
@@ -86,7 +85,7 @@ class cs_page(ttk.Frame, Tk):
     def page_id(self):
         return 9
 
-    def confirm_click(self):
+    def confirm_click(self, Page_tracker):
         try:
             self.entry.listbox.destroy()
         except AttributeError:
@@ -98,9 +97,9 @@ class cs_page(ttk.Frame, Tk):
         if(self.cfirst.get() != '' or self.clast.get() != ''):
             self.error_lb.configure(text=" ")
             self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get(), "type": 'bulk'}
-            Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, self.pages)
+            Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body)
             from Order_process import order_process
-            self.orderprocess_= order_process(self.root, self.body, self.pages, self.customerDetails)
+            self.orderprocess_= order_process(self.root, self.body, Page_tracker, self.customerDetails)
         else:
             self.error_lb.configure(text="Fill up first and last name")       # Displays error if incomplete
             self.error_lb.grid(column=5, row=14)

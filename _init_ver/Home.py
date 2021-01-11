@@ -6,7 +6,7 @@ from PIL import ImageTk, Image
 import os
 class home_page(ttk.Frame, Tk):
     
-    def __init__(self, root, body, title, pages):
+    def __init__(self, root, body, title, Page_tracker):
     
         self.root = root
         self.body = body
@@ -33,12 +33,12 @@ class home_page(ttk.Frame, Tk):
         self.logo = Label(self.body, image = self.photoImg)
         self.logo.grid(column=6, row=7)
 
-    def click(self, pages):
+    def click(self, Page_tracker):
         for widget in self.body.winfo_children():
             widget.destroy()
 
-        pages.append(4)
-        self.order_= orderselect(self.root, self.body, pages)
+    
+        self.order_= orderselect(self.root, self.body, Page_tracker)
         pass
 
     def page_id(self):

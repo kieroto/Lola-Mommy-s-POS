@@ -11,7 +11,7 @@ ROLEOPTIONS=["Admin", "Cashier", "Inventory Staff"]
 
 class adj_priv(ttk.Frame, Tk):
 
-    def __init__(self, root, body, pages, title):
+    def __init__(self, root, body, Page_tracker, title):
 
         self.root = root
         self.body = body

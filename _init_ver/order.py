@@ -6,11 +6,11 @@ from cs_entry import cs_page
 
 class orderselect(ttk.Frame, Tk):
     
-    def __init__(self, root, body, pages):
+    def __init__(self, root, body, Page_tracker):
         
         self.root = root
         self.body = body
-        self.pages = pages
+    
 
         # Virtual pixels to help resize button in pixels
         #pixelVirtual = PhotoImage(width=1, height=1)
@@ -18,8 +18,8 @@ class orderselect(ttk.Frame, Tk):
         menuFont = font.Font(family='Helvetica', size=20, weight='bold')
  
         # Create button objects for top bar
-        Short = Button(self.body, text='Short Order', command= lambda: self.click(0, self.pages))
-        Bulk = Button(self.body, text='Bulk', width = 10, command= lambda: self.click(1, self.pages))
+        Short = Button(self.body, text='Short Order', command= lambda: self.click(0, Page_tracker))
+        Bulk = Button(self.body, text='Bulk', width = 10, command= lambda: self.click(1, Page_tracker))
 
         # List buttons
         self.buttons = [Short, Bulk]
@@ -42,17 +42,17 @@ class orderselect(ttk.Frame, Tk):
     def page_id(self):
         return 4
 
-    def click(self, i, pages):
+    def click(self, i, Page_tracker):
         for widget in self.body.winfo_children():
             widget.destroy()
         
         self.i = i
         if(self.i == 1):
-            self.pages.append(9)
-            self.cspage_ = cs_page(self.root, self.body, pages)
+            Page_tracker.pages.append(9)
+            self.cspage_ = cs_page(self.root, self.body, Page_tracker)
         else:
-            self.pages.append(10)
+            #age_tracker.pages.append(10)
             cs = {"type": 'short'}
-            self.orderprocess_= order_process(self.root, self.body, pages, cs)
+            self.orderprocess_= order_process(self.root, self.body, Page_tracker, cs)
         pass
         pass
