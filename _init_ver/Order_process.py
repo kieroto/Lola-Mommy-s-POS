@@ -3,18 +3,24 @@ from tkinter import ttk
 import tkinter.font as font
 from table import table
 from prompt import *
+import CRUD
+
+class quantity_change():
+    def __init__(self, flag, qty_s, qty_c):
+        self.confirm_flag = flag
+        self.qty_s = qty_s
+        self.qty_change = qty_c
+        self.qty_ref = qty_c
 class order_process(ttk.Frame, Tk):
     
-    # Populate listbox with _list
-    _list=[]
-    for i in range(22):
-        _list.append('<item> '+ str(i))
 
     def __init__(self, root, body, pages):
         
         self.root = root
         self.body = body
         self.pages = pages
+        self.order_list = []
+        self.order_qty = []
 
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -66,7 +72,7 @@ class order_process(ttk.Frame, Tk):
                         rowheight = 80, height = 5, font_size = 20, font = 'Helvetica',
                         tablecol_width = 175, headingfont= 30)
         self.Table_.test()
-        self.Table_.tree.insert('', '0', values=('sddsd'))
+        # self.Table_.tree.insert('', '0', values=('sddsd'))
        # Total
         Total = Label(self.tableframe, text='Total:    <>', font=('Helvetica', 20, 'bold'))
         Total.grid(column=2, row=23, columnspan=5, rowspan =1, sticky=N+S+E)
@@ -74,10 +80,35 @@ class order_process(ttk.Frame, Tk):
         self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
         
     def OnDoubleClick(self, event):
-        item = self.Table_.tree.selection()[0]
-        self.Table_.tree.insert('', '0', values=('sddsd'))
-        print("you clicked on", self.Table_.tree.item(item,"text"))
-        history(1, self.body, self.root)
+        selected_item = self.Table_.tree.selection()[0]
+        entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+        print(self.order_list[entryIndex])
+        product = self.order_list[entryIndex]
+
+        product_ = CRUD.retreive_name("'"+product+"'")
+        qty_s =  product_[0][6]
+        self.Tracker = quantity_change(False, qty_s ,int(self.Table_.tree.item(selected_item)['values'][1]))
+        quantity(1, self.root, self.body, self.pages, self.Tracker)
+                
+        if (self.Tracker.confirm_flag == True):
+            for i in range(0, len(product)):
+                if (product[i]==')'):
+                    product=product[i+1:]
+                    break
+            self.add_to_cart(product)
+        
+        if(self.current_cat == product_[0][2]):
+            s = ("("+str(qty_s)+")"+product)
+            new = ("("+str(self.Tracker.qty_s - (self.Tracker.qty_change - self.Tracker.qty_ref))+")"+product)
+            i = 0
+            for line in self._list:
+                if (line == s):
+                    self._list[i] = new
+                    print(self._list)
+                    self.list_var.set(self._list)
+                    print(self._list)
+                    break 
+                i = i + 1
 
     def page_id(self):
         return 10
@@ -94,16 +125,16 @@ class order_process(ttk.Frame, Tk):
         Items = Label(self.labels, text='Items', font=('Helvetica', 25, 'bold'))
         Items.grid(column=0, row=7, rowspan=1, columnspan=3,  sticky=N+W)
         #
-        self.Ready_cook = Button(self.scrollpane, text='Ready \nto Cook', font=('Helvetica', 20, 'bold'), command = self.choose_item)
+        self.Ready_cook = Button(self.scrollpane, text='Ready \nto Cook', font=('Helvetica', 20, 'bold'), command=lambda:self.choose_item('rdy'))
         self.Ready_cook.grid(column=0, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Cooked = Button(self.scrollpane, text='Cooked', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Cooked = Button(self.scrollpane, text='Cooked', font=('Helvetica', 30, 'bold'), command=lambda:self.choose_item('ckd'))
         self.Cooked.grid(column=4, row=0 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Chicken = Button(self.scrollpane, text='Chicken', font=('Helvetica', 25, 'bold'), command = self.choose_item)
+        self.Chicken = Button(self.scrollpane, text='Chicken', font=('Helvetica', 25, 'bold'), command=lambda:self.choose_item('chc'))
         self.Chicken.grid(column=0, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
-        self.Pork = Button(self.scrollpane, text='Pork', font=('Helvetica', 30, 'bold'), command = self.choose_item)
+        self.Pork = Button(self.scrollpane, text='Pork', font=('Helvetica', 30, 'bold'), command=lambda:self.choose_item('prk'))
         self.Pork.grid(column=4, row=6 , columnspan=3, rowspan=6, sticky=N+S+E+W)
 
     def destroy_button(self):
@@ -117,20 +148,41 @@ class order_process(ttk.Frame, Tk):
         self.listbox_.destroy()
         self.create_cat()
 
-    def choose_item(self):
+    def choose_item(self, cat):
         self.destroy_button()
         # Create scrollbar widget
         self.scrollbar_ = Scrollbar(self.scrollpane, orient="vertical")
         self.scrollbar_.grid(row=0, column=7, rowspan=12, sticky=N+S+E+W)
         
-        self.create_listbox()
+        self.create_listbox(cat)
         # Back button
         self.Back_items = Button(self.labels, text='back', font=('Helvetica', 20, 'bold'), command = self.choose_cat)
         self.Back_items.grid(column=3, row=7 , columnspan=3, rowspan=6)   
 
-    def create_listbox(self):
+    def retrieve_list(self,cat):
+        if (cat == 'rdy'):
+            self.current_cat='Ready to cook'
+            row=CRUD.retrieve_category("'Ready to cook'")
+        elif (cat == 'ckd'):
+            self.current_cat='Cooked'
+            row=CRUD.retrieve_category("'Cooked'")
+        elif (cat == 'chc'):
+            self.current_cat='Chicken'
+            row=CRUD.retrieve_category("'Chicken'")
+        elif (cat == 'prk'):
+            self.current_cat='Pork'
+            row=CRUD.retrieve_category("'Pork'")
+
+        for i in range(0, len(row)):
+            self._list.append("(" + str(row[i][6]) + ")" +  row[i][1] )
+            
+        
+    def create_listbox(self, cat):
         # Create Listbox widget
-        self.list_var = StringVar(value=self._list)    
+        self._list=[]
+        self.retrieve_list(cat)
+        self.list_var = StringVar(value=self._list)   
+        self.list_var.set(self._list) 
         self.listbox_ = Listbox(self.scrollpane, width=10, listvariable=self.list_var)
         # Attach scrollbar to the listbox widget
         self.listbox_.config(yscrollcommand=self.scrollbar_.set)
@@ -149,12 +201,89 @@ class order_process(ttk.Frame, Tk):
     def OnDouble_listbox(self, event):
         widget = event.widget
         selection=widget.curselection()
+        product=self._list[selection[0]]
+        for i in range(0, len(product)):
+            if (product[i]==')'):
+                product=product[i+1:]
+                break
         #value = widget.get(selection[0])
-        quantity(1, self.root, self.body, self.pages)
-        self._list[selection[0]]='test'
-        self.list_var.set(self._list)
+        import re
+        qty=(re.findall('\d+', self._list[selection[0]] ))
+        qty=int(qty[0])
 
+        if(self.check_if_exists(product)):
+            self.focus_item(self.get_index(product))
+            qty_c =  int(self.Table_.tree.item(self.Table_.tree.selection())['values'][1])
+            self.r = 0
+        else:
+            qty_c = 1
+            self.r = 1
+        self.Tracker = quantity_change(False, qty-self.r, qty_c)
+        quantity(1, self.root, self.body, self.pages, self.Tracker)
         
+        if (self.Tracker.confirm_flag == True):
+            self.add_to_cart(product)
+            s = self.Tracker.qty_s - (self.Tracker.qty_change - self.Tracker.qty_ref)
+            self._list[selection[0]]=("("+str(s)+")"+product)
+            self.list_var.set(self._list)
+
+    def add_to_cart(self, product):
+        product_ = CRUD.retreive_name("'"+product+"'")
+
+        if(self.check_if_exists(product)):
+            index = self.get_index(product)
+            self.order_qty[index] = self.Tracker.qty_change
+            self.replace(index)
+            s = str(index)
+        else:
+            self.order_list.append(product)
+            self.order_qty.append(self.Tracker.qty_change)
+            s = 'end'
+
+        qty = self.Tracker.qty_change
+        price = self.wholesale_check(qty, product_)
+        total = price * qty
+        stock = self.Tracker.qty_s - (self.Tracker.qty_change - self.Tracker.qty_ref)
+        CRUD.update_stock(str(product), int(stock))
+        
+        if(qty == 0):
+            a = int(self.get_index(product))
+            self.order_list.pop(a)
+            self.order_qty.pop(a)
+            # self.focus_item(a)
+            # self.Table_.tree.delete(self.Table_.tree.selection())
+        else:
+            product=product.replace(" ", "")
+            product=(product+" "+str(qty)+" " + str(price) + " "+ str(total))
+            self.Table_.tree.insert('', s, values=(product))
+        
+
+    def replace(self, index):
+        self.focus_item(index)
+        self.Table_.tree.delete(self.Table_.tree.selection())
+    
+    def focus_item(self, index):
+        child_id = self.Table_.tree.get_children()[index]
+        self.Table_.tree.focus(child_id)
+        self.Table_.tree.selection_set(child_id)
+
+    def wholesale_check(self, qty, product_):
+        if ( qty >= product_[0][5]):
+            price = int(product_[0][4])
+        else:
+            price = int(product_[0][3])
+        return price
+
+    def check_if_exists(self, product):
+        for i in range(0, len(self.order_list)):
+            if( self.order_list[i] == product):
+                return 1
+        return 0
+
+    def get_index(self, product):
+        for i in range(0, len(self.order_list)):
+            if( self.order_list[i] == product):
+                return i
 
     def place_order(self):
         # self._list.append('<item> ')
