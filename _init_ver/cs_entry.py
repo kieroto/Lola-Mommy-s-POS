@@ -95,6 +95,8 @@ class cs_page(ttk.Frame, Tk):
             self.error_lb.configure(text=" ")
             self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get()}
             Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, self.pages)
+            from Order_process import order_process
+            self.orderprocess_= order_process(self.root, self.body, self.pages)
         else:
             self.error_lb.configure(text="Fill up first and last name")       # Displays error if incomplete
             self.error_lb.grid(column=5, row=14)

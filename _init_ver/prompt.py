@@ -240,8 +240,7 @@ class confirm_customer(prompt_box):
 			widget.destroy()
 		self.promptWindow.destroy()
 		self.var.set(1)
-		from Order_process import order_process
-		self.orderprocess_= order_process(self.root, self.master, pages)
+
 
 class add_user(prompt_box):
 
