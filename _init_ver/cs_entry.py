@@ -87,7 +87,11 @@ class cs_page(ttk.Frame, Tk):
         return 9
 
     def confirm_click(self):
-        self.entry.listbox.destroy()
+        try:
+            self.entry.listbox.destroy()
+        except AttributeError:
+            pass
+        
         self.entry.listboxUp = False
         self.entry.icursor(END)
 
