@@ -8,10 +8,10 @@ import CRUD
 class i_page(ttk.Frame, Tk):
     
     # Populate listbox with _list
-    _list_inv = CRUD.retrieve_product()
+    
 
     def __init__(self, root, body, pages):
-        
+        self._list_inv = CRUD.retrieve_product()
         self.root = root
         self.body = body
         self.pages = pages
@@ -60,9 +60,9 @@ class i_page(ttk.Frame, Tk):
         for row in self._list_inv:
             self.Table_.tree.insert('', '0', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
 
-        # child_id = self.Table_.tree.get_children()[0]
-        # self.Table_.tree.focus(child_id)
-        # self.Table_.tree.selection_set(child_id)
+        child_id = self.Table_.tree.get_children()[0]
+        self.Table_.tree.focus(child_id)
+        self.Table_.tree.selection_set(child_id)
 
         #self.Table_.tree.bind("<Key>", self.select)
         self.Table_.tree.bind("<<TreeviewSelect>>", self.select_row)
@@ -76,8 +76,7 @@ class i_page(ttk.Frame, Tk):
             selected=widget.selection()
         except IndexError:
             return
-        self.Table_.tree.insert('', 'end', values=('sddsd'))
-        
+    
         self.id_e.delete(0, "end")
         self.itemname_e.delete(0, "end")
         self.item_cate.delete(0, "end")
@@ -88,7 +87,9 @@ class i_page(ttk.Frame, Tk):
         
         self.id_e.insert(0, self.Table_.tree.item(selected)['values'][0])
         self.itemname_e.insert(0, self.Table_.tree.item(selected)['values'][1])
-        self.item_cate.insert(0, self.Table_.tree.item(selected)['values'][2])
+        for i in range(0,4):
+            if (self.item_cat_list[i] == (self.Table_.tree.item(selected)['values'][2])):
+                self.item_cate.current(i)
         self.enter_prce.insert(0, self.Table_.tree.item(selected)['values'][3])
         self.enter_WSprce.insert(0, self.Table_.tree.item(selected)['values'][4])
         self.enter_minWSe.insert(0, self.Table_.tree.item(selected)['values'][5])
@@ -149,7 +150,7 @@ class i_page(ttk.Frame, Tk):
 
         self.item_cat_list = ["Ready to cook", "Cooked", "Pork", "Chicken"]
 
-        self.item_cate = ttk.Combobox(self.labels, width=12, values=self.item_cat_list, font = ("Helvetica", 22, 'bold'), state='readonly')
+        self.item_cate = ttk.Combobox(self.labels, width=12, values=self.item_cat_list, font = ("Helvetica", 21, 'bold'), state='readonly')
         self.item_cate.grid(column=1, row=3 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
         self.item_cat = Label(self.labels, text = "Category", font = ("Helvetica", 25, 'bold'))
@@ -213,7 +214,9 @@ class i_page(ttk.Frame, Tk):
                 self.choose_item(0)
         else:
             entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
-            self.delete()
+            CRUD.update_product(pid, name, itemcat, price, wsprice,
+                        minws, stock)
+            self.Table_.tree.delete(self.Table_.tree.selection())
             self.Table_.tree.insert('', entryIndex, values=(pid, name, itemcat, price, wsprice, minws, stock))
             pass
 
@@ -226,4 +229,5 @@ class i_page(ttk.Frame, Tk):
     def delete(self):
         selected_item = self.Table_.tree.selection() ## get selected item
         print(selected_item)
+        CRUD.delete_product(str(self.Table_.tree.item(selected_item)['values'][0]))
         self.Table_.tree.delete(selected_item)
