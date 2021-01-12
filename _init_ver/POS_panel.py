@@ -17,8 +17,7 @@ class page_tracker():
         self.pages = []
         self.confirm_flag = False
         self.bin = []
-        self.privilege = '111111111'
-        self.role = 'Admin'
+        self.user = []
 class main_(ttk.Frame, Tk):
 
     def callback_root(self):
@@ -31,7 +30,7 @@ class main_(ttk.Frame, Tk):
                 return
         self.root.destroy()
     
-    def __init__(self, root, menu, body, type_, menuFont):
+    def __init__(self, root, menu, body, user, menuFont):
        
         self.root = root
         self.menu = menu
@@ -40,9 +39,9 @@ class main_(ttk.Frame, Tk):
         self.page_toggle = 0
         self.pages = [] 
         self.Page_tracker = page_tracker()
-        self.Page_tracker.privilege = util.priv_bin(type_)
-        self.Page_tracker.role = type_
-
+        
+        self.Page_tracker.user = user
+        print(user)
         # Virtual pixels to help resize button in pixels
         # pixelVirtual = PhotoImage(width=1, height=1)
         # Font styles

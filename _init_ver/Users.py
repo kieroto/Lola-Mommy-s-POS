@@ -15,7 +15,7 @@ class u_page(ttk.Frame, Tk):
 
         self.root = root
         self.body = body
-
+        self.tracker = Page_tracker
         # Font styles
         menuFont = font.Font(family='Helvetica', size=15, weight='bold')
 
@@ -151,8 +151,12 @@ class u_page(ttk.Frame, Tk):
 
     def delete(self):
         selected_item = self.UserTable_.tree.selection() ## get selected item
-      
+        userid = str(self.UserTable_.tree.item(selected_item)['values'][0])
+
+        if (str(self.tracker.user[0]) == userid):
+            return
+
         if(int(CRUD.user_count()[0][0])==1):
             return
-        CRUD.delete_employee(str(self.UserTable_.tree.item(selected_item)['values'][0]))
+        CRUD.delete_employee(userid)
         self.UserTable_.tree.delete(selected_item)

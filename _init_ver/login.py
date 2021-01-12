@@ -49,32 +49,41 @@ class login_user(prompt_box):
 
 	def validate(self, event=None):
 		#Dictionary for list of users (username : password)
-		_user = []
+		userid = {}
 		users = {}
 		role = {}
 		keys = CRUD.retrieve_employee()
-
-		for key in keys:
-			_user.append(key[1])
-			users[key[1]] = key[2]
-			role[key[1]] = key[3]
 
 		#Saves the input for username and pasword
 		username = self.userName.get()
 		Pass = self.password.get()
 
-		#Checks if the inputted username and password are correct or not
-		if username in users:
-			if (users[username] == Pass):				# If username and password are correct, display main window
-				self.promptWindow.destroy()
-				# If admin, starts window with admin privileges
-				home = window(role[username])
-				home.root.mainloop()
-			else:
-				self.label3.configure(text="Incorrect Password")		# Displays error if incorrect password
-				self.label3.grid(column=0, row=6)
+		for key in keys:
+			if (username == key[1]):
+				if (Pass == key[2]):
+					self.promptWindow.destroy()
+					home = window(key)
+					home.root.mainloop()
+				else:
+					self.label3.configure(text="Incorrect Password")		# Displays error if incorrect password
+					self.label3.grid(column=0, row=6)
+				
+		self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
+		self.label3.grid(column=0, row=6)		
 
-		else:
-			self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
-			self.label3.grid(column=0, row=6)
+		#Checks if the inputted username and password are correct or not
+		# if username in users:
+		# 	if (users[username] == Pass):				# If username and password are correct, display main window
+		# 		self.promptWindow.destroy()
+		# 		# If admin, starts window with admin privileges
+		# 		user_cred = [userusername, role[username]]
+		# 		home = window(user_cred)
+		# 		home.root.mainloop()
+		# 	else:
+		# 		self.label3.configure(text="Incorrect Password")		# Displays error if incorrect password
+		# 		self.label3.grid(column=0, row=6)
+
+		# else:
+		# 	self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
+		# 	self.label3.grid(column=0, row=6)
 
