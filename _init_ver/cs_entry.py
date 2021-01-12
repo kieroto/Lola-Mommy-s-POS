@@ -100,6 +100,11 @@ class cs_page(ttk.Frame, Tk):
             self.customerDetails={"customerFirst": " ".join(self.cfirst.get().split()), "customerLast": " ".join(self.clast.get().split()), 
                                     "mobile": " ".join(self.cmobile.get().split()), "address": " ".join(self.caddr.get().split()), "type": 'bulk'}
             cs = self.customerDetails
+            if self.customerDetails['customerFirst'] == "" or self.customerDetails['customerLast'] == "" or self.customerDetails['address'] == "" or self.customerDetails['mobile'] == "":
+                self.error_lb.configure(text="Please fill all fields")       # Displays error if incomplete
+                self.error_lb.grid(column=5, row=14) 
+                return
+       
             print(cs)
             confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
             if(Page_tracker.confirm_flag == True):
