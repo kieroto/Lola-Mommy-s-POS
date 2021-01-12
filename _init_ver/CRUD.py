@@ -239,7 +239,7 @@ def retrieve_employee():
 def retrieve_order():
     con = sqlite3.connect('order.db')
     c = con.cursor()
-    c.execute("SELECT * FROM orderx")
+    c.execute("SELECT productID, productName, quantity, totalAmount FROM orderx")
     rows = c.fetchall()
     con.close()
     return rows
@@ -247,7 +247,7 @@ def retrieve_order():
 def retrieve_history():
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("SELECT * FROM history")
+    c.execute("SELECT userID, action, date, time FROM history")
     rows = c.fetchall()
     con.close()
     return rows
@@ -394,10 +394,10 @@ def delete_product(productID):
     con.commit()
     con.close()
 
-def delete_records():
+def delete_records(productID):
     con = sqlite3.connect('order.db')
     c = con.cursor()
-    c.execute("DELETE FROM orderx ")
+    c.execute("DELETE FROM orderx WHERE productID = " + productID)
     con.commit()
     con.close()
 
