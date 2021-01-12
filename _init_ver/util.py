@@ -1,5 +1,16 @@
 import CRUD
 
+def date_split(date):
+    temp = (date.split('/'))
+    count = 0
+    for x in temp:
+        if count < len(temp):
+            temp[count] = x.lstrip('0')
+            count += 1
+
+    date = temp[0] + '/' + temp[1] + '/' + temp[2]
+    return date
+
 def priv_bin(role):
     s = CRUD.retrieve_privilege_bin('"' + role + '"')
     return s[0][1]

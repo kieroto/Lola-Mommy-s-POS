@@ -305,6 +305,7 @@ class order_process(ttk.Frame, Tk):
 
         _time = datetime.now().strftime("%H:%M:%S")
         _date = date.today().strftime("%m/%d/%y")
+        _date = util.date_split(_date)
         self.csid = util.customer_check(self.c_details)
         sdetails={"id": self.csid, "date": _date, "time": _time}
         
