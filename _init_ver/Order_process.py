@@ -11,10 +11,10 @@ _customerID = 0
 _userID = 1
 
 class order_cred():
-    def __init__(self, ids, row, pn, details):
+    def __init__(self, ids, row, pn, details, uid):
         self.pid = ids[0]
         self.oid = ids[1]
-        self.userID = _userID
+        self.userID = uid
         self.customerID = details['id']
         self.productid = CRUD.retreive_name('"'+pn+'"')[0][0]
         self.pn = pn
@@ -44,6 +44,7 @@ class order_process(ttk.Frame, Tk):
         self.order_price = []
         self.item_list = []
         self.c_details = cdetails
+        self._userID = Page_tracker.user[0]
     
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -301,13 +302,18 @@ class order_process(ttk.Frame, Tk):
         if not self.order_list:
             print("No item")
             return
+
+        _time = datetime.now().strftime("%H:%M:%S")
+        _date = date.today().strftime("%m/%d/%y")
         self.csid = util.customer_check(self.c_details)
-        sdetails={"id": self.csid, "date": date.today().strftime("%m/%d/%y"),
-                "time": datetime.now().strftime("%H:%M:%S")}
+        sdetails={"id": self.csid, "date": _date, "time": _time}
         
+        history_text = []
+        total = 0
 
         self.Tracker=quantity_change(False, 0, 0)
         place_order(1, self.root, self.body, self.Tracker)
+
         if(self.Tracker.confirm_flag == True):
             ids=util.extract_orderprev()
             ids[1] = ids[1] + 1
@@ -317,9 +323,30 @@ class order_process(ttk.Frame, Tk):
                     util.focus_item(0, self.Table_)
                     row=self.Table_.tree.item(self.Table_.tree.selection())['values']
                     pn = self.order_list.pop(0)
-                    _order_cred = order_cred(ids, row, pn, sdetails)
+
+                    history_text.append(pn + ' (' + str(row[1]) + ') - P' + str(row[3]))
+                    total = total + int(row[3])
+                    _order_cred = order_cred(ids, row, pn, sdetails, self._userID)
                     util.update_order(_order_cred)
                     self.Table_.tree.delete(self.Table_.tree.selection())
+    
+                jelly=''
+                for item in history_text:
+                    jelly=(jelly + item + '\n')
+
+                if sdetails['id'] != -1:
+                    jelly = (self.c_details['customerFirst'] + ' ' + 
+                            self.c_details['customerLast'] + '\n' + jelly)
+                else:
+                     jelly = ('Short Order \n'+ jelly)
+
+                if CRUD.retrieve_history():
+                    hid = int(CRUD.retrieve_history_last()[0][0]) + 1  
+                else:
+                    hid = 0
+                CRUD.add_history(hid, 'order', self._userID, jelly, _date, _time)
+
+
                 for widget in self.body.winfo_children():
                     widget.destroy()
                 from Home import home_page

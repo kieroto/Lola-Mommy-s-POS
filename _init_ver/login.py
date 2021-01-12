@@ -67,10 +67,11 @@ class login_user(prompt_box):
 				else:
 					self.label3.configure(text="Incorrect Password")		# Displays error if incorrect password
 					self.label3.grid(column=0, row=6)
-				
-		self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
-		self.label3.grid(column=0, row=6)		
-
+		try:	
+			self.label3.configure(text="Username does not exist")		# Displays error nonexistent username
+			self.label3.grid(column=0, row=6)		
+		except TclError:
+			pass
 		#Checks if the inputted username and password are correct or not
 		# if username in users:
 		# 	if (users[username] == Pass):				# If username and password are correct, display main window

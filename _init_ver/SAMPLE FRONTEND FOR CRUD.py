@@ -56,6 +56,11 @@ def del_u():
 def wipeh():
     CRUD.delete_history()
     CRUD.history()
+
+def viewh():
+    row=CRUD.retrieve_history()
+    for item in row:
+        print(item)
     
 CRUD.product()
 CRUD.customer()
@@ -83,8 +88,11 @@ button2 = Button(text="wipe roles", width=12, bg="red", command=dummy2, font=("a
 button2.grid(column=0, row=3)
 button2 = Button(text="wipe users", width=12, bg="red", command=del_u, font=("arial", 12, "bold"))
 button2.grid(column=0, row=4)
-button2 = Button(text="wipe history", width=12, bg="red", command=wipeh, font=("arial", 12, "bold"))
+button2 = Button(text="WIPE history", width=12, bg="red", command=wipeh, font=("arial", 12, "bold"))
 button2.grid(column=2, row=4)
+button2 = Button(text="see history", width=12, bg="red", command=viewh, font=("arial", 12, "bold"))
+button2.grid(column=2, row=5)
+
 
 
 

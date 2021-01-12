@@ -162,7 +162,7 @@ def add_order(primaryID, orderID, userID, customerID, productID, productName, qu
 def add_history(historyID, action_type, userID, action, date, time):
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("INSERT INTO employee VALUES (:historyID, :action_type, :userID, :action, :date, :time)",
+    c.execute("INSERT INTO history VALUES (:historyID, :action_type, :userID, :action, :date, :time)",
               {
                   'historyID': historyID,
                   'action_type': action_type,
@@ -249,10 +249,20 @@ def retrieve_order():
 def retrieve_history():
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("SELECT * time FROM history")
+    c.execute("SELECT * FROM history")
     rows = c.fetchall()
     con.close()
     return rows
+
+def retrieve_history_last():
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM history ORDER BY historyID DESC LIMIT 1")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+
 
 def retrieve_privileges():
     con = sqlite3.connect('role_priv.db')
@@ -420,7 +430,7 @@ def delete_customer():
 def delete_history():
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("DELETE FROM history ")
+    c.execute("""DROP TABLE IF EXISTS history""")
     con.commit()
     con.close()
 
