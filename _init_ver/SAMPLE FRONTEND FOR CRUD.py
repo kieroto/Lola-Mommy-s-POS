@@ -11,11 +11,10 @@ CRUD.product() #CREATE OR CONNECT DATABASE
 CRUD.employee()
 CRUD.customer()
 CRUD.adjust()
-
-
 #ADD ENTRY TO DATABASE
 def view_cs():
     #a
+    
     rows = CRUD.retrieve_customer()
     for item in rows:
         print(item)
@@ -32,6 +31,7 @@ def view_u():
     rows = CRUD.retrieve_employee()
     for item in rows:
         print(item)
+
 def del_cs():
     CRUD.delete_customer()
 
@@ -42,6 +42,9 @@ def dummy():
     CRUD.add_customer(0, '-', '-', 0, '-')
 
 def dummy2():
+    CRUD.sqlitequery()
+    CRUD.adjust()
+
     CRUD.add_role('Admin', '111111111')
     CRUD.add_role('Cashier', '111111111')
     CRUD.add_role('Inventory Staff', '111111111')
@@ -49,6 +52,7 @@ def dummy2():
 def del_u():
     CRUD.delete_user()
     CRUD.add_employee(1,1,'Admin')
+    
 CRUD.product()
 CRUD.customer()
 CRUD.employee()
@@ -71,9 +75,10 @@ button2 = Button(text="View in roles", width=12, bg="red", command=view_r, font=
 button2.grid(column=2, row=2)
 button2 = Button(text="dummy", width=12, bg="red", command=dummy, font=("arial", 12, "bold"))
 button2.grid(column=2, row=3)
-button2 = Button(text="add roles", width=12, bg="red", command=dummy2, font=("arial", 12, "bold"))
+button2 = Button(text="wipe roles", width=12, bg="red", command=dummy2, font=("arial", 12, "bold"))
 button2.grid(column=0, row=3)
-button2 = Button(text="del users", width=12, bg="red", command=del_u, font=("arial", 12, "bold"))
+button2 = Button(text="wipe users", width=12, bg="red", command=del_u, font=("arial", 12, "bold"))
 button2.grid(column=0, row=4)
+
 
 root.mainloop()
