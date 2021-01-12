@@ -25,8 +25,8 @@ class adj_priv(ttk.Frame, Tk):
         self.roleList=[]
         self.privList=[]
         for row in self.records:
-            self.roleList.append(row[1])
-            self.privList.append(row[2])
+            self.roleList.append(row[0])
+            self.privList.append(row[1])
 
         lbl = Label(self.body, text=title, font=('Helvetica', 20, 'bold'))
         lbl.grid(column=3, row=0 , columnspan=6, rowspan=1, sticky=(N+S+E+W))
@@ -58,6 +58,8 @@ class adj_priv(ttk.Frame, Tk):
         self.btn7 = Checkbutton(self.body, text="Edit customer", variable=self.Checkbutton7, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
         self.btn8 = Checkbutton(self.body, text="View orders", variable=self.Checkbutton8, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=15)
         self.btn9 = Checkbutton(self.body, text="Void/Edit orders", variable=self.Checkbutton9, onvalue=1, offvalue=0, font=("Helvetica", 16), height=2, width=20)
+        self.buttons=[self.btn1, self.btn2, self.btn3, self.btn4, self.btn5, 
+                    self.btn6, self.btn7, self.btn8, self.btn9 ]
 
         self.btn1.grid(column=4, row=2)
         self.btn2.grid(column=4, row=3)
@@ -77,15 +79,24 @@ class adj_priv(ttk.Frame, Tk):
     # function for when a role is selected
     def selection(self, event):
         self.roleActive = self.role.get()
+        if(self.roleActive == 'Admin'):
+            for button in self.buttons:
+                button.config(state=DISABLED)
+        else:
+            for button in self.buttons:
+                button.config(state=ACTIVE)
 
+            pass
         # take id of selected role
+        i = 0
         for row in self.records:
-            if row[1] == self.roleActive:
-                role_id = row[0]
+            if row[0] == self.roleActive:
+                break
+            i = i + 1
 
         # take privilege binary and split it into nine character. Assign them to toggle list
-        self.toggleList=[char for char in self.privList[role_id - 1]]
-
+        self.toggleList=[char for char in self.privList[i]]
+        print(self.toggleList)
         # Change toggle of each checkbutton
         self.Checkbutton1.set(self.toggleList[0])
         self.Checkbutton2.set(self.toggleList[1])
@@ -128,10 +139,9 @@ class adj_priv(ttk.Frame, Tk):
         CRUD.update_priv(role, role_priv)
 
         self.records = CRUD.retrieve_privileges()
-
         # Assign roles and privileges to lists
         self.roleList = []
         self.privList = []
         for row in self.records:
-            self.roleList.append(row[1])
-            self.privList.append(row[2])
+            self.roleList.append(row[0])
+            self.privList.append(row[1])
