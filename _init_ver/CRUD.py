@@ -78,13 +78,11 @@ def adjust():
     con = sqlite3.connect('role_priv.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS privileges (
-                    role_id INTEGER PRIMARY KEY,
                     role text,
                     privileges_bin text
                 ) """)
     con.commit()
     con.close()
-
 
 # ----------------------------------------------- ADD ----------------------------------------------------------------------------------------- #
 
@@ -136,6 +134,9 @@ def add_employee(username, password, role):
 
     con.commit()
     con.close()
+
+
+
 
 def add_order(primaryID, orderID, userID, customerID, productID, productName, quantity, totalAmount, date, time):
     con = sqlite3.connect('order.db')
@@ -267,6 +268,24 @@ def retrieve_lastorder():
     con.close()
     return rows
 
+def retrieve_customer_search(key):
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM customer WHERE " + key)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+def retrieve_lastcustomer():
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM customer ORDER BY customerID DESC LIMIT 1")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+
+
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
@@ -345,6 +364,7 @@ def update_priv(role, privileges_bin):
     con.commit()
     con.close()
 
+
 # ----------------------------------------------- SEARCH ELEMENT ------------------------------------------------------------------------------------------ #
 
 
@@ -372,3 +392,58 @@ def delete_records():
     c.execute("DELETE FROM orderx ")
     con.commit()
     con.close()
+
+def delete_customer():
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("DELETE FROM customer ")
+    con.commit()
+    con.close()
+
+def delete_employee(userID):
+    con = sqlite3.connect('employee.db')
+    c = con.cursor()
+    c.execute("DELETE FROM employee WHERE userID = " + userID)
+    con.commit()
+    con.close()
+
+
+#---------MISC
+
+
+
+def sqlitequery():
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("""DROP TABLE IF EXISTS privileges""")
+    con.commit()
+    con.close()
+	
+def delete_user():
+    con = sqlite3.connect('employee.db')
+    c = con.cursor()
+    c.execute("DELETE FROM employee ")
+    con.commit()
+    con.close()
+
+
+def add_role(role, p):
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("INSERT INTO privileges VALUES (:role, :privilege_bin)",
+              {
+                  'role': role,
+                  'privilege_bin': p,
+              })
+
+    con.commit()
+    con.close()
+
+def user_count():
+    con = sqlite3.connect('employee.db')
+    c = con.cursor()
+    c.execute("SELECT count(*) FROM employee")
+    rows = c.fetchall()
+    con.commit()
+    con.close()
+    return rows

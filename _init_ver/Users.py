@@ -151,5 +151,8 @@ class u_page(ttk.Frame, Tk):
 
     def delete(self):
         selected_item = self.UserTable_.tree.selection() ## get selected item
+      
+        if(int(CRUD.user_count()[0][0])==1):
+            return
         CRUD.delete_employee(str(self.UserTable_.tree.item(selected_item)['values'][0]))
         self.UserTable_.tree.delete(selected_item)
