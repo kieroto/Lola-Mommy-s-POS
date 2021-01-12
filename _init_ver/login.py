@@ -4,7 +4,7 @@ from PIL import ImageTk, Image
 from prompt import prompt_box
 from Window import window
 import os
-
+import CRUD
 
 class login_user(prompt_box):
 	def __init__(self, promptType):
@@ -49,7 +49,15 @@ class login_user(prompt_box):
 
 	def validate(self, event=None):
 		#Dictionary for list of users (username : password)
-		users = {'admin': 'admin', 'dev': '2000', 'client': '3000', 'employee': '4000'}
+		_user = []
+		users = {}
+		role = {}
+		keys = CRUD.retrieve_employee()
+
+		for key in keys:
+			_user.append(key[1])
+			users[key[1]] = key[2]
+			role[key[1]] = key[3]
 
 		#Saves the input for username and pasword
 		username = self.userName.get()
@@ -59,10 +67,8 @@ class login_user(prompt_box):
 		if username in users:
 			if (users[username] == Pass):				# If username and password are correct, display main window
 				self.promptWindow.destroy()
-				if(username=='admin'):					# If admin, starts window with admin privileges
-					home = window(True)
-				else:
-					home = window(False)
+				# If admin, starts window with admin privileges
+				home = window(role[username])
 				home.root.mainloop()
 			else:
 				self.label3.configure(text="Incorrect Password")		# Displays error if incorrect password

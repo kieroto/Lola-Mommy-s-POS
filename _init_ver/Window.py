@@ -5,7 +5,7 @@ from POS_panel import main_
 
 class window:
 
-    def __init__(self, admin):
+    def __init__(self, type_):
  
             #create tk window
             self.root= Tk()
@@ -50,6 +50,6 @@ class window:
             self.menu.rowconfigure(1, weight=1)
 
             # Create Menubar object and Home buttons
-            self.menubar_buttons = main_(self.root, self.menu, self.body, admin, menuFont)
+            self.menubar_buttons = main_(self.root, self.menu, self.body, type_, menuFont)
         
     pass

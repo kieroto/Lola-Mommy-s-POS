@@ -5,7 +5,7 @@ from login import login_user
 # #Comment this section out and uncomment Previous code to go to window directly
 #1------------------------------------#
 login = login_user(0)
-valid = login.promptWindow.mainloop()
+login.promptWindow.mainloop()
 #1end---------------------------------#
 
 # #Previous Code 

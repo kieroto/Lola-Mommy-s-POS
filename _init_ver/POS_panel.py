@@ -17,8 +17,8 @@ class page_tracker():
         self.pages = []
         self.confirm_flag = False
         self.bin = []
-
-
+        self.privilege = '111111111'
+        self.role = 'Admin'
 class main_(ttk.Frame, Tk):
 
     def callback_root(self):
@@ -31,7 +31,7 @@ class main_(ttk.Frame, Tk):
                 return
         self.root.destroy()
     
-    def __init__(self, root, menu, body, admin, menuFont):
+    def __init__(self, root, menu, body, type_, menuFont):
        
         self.root = root
         self.menu = menu
@@ -40,6 +40,9 @@ class main_(ttk.Frame, Tk):
         self.page_toggle = 0
         self.pages = [] 
         self.Page_tracker = page_tracker()
+        self.Page_tracker.privilege = util.priv_bin(type_)
+        self.Page_tracker.role = type_
+
         # Virtual pixels to help resize button in pixels
         # pixelVirtual = PhotoImage(width=1, height=1)
         # Font styles
@@ -59,7 +62,7 @@ class main_(ttk.Frame, Tk):
         Back = Button(self.menu, text='Back', command= lambda: self.click(7))
 
         # List buttons
-        self.buttons = [Sales, Customer, Inventory, History, Order, User, Adj_priv, Log_out, Back]
+        self.buttons = [Sales, Customer, Inventory, History, Order, User, Adj_priv, Back, Log_out]
 
         # Assign button properties
         for bttn in self.buttons:
@@ -79,11 +82,12 @@ class main_(ttk.Frame, Tk):
         Order.grid(column=8, row=0, columnspan=2, rowspan=2,  sticky=(N, S, E, W))
 
         # Admin privileges
-        if (admin== TRUE):
-            User.grid(column=10, row=0, columnspan=2, rowspan=1, sticky=(N, S, E, W))
-            Adj_priv.grid(column=10, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
-            Log_out.grid(column=13, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
-            Back.grid(column=13, row=2, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+        
+        User.grid(column=10, row=0, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+        Adj_priv.grid(column=10, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+        Log_out.grid(column=13, row=1, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+        Back.grid(column=13, row=2, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
 
         # Create Label Objects
         self.Userlbl = Label(self.menu, text='User : <name>', font=('Helvetica', 25, 'bold'))
@@ -104,11 +108,14 @@ class main_(ttk.Frame, Tk):
                 pass
             else:
                 return
-        for n in range(9):   
+        for n in range(7):   
             if (n == i_):
                 self.buttons[n].configure(background='#eeeeee')
                 continue
-            self.buttons[n].configure(background='#93c47d')
+            if (n == 5 or n == 6):#89aae0
+                self.buttons[n].configure(background='#89aae0')
+            else:
+                self.buttons[n].configure(background='#93c47d')
 
         # Short hand IF
         self.shift_(self.Page_tracker.pages[-1], i_) if i_ < 8 else self.test

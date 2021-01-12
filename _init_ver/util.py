@@ -1,5 +1,9 @@
 import CRUD
 
+def priv_bin(role):
+    s = CRUD.retrieve_privilege_bin('"' + role + '"')
+    return s[0][1]
+
 def replace(index, Table_):
     focus_item(index, Table_)
     Table_.tree.delete(Table_.tree.selection())

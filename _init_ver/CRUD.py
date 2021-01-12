@@ -260,6 +260,14 @@ def retrieve_privileges():
     con.close()
     return rows
 
+def retrieve_privilege_bin(role):
+    con = sqlite3.connect('role_priv.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM privileges WHERE role = " + role)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 def retrieve_lastorder():
     con = sqlite3.connect('order.db')
     c = con.cursor()
