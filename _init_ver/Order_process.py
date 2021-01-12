@@ -35,7 +35,7 @@ class order_process(ttk.Frame, Tk):
         print('updated')
         util.undo_order(self.order_list, self.order_qty)
     
-    def __init__(self, root, body, Page_tracker, details):
+    def __init__(self, root, body, Page_tracker, cdetails):
         Page_tracker.pages.append(10)
         self.root = root
         self.body = body
@@ -43,7 +43,7 @@ class order_process(ttk.Frame, Tk):
         self.order_qty = []
         self.order_price = []
         self.item_list = []
-        self.cs_details = details
+        self.c_details = cdetails
     
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -301,11 +301,11 @@ class order_process(ttk.Frame, Tk):
         if not self.order_list:
             print("No item")
             return
-        self.csid = util.customer_check( self.cs_details)
-        details={"id": self.csid, "date": date.today().strftime("%m/%d/%y"),
+        self.csid = util.customer_check(self.c_details)
+        sdetails={"id": self.csid, "date": date.today().strftime("%m/%d/%y"),
                 "time": datetime.now().strftime("%H:%M:%S")}
-        print(self.order_list)
-        print(self.order_qty)
+        
+
         self.Tracker=quantity_change(False, 0, 0)
         place_order(1, self.root, self.body, self.Tracker)
         if(self.Tracker.confirm_flag == True):
@@ -317,7 +317,7 @@ class order_process(ttk.Frame, Tk):
                     util.focus_item(0, self.Table_)
                     row=self.Table_.tree.item(self.Table_.tree.selection())['values']
                     pn = self.order_list.pop(0)
-                    _order_cred = order_cred(ids, row, pn, details)
+                    _order_cred = order_cred(ids, row, pn, sdetails)
                     util.update_order(_order_cred)
                     self.Table_.tree.delete(self.Table_.tree.selection())
                 for widget in self.body.winfo_children():
