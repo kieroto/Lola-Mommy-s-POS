@@ -47,11 +47,11 @@ def search_cs(key):
     mob = 'mobile = ' + str(key['mobile'])+ ' '
     add = 'address = "' + key['address']+'" '
     key_line = fname + 'AND ' + lname + 'AND ' + mob + 'AND ' + add
-
     row = CRUD.retrieve_customer_search(key_line)
     if not row:
         return 0
     else:
+        print(row[0][0])
         return row[0][0]
 
 def customer_check(cs_details):
