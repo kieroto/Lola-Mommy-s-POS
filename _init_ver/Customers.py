@@ -81,13 +81,15 @@ class SuggestionEntry(Entry):
         self.var.trace('w', self.changed)
 
     def changed(self, name, index, mode):
+        for row in self.CusTable_.tree.get_children():
+                self.CusTable_.tree.delete(row)
+
         if self.var.get() == '':
+
+
             for row in self._list_cus:
                 self.CusTable_.tree.insert('', '0', values=(row[1] + " " + row[2], row[4], row[3]))
         else:
-            for row in self.CusTable_.tree.get_children():
-                self.CusTable_.tree.delete(row)
-
             self.words = self.comparison()
 
             self._list_cus_search=[]
