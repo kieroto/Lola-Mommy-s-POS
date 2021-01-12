@@ -36,7 +36,7 @@ def del_cs():
     CRUD.delete_customer()
 
 def del_o():
-    CRUD.delete_records()
+    CRUD.delete_orders()
 
 def dummy():
     CRUD.add_customer(0, '-', '-', 0, '-')

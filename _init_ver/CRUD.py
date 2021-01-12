@@ -403,6 +403,13 @@ def delete_records(productID):
     con.commit()
     con.close()
 
+def delete_orders():
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    c.execute("DELETE FROM orderx")
+    con.commit()
+    con.close()
+
 def delete_customer():
     con = sqlite3.connect('customer.db')
     c = con.cursor()
