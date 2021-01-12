@@ -128,7 +128,7 @@ class u_page(ttk.Frame, Tk):
         else:
             if (pw1 == pw2):
                 update_employee = CRUD.add_employee(us, pw1, role)
-                add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body)
+                add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body, Page_tracker)
                 # update_employee = CRUD.add_employee(us, pw1, role)
                 for widget in self.body.winfo_children():
                     widget.destroy()

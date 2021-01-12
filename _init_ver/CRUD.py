@@ -66,6 +66,7 @@ def history():
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS history (
                         historyID INTEGER PRIMARY KEY,
+                        action_type text,
                         userID INTEGER,
                         action text,
                         date text,
@@ -158,12 +159,13 @@ def add_order(primaryID, orderID, userID, customerID, productID, productName, qu
     con.commit()
     con.close()
 
-def add_history(historyID, userID, action, date, time):
+def add_history(historyID, action_type, userID, action, date, time):
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("INSERT INTO employee VALUES (:historyID, :userID, :action, :date, :time)",
+    c.execute("INSERT INTO employee VALUES (:historyID, :action_type, :userID, :action, :date, :time)",
               {
                   'historyID': historyID,
+                  'action_type': action_type,
                   'userID': userID,
                   'action': action,
                   'date': date,
@@ -247,7 +249,7 @@ def retrieve_order():
 def retrieve_history():
     con = sqlite3.connect('history.db')
     c = con.cursor()
-    c.execute("SELECT userID, action, date, time FROM history")
+    c.execute("SELECT * time FROM history")
     rows = c.fetchall()
     con.close()
     return rows
@@ -407,6 +409,14 @@ def delete_customer():
     c.execute("DELETE FROM customer ")
     con.commit()
     con.close()
+
+def delete_history():
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute("DELETE FROM history ")
+    con.commit()
+    con.close()
+
 
 def delete_employee(userID):
     con = sqlite3.connect('employee.db')

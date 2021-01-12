@@ -11,10 +11,10 @@ CRUD.product() #CREATE OR CONNECT DATABASE
 CRUD.employee()
 CRUD.customer()
 CRUD.adjust()
+CRUD.history()
 #ADD ENTRY TO DATABASE
 def view_cs():
     #a
-    
     rows = CRUD.retrieve_customer()
     for item in rows:
         print(item)
@@ -52,6 +52,10 @@ def dummy2():
 def del_u():
     CRUD.delete_user()
     CRUD.add_employee(1,1,'Admin')
+
+def wipeh():
+    CRUD.delete_history()
+    CRUD.history()
     
 CRUD.product()
 CRUD.customer()
@@ -79,6 +83,9 @@ button2 = Button(text="wipe roles", width=12, bg="red", command=dummy2, font=("a
 button2.grid(column=0, row=3)
 button2 = Button(text="wipe users", width=12, bg="red", command=del_u, font=("arial", 12, "bold"))
 button2.grid(column=0, row=4)
+button2 = Button(text="wipe history", width=12, bg="red", command=wipeh, font=("arial", 12, "bold"))
+button2.grid(column=2, row=4)
+
 
 
 root.mainloop()

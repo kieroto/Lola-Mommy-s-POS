@@ -46,17 +46,17 @@ def update_order(OC):
     
 
 def search_cs(key):
-    fname = 'customerFirst = "' + key['customerFirst']+'" '
-    lname = 'customerLast = "' + key['customerLast']+'" '
-    mob = 'mobile = ' + str(key['mobile'])+ ' '
-    add = 'address = "' + key['address']+'" '
-    key_line = fname + 'AND ' + lname + 'AND ' + mob + 'AND ' + add
+    fname = ' customerFirst = "' + key['customerFirst']+'" '
+    lname = ' customerLast = "' + key['customerLast']+'" '
+    mob = ' mobile = ' + str(key['mobile'])+ ' '
+    add = ' address = "' + key['address']+'" '
+    key_line = fname + ' AND ' + lname + ' AND ' + mob + ' AND ' + add
     row = CRUD.retrieve_customer_search(key_line)
-    if not row:
-        return 0
-    else:
-        print(row[0][0])
+    print(row)
+    if row:
         return row[0][0]
+    else:
+        return -1
 
 def customer_check(cs_details):
     if(cs_details['type']=='short'):
@@ -64,7 +64,7 @@ def customer_check(cs_details):
     else:
         key = search_cs(cs_details)
     
-    if (key!=0):
+    if (key!=-1):
         return key
     else:
         try:

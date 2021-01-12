@@ -95,12 +95,12 @@ class place_order(prompt_box):
 		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
 		
-		
 
 	def cancel(self):
 		self.var.set(1)
 		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
+
 class confirm_inv(prompt_box):		
 	def __init__(self, promptType, body, labels, root):
 		# btn.configure(state="disabled")
@@ -109,6 +109,7 @@ class confirm_inv(prompt_box):
 		self.confirm_bool=FALSE
 		self.promptWindow.title("Confirm Customer")
 	
+		self.promptWindow.grab_set()
 		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
 		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(labels))
 		# dropdown = OptionMenu()
@@ -125,11 +126,13 @@ class confirm_inv(prompt_box):
 			widget.destroy()
 		self.confirm_bool=TRUE
 		self.var.set(1)
+		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
 	
 	def cancel(self):
-		self.var.set(1)
+		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
+		self.var.set(1)
 
 class quantity(prompt_box):
 		
@@ -215,6 +218,8 @@ class confirm_customer(prompt_box):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body, root)
 		self.root = root
+
+		self.promptWindow.grab_set()
 		self.promptWindow.title("Confirm Customer")
 		Page_tracker.confirm_flag = False
 		customerName = customerDetails['customerFirst'] + " " + customerDetails['customerLast']
@@ -224,7 +229,7 @@ class confirm_customer(prompt_box):
 		lb3 = Label(self.body, text = customerDetails['mobile'], font=('Helvetica', 10))
 		lb4 = Label(self.body, text = customerDetails['address'], font=('Helvetica', 10))
 		lb5 = Label(self.body, text = " ")
-		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
+		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
 		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(Page_tracker))
 		# dropdown = OptionMenu()
 
@@ -245,22 +250,29 @@ class confirm_customer(prompt_box):
 		Page_tracker.confirm_flag = True
 		for widget in self.master.winfo_children():
 			widget.destroy()
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+		self.var.set(1)
+
+	def cancel(self):
+		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
 		self.var.set(1)
 
 
 class add_user(prompt_box):
 
-	def __init__(self, promptType, btn, userDetails, root, body):
+	def __init__(self, promptType, btn, userDetails, root, body, Page_tracker):
 		super().__init__(promptType, body, root)
 		self.root = root
 
+		self.promptWindow.grab_set()
 		self.promptWindow.title("User Added")
 
 		lb1 = Label(self.body, text = userDetails['username'], font=('Helvetica', 15, 'bold'))
 		lb2 = Label(self.body, text = "has been added to list of", font=('Helvetica', 10))
 		lb3 = Label(self.body, text = userDetails['role'] + "s", font=('Helvetica', 10, 'bold'))
-		okBtn = Button(self.body, text="OK", command=lambda:self.confirm())
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(Page_tracker))
 		# lb2 = Label(self.body, text = customerName, font=('Helvetica', 10))
 
 		lb1.grid(column=0, row=0, columnspan=9, rowspan=2, sticky=(N, S, E, W))
@@ -273,11 +285,16 @@ class add_user(prompt_box):
 		okBtn.wait_variable(self.var)
 		print("done waiting./")
 
-	def confirm(self):
-		# for widget in self.master.winfo_children():
-		# 	widget.destroy()
+	def confirm(self,Page_tracker):
 		self.var.set(1)
+		Page_tracker.confirm_flag = True
+		self.promptWindow.grab_release()
 		self.promptWindow.destroy()
+		
+	def cancel(self):
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+		self.var.set(1)
 
 class order_exit(prompt_box):
 		
