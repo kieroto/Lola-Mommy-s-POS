@@ -122,7 +122,11 @@ class main_(ttk.Frame, Tk):
     def shift_(self, current, i):
         if (current == i):
             pass
-        else: 
+        else:
+            try:
+                self.Page_tracker.pages.remove(10)
+            except ValueError:
+                pass
             self.reset_body()
             self.Page_tracker.pages.append(i)
             if (i == 0):
