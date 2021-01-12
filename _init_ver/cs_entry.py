@@ -99,9 +99,12 @@ class cs_page(ttk.Frame, Tk):
             self.customerDetails={"customerFirst": " ".join(self.cfirst.get().split()), "customerLast": " ".join(self.clast.get().split()), 
                                     "mobile": " ".join(self.cmobile.get().split()), "address": " ".join(self.caddr.get().split()), "type": 'bulk'}
             cs = self.customerDetails
-            confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body)
-            from Order_process import order_process
-            self.orderprocess_= order_process(self.root, self.body, Page_tracker, cs)
+            confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
+            if(Page_tracker.confirm_flag == True):
+                from Order_process import order_process
+                self.orderprocess_= order_process(self.root, self.body, Page_tracker, cs)
+            else:
+                pass
         else:
             self.error_lb.configure(text="Fill up first and last name")       # Displays error if incomplete
             self.error_lb.grid(column=5, row=14)

@@ -211,11 +211,12 @@ class quantity(prompt_box):
 
 class confirm_customer(prompt_box):
 		
-	def __init__(self, promptType, btn, customerDetails, root, body):
+	def __init__(self, promptType, btn, customerDetails, root, body, Page_tracker):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body, root)
 		self.root = root
 		self.promptWindow.title("Confirm Customer")
+		Page_tracker.confirm_flag = False
 		customerName = customerDetails['customerFirst'] + " " + customerDetails['customerLast']
 		# Set Labels and Buttons
 		lb1 = Label(self.body, text = "Processing order for: ", font=('Helvetica', 20, 'bold'))
@@ -224,7 +225,7 @@ class confirm_customer(prompt_box):
 		lb4 = Label(self.body, text = customerDetails['address'], font=('Helvetica', 10))
 		lb5 = Label(self.body, text = " ")
 		cancelBtn = Button(self.body, text="Cancel", command=self.promptWindow.destroy)
-		okBtn = Button(self.body, text="OK", command=lambda:self.confirm())
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm(Page_tracker))
 		# dropdown = OptionMenu()
 
 		# Place Labels and Buttons on grid
@@ -240,7 +241,8 @@ class confirm_customer(prompt_box):
 		self.promptWindow.wait_variable(self.var)
 		print("done waiting./")
 
-	def confirm(self):
+	def confirm(self, Page_tracker):
+		Page_tracker.confirm_flag = True
 		for widget in self.master.winfo_children():
 			widget.destroy()
 		self.promptWindow.destroy()
