@@ -195,6 +195,16 @@ def retrieve_productName():
     return rows
 
 def retrieve_Prod_Quantity(date):
+    temp = (date.split('/'))
+    count = 0
+
+    for x in temp:
+        if count < len(temp):
+            temp[count] = x.lstrip('0')
+            count += 1
+
+    date = temp[0] + '/' + temp[1] + '/' + temp[2]
+
     con = sqlite3.connect('order.db')
     c = con.cursor()
     c.execute("SELECT productName, quantity, totalAmount FROM orderx WHERE  date=:date""",
