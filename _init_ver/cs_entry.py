@@ -19,13 +19,13 @@ def matches(fieldValue, acListEntry):
 class cs_page(ttk.Frame, Tk):
 
     # Populate listbox with _list
-    _list_cus = CRUD.retrieve_customer()
+    
 
     def __init__(self, root, body, Page_tracker):
 
         self.root = root
         self.body = body
-
+        self._list_cus = CRUD.retrieve_customer()
         # Loop thru results
         customerList=[]
         # customerListSwitch=[]
