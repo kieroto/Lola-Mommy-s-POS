@@ -288,10 +288,16 @@ def retrieve_lastorder():
     con.close()
     return rows
 
-def retrieve_customer_search(key):
+def retrieve_customer_search(customerName):
     con = sqlite3.connect('customer.db')
     c = con.cursor()
-    c.execute("SELECT * FROM customer WHERE " + key)
+    customerFirst = customerName
+    customerLast = customerName
+    c.execute("SELECT * FROM customer WHERE customerFirst=:customerFirst OR customerLast=:customerLast""",
+              {
+                  'customerFirst':customerFirst,
+                  'customerLast':customerLast,
+              })
     rows = c.fetchall()
     con.close()
     return rows
