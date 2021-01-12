@@ -96,10 +96,12 @@ class cs_page(ttk.Frame, Tk):
 
         if(self.cfirst.get() != '' or self.clast.get() != ''):
             self.error_lb.configure(text=" ")
-            self.customerDetails={"customerFirst": self.cfirst.get(), "customerLast": self.clast.get(), "mobile": self.cmobile.get(), "address": self.caddr.get(), "type": 'bulk'}
-            Confirm_prompt = confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body)
+            self.customerDetails={"customerFirst": " ".join(self.cfirst.get().split()), "customerLast": " ".join(self.clast.get().split()), 
+                                    "mobile": " ".join(self.cmobile.get().split()), "address": " ".join(self.caddr.get().split()), "type": 'bulk'}
+            cs = self.customerDetails
+            confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body)
             from Order_process import order_process
-            self.orderprocess_= order_process(self.root, self.body, Page_tracker, self.customerDetails)
+            self.orderprocess_= order_process(self.root, self.body, Page_tracker, cs)
         else:
             self.error_lb.configure(text="Fill up first and last name")       # Displays error if incomplete
             self.error_lb.grid(column=5, row=14)
@@ -195,7 +197,7 @@ class AutocompleteEntry(Entry):
                     customer_id = row[0]
 
             detailList=[]
-            for rec in self._list_cus[customer_id - 1]:
+            for rec in self._list_cus[customer_id]:
                 detailList.append(rec)
 
             self.listbox.destroy()
@@ -209,8 +211,8 @@ class AutocompleteEntry(Entry):
 
             self.cfirst.insert(0, detailList[1])
             self.clast.insert(0, detailList[2])
-            self.caddr.insert(0, detailList[3])
-            self.cmobile.insert(0, detailList[4])
+            self.cmobile.insert(0, detailList[3])
+            self.caddr.insert(0, detailList[4])
 
     def moveUp(self, event):
         if self.listboxUp:
