@@ -25,7 +25,7 @@ class u_page(ttk.Frame, Tk):
         # Assign roles and privileges to lists
         self.roleList=[]
         for row in self._list_roles:
-            self.roleList.append(row[1])    
+            self.roleList.append(row[0])    
 
         #Setting up title Frame
         self.title = ttk.Frame(body)
@@ -93,7 +93,7 @@ class u_page(ttk.Frame, Tk):
 
         self.role_lb = Label(self.add_user_frame, text = "Role: ", font = ("Helvetica", 16))
         self.role_lb.grid(column=10, row=12, pady=20)
-        self.role_cb = ttk.Combobox(self.add_user_frame, width=20, font=("Helvetica, 16"), values=self.roleList)
+        self.role_cb = ttk.Combobox(self.add_user_frame, width=20, font=("Helvetica, 16"), values=self.roleList, state='readonly')
         self.role_cb.grid(column=12, row=12, pady=20)
 
         self.userAddBtn = Button(self.add_user_frame, text="Add", font = ("Helvetica", 16), command=lambda:self.validate(Page_tracker))
