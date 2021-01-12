@@ -311,6 +311,14 @@ def retrieve_customer_search(customerName):
     rows = c.fetchall()
     con.close()
     return rows
+def retrieve_customer_search_whole(key):
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM customer WHERE " + key)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 
 def retrieve_lastcustomer():
     con = sqlite3.connect('customer.db')

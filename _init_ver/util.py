@@ -62,9 +62,11 @@ def search_cs(key):
     mob = ' mobile = ' + str(key['mobile'])+ ' '
     add = ' address = "' + key['address']+'" '
     key_line = fname + ' AND ' + lname + ' AND ' + mob + ' AND ' + add
-    row = CRUD.retrieve_customer_search(key_line)
+    print(key_line)
+    row = CRUD.retrieve_customer_search_whole(key_line)
     print(row)
     if row:
+        print("match")
         return row[0][0]
     else:
         return -1
