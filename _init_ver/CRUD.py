@@ -375,3 +375,10 @@ def delete_customer():
     c.execute("DELETE FROM customer ")
     con.commit()
     con.close()
+
+def delete_employee(userID):
+    con = sqlite3.connect('employee.db')
+    c = con.cursor()
+    c.execute("DELETE FROM employee WHERE userID = " + userID)
+    con.commit()
+    con.close()

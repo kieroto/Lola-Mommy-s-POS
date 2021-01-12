@@ -63,12 +63,20 @@ class u_page(ttk.Frame, Tk):
         row_place = 1
         col_place = 1
         self.UserTable_ = table(frame= self.table_frame, tree_row=row_place, tree_col=col_place, 
-                        column_id=("Username", "Role", "Remove"), 
+                        column_id=("id", "Username", "Role"), 
                         rowheight = 40 ,height = 10, font_size = 12, font = 'Helvetica',
                         tablecol_width = 100, headingfont= 30) 
 
         for row in self._list_employees:
-            self.UserTable_.tree.insert('', '0', values=(row[1], row[3]))
+            self.UserTable_.tree.insert('', '0', values=(row[0], row[1], row[3]))
+
+        self.UserTable_.tree.bind("<<TreeviewSelect>>", self.select_row)
+        # self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
+
+        # Delete button
+        self.userDelBtn = Button(self.table_frame, text="Delete", font = ("Helvetica", 16), command=self.delete)
+        self.userDelBtn.config(height=1, width=8, background='#93c47d', state=DISABLED)
+        self.userDelBtn.grid(column=6, row=1 , columnspan=2, rowspan=1)
 
         # Add User Label
         self.add_user_lb = Label(self.add_user_frame, text="Add User", font=('Helvetica', 15, 'bold'))
@@ -128,3 +136,20 @@ class u_page(ttk.Frame, Tk):
             else:
                 self.error_lb.configure(text="Password mismatch")		# Displays error if incomplete
                 self.error_lb.grid(column=12, row=20)
+
+    def select_row(self, event):
+        self.userDelBtn.config(background='#93c47e', state=NORMAL)
+
+        entryIndex = self.UserTable_.tree.index(self.UserTable_.tree.focus())
+        print(entryIndex)
+
+        try:
+            widget = event.widget
+            selected=widget.selection()
+        except IndexError:
+            return
+
+    def delete(self):
+        selected_item = self.UserTable_.tree.selection() ## get selected item
+        CRUD.delete_employee(str(self.UserTable_.tree.item(selected_item)['values'][0]))
+        self.UserTable_.tree.delete(selected_item)
