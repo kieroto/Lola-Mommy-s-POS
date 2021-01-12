@@ -251,7 +251,7 @@ def retrieve_employee():
 def retrieve_order():
     con = sqlite3.connect('order.db')
     c = con.cursor()
-    c.execute("SELECT productID, productName, quantity, totalAmount FROM orderx")
+    c.execute("SELECT * FROM orderx")
     rows = c.fetchall()
     con.close()
     return rows
@@ -433,7 +433,7 @@ def delete_product(productID):
 def delete_records(productID):
     con = sqlite3.connect('order.db')
     c = con.cursor()
-    c.execute("DELETE FROM orderx WHERE productID = " + productID)
+    c.execute("DELETE FROM orderx WHERE orderID = " + productID)
     con.commit()
     con.close()
 

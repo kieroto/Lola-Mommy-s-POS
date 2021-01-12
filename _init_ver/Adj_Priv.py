@@ -4,6 +4,7 @@ import tkinter.font as font
 from prompt import *
 from table import table
 import sqlite3
+from tkinter import messagebox 
 import CRUD
 
 # All options for roles 
@@ -109,7 +110,10 @@ class adj_priv(ttk.Frame, Tk):
         self.Checkbutton9.set(self.toggleList[8])
 
     def save_changes(self):
-
+        if messagebox.askyesno("message", "Confirm changes?"):
+            pass
+        else:
+            return
         role = self.role.get()
         result = [] #array of privileges
         c1=self.Checkbutton1.get()

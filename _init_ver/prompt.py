@@ -57,13 +57,78 @@ class prompt_box():
 		self.var.set(1)
 		self.promptWindow.destroy()
 		#1end-------------------------------------------------------------#
-
-class history(prompt_box):
+class void_order(prompt_box):
 		
-	def __init__(self, promptType, body, root):
+	def __init__(self, promptType, root, body, Tracker):
 		# btn.configure(state="disabled")
 		super().__init__(promptType, body, root)
-		self.promptWindow.title("Confirm Customer")
+		self.body_ = body
+		self.root = root
+		self.Tracker = Tracker
+
+		self.promptWindow.grab_set()
+		Label(self.body, text="Void order?").grid(row=4, column=2, columnspan=5)
+		cancelBtn = Button(self.body, text="Void order", command=self.cancel)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm( Tracker))
+		# dropdown = OptionMenu()
+
+		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+		print("waiting...")
+		okBtn.wait_variable(self.var)
+		print("done waiting./")
+
+	def confirm(self,  Tracker):
+		# for widget in self.master.winfo_children():
+		# 	widget.destroy()
+		self.var.set(1)
+		Tracker.confirm_flag = True
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+		
+
+	def cancel(self):
+		self.var.set(1)
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+
+class see_order(prompt_box):
+		
+	def __init__(self, promptType, root, body, Tracker):
+		# btn.configure(state="disabled")
+		super().__init__(promptType, body, root)
+		self.body_ = body
+		self.root = root
+		self.Tracker = Tracker
+
+		self.promptWindow.grab_set()
+		Label(self.body, text="Void order?").grid(row=4, column=2, columnspan=5)
+		cancelBtn = Button(self.body, text="Cancel", command=self.cancel)
+		okBtn = Button(self.body, text="OK", command=lambda:self.confirm( Tracker))
+		# dropdown = OptionMenu()
+
+		cancelBtn.grid(column=2, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+		okBtn.grid(column=5, row=6, columnspan=2, rowspan=1, sticky=(N, S, E, W))
+
+		print("waiting...")
+		okBtn.wait_variable(self.var)
+		print("done waiting./")
+
+	def confirm(self,  Tracker):
+		# for widget in self.master.winfo_children():
+		# 	widget.destroy()
+		self.var.set(1)
+		Tracker.confirm_flag = True
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+		
+
+	def cancel(self):
+		self.var.set(1)
+		self.promptWindow.grab_release()
+		self.promptWindow.destroy()
+
 
 class place_order(prompt_box):
 		

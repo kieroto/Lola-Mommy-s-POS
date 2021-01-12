@@ -11,6 +11,7 @@ from Users import u_page
 from Adj_Priv import adj_priv
 from cs_entry import cs_page
 from prompt import *
+from tkinter import messagebox 
 import util
 class page_tracker():
     def __init__(self):
@@ -22,9 +23,10 @@ class main_(ttk.Frame, Tk):
 
     def callback_root(self):
         if(self.Page_tracker.pages[-1]==10):
-            order_exit(1, self.root, self.body, self.Page_tracker)
-            if(self.Page_tracker.confirm_flag == True):
-                self.Page_tracker.confirm_flag = False
+            # order_exit(1, self.root, self.body, self.Page_tracker)
+            #if(self.Page_tracker.confirm_flag == True):
+            if messagebox.askyesno("askyesno", "Discard order?"):
+                #self.Page_tracker.confirm_flag = False
                 pass
             else:
                 return
@@ -101,9 +103,10 @@ class main_(ttk.Frame, Tk):
     def click(self, i_):
         # Button color change
         if(self.Page_tracker.pages[-1]==10):
-            order_exit(1, self.root, self.body, self.Page_tracker)
-            if(self.Page_tracker.confirm_flag == True):
-                self.Page_tracker.confirm_flag = False
+            #order_exit(1, self.root, self.body, self.Page_tracker)
+            if messagebox.askyesno("askyesno", "Discard order?"):
+            #if(self.Page_tracker.confirm_flag == True):
+             #   self.Page_tracker.confirm_flag = False
                 pass
             else:
                 return

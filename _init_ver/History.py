@@ -1,76 +1,15 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
+from tkinter import messagebox 
 from table import table
 from prompt import *
 import CRUD
+import util
 
-class h_page(ttk.Frame, Tk):
-    
+class h_page(ttk.Frame, Tk): 
     def __init__(self, root, body, title, Page_tracker):
 
-        # Virtual pixels to help resize button in pixels
-        #pixelVirtual = PhotoImage(width=1, height=1)
-
-        # Functions
-        def view_orders():
-            for widget in self.body.winfo_children():
-                widget.destroy()
-
-            self.table_frame = ttk.Frame(body)
-            self.table_frame.grid(row=7, column=0, columnspan=14, rowspan=8, sticky=N + S + E + W)
-
-            for i in range(0, 13):
-                self.table_frame.columnconfigure(i, weight=1)
-
-            for i in range(0, 18):
-                self.table_frame.rowconfigure(i, weight=1)
-
-            list_or = CRUD.retrieve_order()
-
-            # Create Label Objects
-            Userlbl = Label(self.table_frame, text="Orders", font=('Helvetica', 30, 'bold'))
-            Userlbl.grid(column=4, row=0 , columnspan=6, rowspan=1, sticky=(N+S+E+W))
-
-            # Create table
-            self.Table_ = table(frame=self.table_frame, tree_row=3, tree_col=5,
-                                column_id=("Product ID", "Item", "Quantity", "Amount"),
-                                rowheight=30, height=8, font_size=15, font='Helvetica',
-                                tablecol_width=200)
-            self.Table_.tree.column("Product ID", width = 90)
-            self.Table_.tree.column("Quantity", width = 90)
-            self.Table_.tree.column("Amount", width = 90)
-
-            for x in list_or:
-                self.Table_.tree.insert('', 'end', values=(x))
-
-            self.Table_.tree.bind("<<TreeviewSelect>>", select_row)
-
-            self.orderDelBtn = Button(self.table_frame, text="Void Order", font = ("Helvetica", 16), command=void_order)
-            self.orderDelBtn.config(height=1, width=8, background='#93c47d', state=DISABLED)
-            self.orderDelBtn.grid(column=6, row=15 , columnspan=2, rowspan=1)
-        
-        def select_row(event):
-            self.orderDelBtn.config(background='#93c47e', state=NORMAL)
-
-            entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
-            print(entryIndex)
-
-            try:
-                widget = event.widget
-                selected=widget.selection()
-            except IndexError:
-                return
-        
-        def void_order():
-            selected_item = self.Table_.tree.selection() ## get selected item
-            print(selected_item)
-            CRUD.delete_records(str(self.Table_.tree.item(selected_item)['values'][0]))
-            self.Table_.tree.delete(selected_item)
-
-
-        
-        # Font styles
         menuFont = font.Font(family='Helvetica', size=15, weight='bold')
         Page_tracker.pages.append(11)
         self.title = ttk.Frame(body)
@@ -97,7 +36,7 @@ class h_page(ttk.Frame, Tk):
         Date =  Label(self.title, text='Date 8/10/20', font=('Helvetica', 20, 'bold'))
         Date.grid(column=0, row=0 , columnspan=2, rowspan=1, sticky=(N+S+E+W))
 
-        self.Orderonly =  Button(self.title, text='Show orders only', font=('Helvetica', 13, 'bold'), command=view_orders)
+        self.Orderonly =  Button(self.title, text='Show orders only', font=('Helvetica', 13, 'bold'), command=self.view_orders)
         self.Orderonly.grid(column=12, row=0 , columnspan=1, rowspan=1, sticky=(N+S+E+W))
 
         self.Table_ = table(frame= self.table_frame, tree_row=3, tree_col=5, 
@@ -105,8 +44,7 @@ class h_page(ttk.Frame, Tk):
                         rowheight = 40 ,height = 10, font_size = 12, font = 'Helvetica',
                         tablecol_width = 250, headingfont= 30)   
         self.body = body
-        self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
-
+    
         # Populate listbox with _list
         list_his = CRUD.retrieve_history()
         
@@ -115,16 +53,88 @@ class h_page(ttk.Frame, Tk):
 
     def OnDoubleClick(self, event):
         item = self.Table_.tree.selection()[0]
-        print("you clicked on", self.Table_.tree.item(item,"text"))
-        history(1, self.body, self.root)
-        
-    
+        selected_item = self.Table_.tree.selection() ## get selected item
+        entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+        if messagebox.askyesno("message", "Void order of\n" + str(self.list_or[entryIndex][6]) + "?"):
+            if messagebox.askyesno("message", "Are you sure?"):
+                util.void_order(str(self.list_or[entryIndex][0]))
+                util.delete_history_entry(str(self.list_or[entryIndex][0]))
+                self.Table_.tree.delete(selected_item)
 
-    
-
+       
+     
+  
 
     def page_id(self):
         return 3
 
     def click(self, i):
         pass
+    def view_orders(self):
+            for widget in self.body.winfo_children():
+                widget.destroy()
+
+            ids = (util.retrieve_orderids())
+            ids = list(set(ids))
+            
+            # for oid in ids:
+            #     util.retrieve_order_single(oid)
+            self.table_frame = ttk.Frame(self.body)
+            self.table_frame.grid(row=7, column=0, columnspan=14, rowspan=8, sticky=N + S + E + W)
+
+            for i in range(0, 13):
+                self.table_frame.columnconfigure(i, weight=1)
+
+            for i in range(0, 18):
+                self.table_frame.rowconfigure(i, weight=1)
+
+            list_ = util.retrieve_order_from_history()
+            self.list_or = []
+            for item in list_:
+                item = list(item)
+                item.pop(1)
+                hid = item[2]  
+                split_ = item[2].split("\n")
+                a = split_.pop()
+                print(split_)
+                b = split_.pop()
+                item[2]= b 
+                item.insert(3, a)
+                item[1]= split_[0]
+                item.append(hid)
+                self.list_or.append(item)
+
+            # Create Label Objects
+
+            # Create table
+            self.Table_ = table(frame=self.table_frame, tree_row=1, tree_col=5,
+                                column_id=("Order ID", "Customer", "Items", "Amount", "Date", "Time"),
+                                rowheight=60, height=7, font_size=12, font='Helvetica',
+                                tablecol_width=200)
+            # self.Table_.tree.column("Product ID", width = 90)
+            # self.Table_.tree.column("Quantity", width = 90)
+            # self.Table_.tree.column("Amount", width = 90)
+
+            for x in self.list_or:
+                self.Table_.tree.insert('', 'end', values=(x))
+
+            self.Table_.tree.bind("<<TreeviewSelect>>", self.select_row)
+            self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
+            # self.orderDelBtn = Button(self.table_frame, text="Void Order", font = ("Helvetica", 16), command=self.void_order)
+            # self.orderDelBtn.config(height=1, width=8, background='#93c47d', state=DISABLED)
+            # self.orderDelBtn.grid(column=6, row=15 , columnspan=2, rowspan=1)
+        
+    def select_row(self, event):
+        # self.orderDelBtn.config(background='#93c47e', state=NORMAL)
+        entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+        try:
+            widget = event.widget
+            selected=widget.selection()
+        except IndexError:
+            return
+    
+    def void_order(self):
+        selected_item = self.Table_.tree.selection() ## get selected item
+        #print(selected_item)
+        CRUD.delete_records(str(self.Table_.tree.item(selected_item)['values'][0]))
+        self.Table_.tree.delete(selected_item)

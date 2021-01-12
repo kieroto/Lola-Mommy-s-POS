@@ -14,7 +14,6 @@ CRUD.adjust()
 CRUD.history()
 #ADD ENTRY TO DATABASE
 def view_cs():
-    #a
     rows = CRUD.retrieve_customer()
     for item in rows:
         print(item)

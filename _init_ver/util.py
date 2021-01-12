@@ -1,5 +1,58 @@
 import CRUD
+import sqlite3
 
+def delete_history_entry(pid):
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute("DELETE FROM history WHERE historyID = " + '"'+ str(pid) +'"')
+    con.commit()
+    con.close()
+
+
+def add_stock(pid, n):
+    con = sqlite3.connect('product.db')
+    c = con.cursor()
+    c.execute("SELECT stock FROM product WHERE productName = " + '"'+ str(pid) +'"')
+    stock = c.fetchall()
+    stock_ = int(stock[0][0]) + n
+    CRUD.update_stock(pid, int(stock_))
+    con.close()
+
+def void_order(pid):
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    c.execute("SELECT productName, quantity FROM orderx WHERE orderID = " + '"'+ pid +'"')
+    s = c.fetchall()
+    #rint(order[0])
+    for order in s:
+        add_stock(str(order[0]), int(order[1]))
+    CRUD.delete_records('"'+ str(pid) +'"')
+    con.close()
+
+def retrieve_orderids():
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    rows = [row[0] for row in c.execute("SELECT orderID FROM orderx")]
+    con.close()
+    return rows
+
+def retrieve_order_single(oid):
+    con = sqlite3.connect('order.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM orderx WHERE orderID = " + str(oid))
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+def retrieve_order_from_history():
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM history WHERE action_type = 'order'" )
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+#------------------------
 def date_split(date):
     temp = (date.split('/'))
     count = 0

@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
 from prompt import *
+from tkinter import messagebox 
 from table import table
 import sqlite3
 import CRUD
@@ -127,12 +128,18 @@ class u_page(ttk.Frame, Tk):
 
         else:
             if (pw1 == pw2):
-                update_employee = CRUD.add_employee(us, pw1, role)
-                add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body, Page_tracker)
-                # update_employee = CRUD.add_employee(us, pw1, role)
-                for widget in self.body.winfo_children():
-                    widget.destroy()
-                self.user = u_page(self.root, self.body, Page_tracker, 'Users')
+                if messagebox.askyesno("message", "Are you sure?") :
+                    update_employee = CRUD.add_employee(us, pw1, role)
+                    #add_user_prompt = add_user(1, self.userAddBtn, self.userDetails, self.root, self.body, Page_tracker)
+                    # update_employee = CRUD.add_employee(us, pw1, role)
+                    messagebox.showinfo("showinfo", 
+                                str(self.userDetails['username'])+"\n"+ "has been added to the list of \n"
+                                +self.userDetails['role']+"s") 
+                    for widget in self.body.winfo_children():
+                        widget.destroy()
+                    self.user = u_page(self.root, self.body, Page_tracker, 'Users')
+                else:
+                    pass
             else:
                 self.error_lb.configure(text="Password mismatch")		# Displays error if incomplete
                 self.error_lb.grid(column=12, row=20)
@@ -152,11 +159,15 @@ class u_page(ttk.Frame, Tk):
     def delete(self):
         selected_item = self.UserTable_.tree.selection() ## get selected item
         userid = str(self.UserTable_.tree.item(selected_item)['values'][0])
-
+        username = str(self.UserTable_.tree.item(selected_item)['values'][1])
+        print(username)
         if (str(self.tracker.user[0]) == userid):
+            messagebox.showwarning("showwarning", "Can't delete current account") 
             return
 
         if(int(CRUD.user_count()[0][0])==1):
+            messagebox.showwarning("showwarning", "Can't delete current account") 
             return
-        CRUD.delete_employee(userid)
-        self.UserTable_.tree.delete(selected_item)
+        if messagebox.askyesno("message", "Are you sure\n"+"you want to remove\n"+username+" from the list?"):
+            CRUD.delete_employee(userid)
+            self.UserTable_.tree.delete(selected_item)

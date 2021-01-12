@@ -6,6 +6,7 @@ from prompt import *
 import CRUD
 import util
 from datetime import date, datetime
+from tkinter import messagebox 
 
 _customerID = 0
 _userID = 1
@@ -300,6 +301,7 @@ class order_process(ttk.Frame, Tk):
 
     def place_order(self, Page_tracker):
         if not self.order_list:
+            messagebox.showwarning("showwarning", "No Item listed") 
             print("No item")
             return
 
@@ -308,7 +310,11 @@ class order_process(ttk.Frame, Tk):
         _date = util.date_split(_date)
         self.csid = util.customer_check(self.c_details)
         sdetails={"id": self.csid, "date": _date, "time": _time}
-        
+
+        jelly_items=''
+        for item in self.order_list:
+            jelly_items=jelly_items+item+', '    
+
         history_text = []
         total = 0
 
@@ -332,6 +338,7 @@ class order_process(ttk.Frame, Tk):
                     self.Table_.tree.delete(self.Table_.tree.selection())
     
                 jelly=''
+                
                 for item in history_text:
                     jelly=(jelly + item + '\n')
 
@@ -339,13 +346,15 @@ class order_process(ttk.Frame, Tk):
                     jelly = (self.c_details['customerFirst'] + ' ' + 
                             self.c_details['customerLast'] + '\n' + jelly)
                 else:
-                     jelly = ('Short Order \n'+ jelly)
+                     jelly = ('Short Order \n'+ jelly )
 
                 if CRUD.retrieve_history():
                     hid = int(CRUD.retrieve_history_last()[0][0]) + 1  
                 else:
                     hid = 0
-                CRUD.add_history(hid, 'order', self._userID, jelly, _date, _time)
+                
+                jelly = (jelly + '\n' + jelly_items  +'\n'+ str(total) )
+                CRUD.add_history(ids[1], 'order', ids[1], jelly, _date, _time)
 
 
                 for widget in self.body.winfo_children():

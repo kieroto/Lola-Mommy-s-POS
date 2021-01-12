@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
+from tkinter import messagebox 
 from table import table
 import time
 from prompt import *
@@ -107,11 +108,29 @@ class i_page(ttk.Frame, Tk):
     def OnDoubleClick(self, event):
         entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
         print(entryIndex)
+        try:
+            widget = event.widget
+            selected=widget.selection()
+        except IndexError:
+            return
+        
+        pid=self.Table_.tree.item(selected)['values'][0]
+        name=self.Table_.tree.item(selected)['values'][1]
+        itemcat=self.Table_.tree.item(selected)['values'][2]
+        price=self.Table_.tree.item(selected)['values'][3]
+        wsprice=self.Table_.tree.item(selected)['values'][4]
+        minws=self.Table_.tree.item(selected)['values'][5]
+        stock=self.Table_.tree.item(selected)['values'][6]
+
+        
+        messagebox.showinfo("showinfo", "Product Information\n" +
+                            "ID " + str(pid) + ", " + str(name) + ", " +str(itemcat)+
+                            "\n Reg price: P" +str(price) +"\t Wholesale price: P" + str(wsprice) +
+                            "\n Minimum wholesale: "+ str(minws) + ", Stock : " + str(stock)) 
     #     widget = event.widget
     #     selected=widget.selection()[0]
     #    # print(selected)
     #     print(self.Table_.tree.item(selected)['values'][0])
-        history(1, self.body, self.root)
 
     def page_id(self):
         return 10
@@ -209,8 +228,9 @@ class i_page(ttk.Frame, Tk):
         stock=self.current_ste.get()  
 
         if (type == 1):
-            self.prompt_ = confirm_inv(1, self.body, self.labels, self.root)
-            if (self.prompt_.confirm_bool==TRUE):
+            #self.prompt_ = confirm_inv(1, self.body, self.labels, self.root)
+            #if (self.prompt_.confirm_bool==TRUE):
+            if messagebox.askyesno("message", "Add Product?"):
                 CRUD.add_product(pid, name, itemcat, price, wsprice,
                                 minws, stock)
                 #insert = [pid, name, itemcat, price, wsprice, minws, stock]
@@ -218,12 +238,17 @@ class i_page(ttk.Frame, Tk):
                 # self._list_inv.append(insert)
                 # self.invtable.set(self._list_inv)
                 self.choose_item(0)
+            else:
+                pass
         else:
-            entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
-            CRUD.update_product(pid, name, itemcat, price, wsprice,
-                        minws, stock)
-            self.Table_.tree.delete(self.Table_.tree.selection())
-            self.Table_.tree.insert('', entryIndex, values=(pid, name, itemcat, price, wsprice, minws, stock))
+            if messagebox.askyesno("message", "Confirm change?"):
+                entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+                CRUD.update_product(pid, name, itemcat, price, wsprice,
+                            minws, stock)
+                self.Table_.tree.delete(self.Table_.tree.selection())
+                self.Table_.tree.insert('', entryIndex, values=(pid, name, itemcat, price, wsprice, minws, stock))
+            else:
+                pass
             pass
 
     def add_update(self, type):
@@ -235,5 +260,8 @@ class i_page(ttk.Frame, Tk):
     def delete(self):
         selected_item = self.Table_.tree.selection() ## get selected item
         print(selected_item)
-        CRUD.delete_product(str(self.Table_.tree.item(selected_item)['values'][0]))
-        self.Table_.tree.delete(selected_item)
+        if messagebox.askyesno("message", "Delete Product?"):
+            CRUD.delete_product(str(self.Table_.tree.item(selected_item)['values'][0]))
+            self.Table_.tree.delete(selected_item)
+        else:
+            pass
