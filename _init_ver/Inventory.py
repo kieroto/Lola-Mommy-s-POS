@@ -233,6 +233,7 @@ class i_page(ttk.Frame, Tk):
                                     minws, stock)
                 except sqlite3.IntegrityError:
                     messagebox.showwarning("showwarning", "Can't add, Product ID already exist")
+                    return
                 #insert = [pid, name, itemcat, price, wsprice, minws, stock]
                 self.Table_.tree.insert('', '0', values=(pid, name, itemcat, price, wsprice, minws, stock))
                 # self._list_inv.append(insert)
