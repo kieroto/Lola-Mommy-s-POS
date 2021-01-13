@@ -22,15 +22,18 @@ class page_tracker():
 class main_(ttk.Frame, Tk):
 
     def callback_root(self):
+        print("yes")
         if(self.Page_tracker.pages[-1]==10):
             # order_exit(1, self.root, self.body, self.Page_tracker)
             #if(self.Page_tracker.confirm_flag == True):
-            if messagebox.askyesno("askyesno", "Discard order?"):
-                #self.Page_tracker.confirm_flag = False
-                pass
+            if messagebox.askyesno("askyesno", "Sign out and Discard order?"):
+                self.root.destroy()
+                return
             else:
                 return
-        self.root.destroy()
+
+        if messagebox.askyesno("askyesno", "Sign out?"):
+            self.root.destroy()
     
     def __init__(self, root, menu, body, user, menuFont):
        
@@ -59,7 +62,7 @@ class main_(ttk.Frame, Tk):
         
         User = Button(self.menu, text='Users', command= lambda: self.click(5))
         Adj_priv = Button(self.menu, text='Adjust Privileges', command= lambda: self.click(6))
-        Log_out = Button(self.menu, text='Logout', command= self.test)
+        Log_out = Button(self.menu, text='Logout', command= self.callback_root)
         Back = Button(self.menu, text='Back', command= lambda: self.click(7))
 
         # List buttons
