@@ -298,19 +298,13 @@ def retrieve_lastorder():
     con.close()
     return rows
 
-def retrieve_customer_search(customerName):
+def retrieve_customer_search(key):
     con = sqlite3.connect('customer.db')
     c = con.cursor()
-    customerFirst = customerName
-    customerLast = customerName
-    c.execute("SELECT * FROM customer WHERE customerFirst=:customerFirst OR customerLast=:customerLast""",
-              {
-                  'customerFirst':customerFirst,
-                  'customerLast':customerLast,
-              })
-    rows = c.fetchall()
-    con.close()
+    c.execute("SELECT * FROM customer WHERE customerFirst || ' ' || customerLast IN(SELECT customerFirst || ' ' || customerLast AS customerName FROM customer WHERE customerName LIKE ?)", ('%'+key+'%',))
+    rows=c.fetchall()
     return rows
+
 def retrieve_customer_search_whole(key):
     con = sqlite3.connect('customer.db')
     c = con.cursor()
@@ -318,7 +312,6 @@ def retrieve_customer_search_whole(key):
     rows = c.fetchall()
     con.close()
     return rows
-
 
 def retrieve_lastcustomer():
     con = sqlite3.connect('customer.db')

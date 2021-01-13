@@ -85,56 +85,22 @@ class SuggestionEntry(Entry):
                 self.CusTable_.tree.delete(row)
 
         if self.var.get() == '':
-
-
             for row in self._list_cus:
                 self.CusTable_.tree.insert('', '0', values=(row[1] + " " + row[2], row[4], row[3]))
         else:
             self.words = self.comparison()
 
-            self._list_cus_search=[]
-            for w in self.words:
-                self.wsplit = w.split()
-                # print(w)
-                # print(self.wsplit)
-                self.found = True
-                for ws in self.wsplit:
-                    # print("yo1" + self.found)
-                    if (self.found == True):
-                        self._list_cus_search.append(CRUD.retrieve_customer_search(ws))
-                        self.found = False
-                        # print("yo2" + self.found)
-                    # print(ws)
-                    
-            self.flat = list(chain.from_iterable(self._list_cus_search))
-            # print(self.flat)
-
             for row in self.flat:
                 self.CusTable_.tree.insert('', '0', values=(row[1] + " " + row[2], row[4], row[3]))
 
-
-            # print(words)
-            # print(self._list_cus)
-            # for w in self.words:
-            #     print(w)
-            # if words:
-            #     for w in words:
-            #         self.CusTable_.tree.insert('', '0', values=(row[1] + " " + row[2], row[4], row[3]))
-
-                    # print("y02")
-
-
-
-        # words = self.comparison()
-        # else:
-        #     if words:
-        #         print("yo1")
-        #         for row in self._list_cus:
-        #             print("y02")
-        #             self.CusTable_.tree.delete(row)
-
-            # for w in words:
-            #     self.CusTable_.tree.insert(END,w) 
-
     def comparison(self):
-        return [ w for w in self.customerList if self.matchesFunction(self.var.get(), w) ]
+        self.name=[]
+        for w in self.customerList:
+            self.name.append(w.split())
+        self.flatName = list(chain.from_iterable(self.name))
+        self.flatName = list(dict.fromkeys(self.flatName))
+
+        key = self.var.get()
+        self.flat = CRUD.retrieve_customer_search(key)
+        # self.customerList = self.name
+        # return [ w for w in self.flatName if self.matchesFunction(self.var.get(), w) ]
