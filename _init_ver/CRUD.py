@@ -346,6 +346,28 @@ def update_stock(productName, stock):
     con.commit()
     con.close()
 
+def update_customer2(customerID, customerFirst, customerLast, mobile, address):
+    con = sqlite3.connect('customer.db')
+    c = con.cursor()
+    c.execute("""UPDATE customer SET
+           customerFirst = :customerFirst,
+           customerLast = :customerLast,
+           mobile = :mobile,
+           address = :address
+
+           WHERE customerID = :customerID""",
+              {
+                  'customerID': customerID,
+                  'customerFirst': customerFirst,
+                  'customerLast': customerLast,
+                  'mobile': mobile,
+                  'address': address
+              }
+    )
+    con.commit()
+    con.close()
+
+
 def update_customer(customerID, customerFirst, customerLast, mobile, address):
     con = sqlite3.connect('customer.db')
     c = con.cursor()

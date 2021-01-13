@@ -111,7 +111,11 @@ class cs_page(ttk.Frame, Tk):
                 self.error_lb.grid(column=5, row=14) 
                 return
        
-            print(cs)
+            if 'self.entry.original_customerDetails' in locals():
+                if (self.entry.original_customerDetails != cs):
+                    if messagebox.askyesno("message", "Update info and proceed?"):
+                        CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
+            
             confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
             if(Page_tracker.confirm_flag == True):
                 from Order_process import order_process
@@ -241,10 +245,10 @@ class AutocompleteEntry(Entry):
 
             for row in self._list_cus:
                 if str(str(row[1]) + " " + str(row[2])) == str(self.listbox.get(ACTIVE)):
-                    customer_id = row[0]
+                    self.customer_id = row[0]
 
             detailList=[]
-            for rec in self._list_cus[customer_id]:
+            for rec in self._list_cus[self.customer_id]:
                 detailList.append(rec)
 
             self.listbox.destroy()
@@ -260,6 +264,9 @@ class AutocompleteEntry(Entry):
             self.clast.insert(0, detailList[2])
             self.cmobile.insert(0, detailList[3])
             self.caddr.insert(0, detailList[4])
+
+            self.original_customerDetails={"customerFirst": " ".join(self.cfirst.get().split()), "customerLast": " ".join(self.clast.get().split()), 
+                                    "mobile": " ".join(self.cmobile.get().split()), "address": " ".join(self.caddr.get().split()), "type": 'bulk'}
 
     def moveUp(self, event):
         if self.listboxUp:
