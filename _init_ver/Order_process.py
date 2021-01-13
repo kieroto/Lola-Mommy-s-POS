@@ -319,9 +319,9 @@ class order_process(ttk.Frame, Tk):
         total = 0
 
         self.Tracker=quantity_change(False, 0, 0)
-        place_order(1, self.root, self.body, self.Tracker)
+        #place_order(1, self.root, self.body, self.Tracker)
 
-        if(self.Tracker.confirm_flag == True):
+        if messagebox.askyesno("message", "Confirm order?"):
             ids=util.extract_orderprev()
             ids[1] = ids[1] + 1
             try:
@@ -353,8 +353,8 @@ class order_process(ttk.Frame, Tk):
                 else:
                     hid = 0
                 
-                jelly = (jelly + '\n' + jelly_items  +'\n'+ str(total) )
-                CRUD.add_history(ids[1], 'order', ids[1], jelly, _date, _time)
+                jelly = ( str(ids[1]) + '\n' + jelly + jelly_items[:-2]  +'\n' + str(total) )
+                CRUD.add_history(hid, 'order', ids[1], jelly, _date, _time)
 
 
                 for widget in self.body.winfo_children():

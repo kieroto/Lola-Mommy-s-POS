@@ -55,15 +55,11 @@ class h_page(ttk.Frame, Tk):
         item = self.Table_.tree.selection()[0]
         selected_item = self.Table_.tree.selection() ## get selected item
         entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
-        if messagebox.askyesno("message", "Void order of\n" + str(self.list_or[entryIndex][6]) + "?"):
+        if messagebox.askyesno("message", "Void order of\n" + str(self.list_or[entryIndex][7]) + "?"):
             if messagebox.askyesno("message", "Are you sure?"):
                 util.void_order(str(self.list_or[entryIndex][0]))
-                util.delete_history_entry(str(self.list_or[entryIndex][0]))
+                util.delete_history_entry(str(self.list_or[entryIndex][6]))
                 self.Table_.tree.delete(selected_item)
-
-       
-     
-  
 
     def page_id(self):
         return 3
@@ -93,15 +89,19 @@ class h_page(ttk.Frame, Tk):
             for item in list_:
                 item = list(item)
                 item.pop(1)
-                hid = item[2]  
                 split_ = item[2].split("\n")
+                oid = split_.pop(0)
+                hid = item[0]
+                item[0]=oid 
                 a = split_.pop()
-                print(split_)
                 b = split_.pop()
                 item[2]= b 
                 item.insert(3, a)
                 item[1]= split_[0]
+               
+                info = "\n".join(split_) + "\n" + a 
                 item.append(hid)
+                item.append(info)
                 self.list_or.append(item)
 
             # Create Label Objects
@@ -126,15 +126,16 @@ class h_page(ttk.Frame, Tk):
         
     def select_row(self, event):
         # self.orderDelBtn.config(background='#93c47e', state=NORMAL)
-        entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+        
         try:
             widget = event.widget
             selected=widget.selection()
         except IndexError:
             return
     
-    def void_order(self):
-        selected_item = self.Table_.tree.selection() ## get selected item
-        #print(selected_item)
-        CRUD.delete_records(str(self.Table_.tree.item(selected_item)['values'][0]))
-        self.Table_.tree.delete(selected_item)
+    # def void_order(self):
+    #     selected_item = self.Table_.tree.selection() ## get selected item
+    #     entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
+    #     #print(selected_item)
+    #     CRUD.delete_records( self.list_or[}[6],  self.list_or[7])
+    #     self.Table_.tree.delete(selected_item)
