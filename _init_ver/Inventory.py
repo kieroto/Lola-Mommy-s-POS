@@ -5,6 +5,7 @@ from tkinter import messagebox
 from table import table
 import time
 from prompt import *
+import sqlite3
 import CRUD
 class i_page(ttk.Frame, Tk):
     
@@ -42,6 +43,18 @@ class i_page(ttk.Frame, Tk):
         # self.labels.columnconfigure(8, weight=1)
 
         #self.create_cat()
+        
+        self.Add_item_label = Button(self.labels, 
+                            text='Add an item', 
+                            font=('Helvetica', 30, 'bold'),
+                            command= lambda: self.add_update(1))
+        self.Add_item_label.grid(column=0, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
+
+        self.Update_item_label = Button(self.labels, 
+                                text='Update an item', 
+                                font=('Helvetica', 30, 'bold'),
+                                command= lambda: self.add_update(0))
+        self.Update_item_label.grid(column=3, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
         self.choose_item(0)
         # Create frame for scrollpane 
         self.tableframe = ttk.Frame(self.body)
@@ -124,9 +137,9 @@ class i_page(ttk.Frame, Tk):
 
         
         messagebox.showinfo("showinfo", "Product Information\n" +
-                            "ID " + str(pid) + ", " + str(name) + ", " +str(itemcat)+
-                            "\n Reg price: P" +str(price) +"\t Wholesale price: P" + str(wsprice) +
-                            "\n Minimum wholesale: "+ str(minws) + ", Stock : " + str(stock)) 
+                            "ID " + str(pid) + "\n " + str(name) + "\n " +str(itemcat)+
+                            "\nReg price: P" +str(price) +"\nWholesale price: P" + str(wsprice) +
+                            "\nMinimum wholesale: "+ str(minws) + "\nStock : " + str(stock)) 
     #     widget = event.widget
     #     selected=widget.selection()[0]
     #    # print(selected)
@@ -144,27 +157,11 @@ class i_page(ttk.Frame, Tk):
         #self.destroy_button()
 
         if (type==0):
-            self.Add_item_label = Button(self.labels, 
-                                        text='Add an item', 
-                                        font=('Helvetica', 30, 'bold'),
-                                        command= lambda: self.add_update(1))
-            self.Add_item_label.grid(column=0, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
-        
-            self.Delete_item_label = Button(self.labels, 
-                                            text='Delete item', 
-                                            font=('Helvetica', 30, 'bold'),
-                                            command= lambda: self.delete())
-            self.Delete_item_label.grid(column=3, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
+            self.Update_item_label.configure(background = '#93c47d')
+            self.Add_item_label.configure(background = '#f0f0f0')
         else:
-            self.Add_item_label.destroy()
-            self.Delete_item_label.destroy()
-
-            self.Add_item_label = Button(self.labels, 
-                                        text='Update an item', 
-                                        font=('Helvetica', 30, 'bold'),
-                                        command= lambda: self.add_update(0))
-            self.Add_item_label.grid(column=0, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
-
+            self.Update_item_label.configure(background = '#f0f0f0')
+            self.Add_item_label.configure(background = '#93c47d')
 
         self.id = Label(self.labels, text = "ID", font = ("Helvetica", 25, 'bold'))
         self.id.grid(column=0, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
@@ -210,7 +207,7 @@ class i_page(ttk.Frame, Tk):
         self.enter_minWSe= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
         self.enter_minWSe.grid(column=1, row=7 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.cancel_ = Button(self.labels, width=15, text='Cancel', font=('Helvetica', 25, 'bold'), command = self.cancel)
+        self.cancel_ = Button(self.labels, width=15, text='Delete', font=('Helvetica', 25, 'bold'), command = self.delete)
         self.cancel_.grid(column=0, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
 
         self.confirm_ = Button(self.labels, width=15, text='Confirm', font=('Helvetica', 25, 'bold'), command= lambda: self.confirm(type))
@@ -231,13 +228,15 @@ class i_page(ttk.Frame, Tk):
             #self.prompt_ = confirm_inv(1, self.body, self.labels, self.root)
             #if (self.prompt_.confirm_bool==TRUE):
             if messagebox.askyesno("message", "Add Product?"):
-                CRUD.add_product(pid, name, itemcat, price, wsprice,
-                                minws, stock)
+                try:
+                    CRUD.add_product(pid, name, itemcat, price, wsprice,
+                                    minws, stock)
+                except sqlite3.IntegrityError:
+                    messagebox.showwarning("showwarning", "Can't add, Product ID already exist")
                 #insert = [pid, name, itemcat, price, wsprice, minws, stock]
                 self.Table_.tree.insert('', '0', values=(pid, name, itemcat, price, wsprice, minws, stock))
                 # self._list_inv.append(insert)
                 # self.invtable.set(self._list_inv)
-                self.choose_item(0)
             else:
                 pass
         else:
@@ -252,9 +251,9 @@ class i_page(ttk.Frame, Tk):
             pass
 
     def add_update(self, type):
-        for Widget in self.labels.winfo_children():
-            Widget.destroy()
-
+        # for Widget in self.labels.winfo_children():
+        #     Widget.destroy()
+        
         self.choose_item(type)
 
     def delete(self):
