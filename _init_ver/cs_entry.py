@@ -8,6 +8,7 @@ import CRUD
 import sqlite3
 import re
 import itertools
+from itertools import chain
 
 # Dictionary list for testing
 lista = ['Abba', 'Cole', 'Franz', 'Gab', 'Kaye', 'Zian']
@@ -82,6 +83,11 @@ class cs_page(ttk.Frame, Tk):
 
         # Label for Error Message
         self.error_lb = Label(self.body, fg = "red", font = ("Helvetica", 14))
+
+        # self.buttonState = str(self.customerConfirmBtn['state'])
+        # print(self.buttonState)
+        # if self.buttonState == 'active':
+        #     self.body.bind("<Return>", self.validate)
         
     def page_id(self):
         return 9
@@ -125,6 +131,12 @@ class cs_page(ttk.Frame, Tk):
         
     def click(self, i):
         pass
+
+# class KeyButton(Button):
+#     def __init__(self, *args, **kwargs):
+#         Button.__init__(self, *args, **kwargs)
+#         # Press enter to Confirm
+#         self.body.bind("<Return>", self.confirm_click)
 
 # New source, Autocomplete class taken from : https://gist.github.com/uroshekic/11078820
 # Remaining Bugs:
@@ -173,29 +185,55 @@ class AutocompleteEntry(Entry):
         self.listboxUp = False
 
     def changed(self, name, index, mode):
+        if self.listboxUp:
+            self.listbox.destroy()
+            self.listboxUp = False
+
         if self.var.get() == '':
             if self.listboxUp:
                 self.listbox.destroy()
                 self.listboxUp = False
+
         else:
-            words = self.comparison()
-            if words:
+            self.words = self.comparison()
+            if self.flat:
                 if not self.listboxUp:
                     self.listbox = Listbox(width=self["width"], height=self.listboxLength)
                     self.listbox.bind("<Button-1>", self.selection)
                     self.listbox.bind("<Right>", self.selection)
                     self.listbox.place(relwidth = 0.10, relheight = 0.06, relx = 0.400, rely = 0.330)
-                    #self.listbox.grid(column=5, row=3)
                     self.listboxUp = True
-                    # self.listbox.selection_set(first=0) #this is the olonemdosjkmpkmsodkvnsokvnfkbmfbmfoskbmkgobmkgombkgomd,lbmg,blmdkobmg,bmlsdsdsdsdsdsdsdsdsdsdfrff
-                
-                self.listbox.delete(0, END)
-                for w in words:
-                    self.listbox.insert(END,w)
+
+                    for row in self.flat:
+                        self.listbox.insert(END,row[1] + " " + row[2])
             else:
                 if self.listboxUp:
                     self.listbox.destroy()
                     self.listboxUp = False
+
+        # if self.var.get() == '':
+        #     if self.listboxUp:
+        #         self.listbox.destroy()
+        #         self.listboxUp = False
+        # else:
+        #     self.words = self.comparison()
+        #     if self.words:
+        #         if not self.listboxUp:
+        #             self.listbox = Listbox(width=self["width"], height=self.listboxLength)
+        #             self.listbox.bind("<Button-1>", self.selection)
+        #             self.listbox.bind("<Right>", self.selection)
+        #             self.listbox.place(relwidth = 0.10, relheight = 0.06, relx = 0.400, rely = 0.330)
+        #             #self.listbox.grid(column=5, row=3)
+        #             self.listboxUp = True
+        #             # self.listbox.selection_set(first=0) #this is the olonemdosjkmpkmsodkvnsokvnfkbmfbmfoskbmkgobmkgombkgomd,lbmg,blmdkobmg,bmlsdsdsdsdsdsdsdsdsdsdfrff
+                
+        #         self.listbox.delete(0, END)
+        #         for row in self.flat:
+        #             self.listbox.insert(END,w)
+        #     else:
+        #         if self.listboxUp:
+        #             self.listbox.destroy()
+        #             self.listboxUp = False
 
     def selection(self, event):
         if self.listboxUp:
@@ -256,15 +294,19 @@ class AutocompleteEntry(Entry):
 
 
     def comparison(self):
+        self.name=[]
+        for w in self.customerList:
+            self.name.append(w.split())
+        self.flatName = list(chain.from_iterable(self.name))
+        self.flatName = list(dict.fromkeys(self.flatName))
 
-        # self.splitAll=[]
-        # for c in self.customerList:
-        #     splitName = c.split(" ")
-        #     for s in splitName:
-        #         self.splitAll.append(s)
-        # print(self.splitAll)
+        key = self.var.get()
+        self.flat = CRUD.retrieve_customer_search(key)
 
-        return [ w for w in self.customerList if self.matchesFunction(self.var.get(), w) ]
+
+        # return [ w for w in self.customerList if self.matchesFunction(self.var.get(), w) ]
+
+
 
 # Autocomplete class and def taken from https://code.activestate.com/recipes/578253-an-entry-with-autocompletion-for-the-tkinter-gui/
 # Temp sa ni, kay stylize pa langman. Not sure how this works v: 
