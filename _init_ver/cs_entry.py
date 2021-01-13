@@ -141,7 +141,6 @@ class cs_page(ttk.Frame, Tk):
 # New source, Autocomplete class taken from : https://gist.github.com/uroshekic/11078820
 # Remaining Bugs:
 # - First entry is defaultly selected, but not highlighted
-# - Cant search based on last name
 class AutocompleteEntry(Entry):
     def __init__(self, customerList, _list_cus, cfirst, clast, caddr, cmobile, *args, **kwargs):
 
