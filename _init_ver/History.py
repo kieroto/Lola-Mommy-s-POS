@@ -110,10 +110,14 @@ class h_page(ttk.Frame, Tk):
             self.Table_ = table(frame=self.table_frame, tree_row=1, tree_col=5,
                                 column_id=("Order ID", "Customer", "Items", "Amount", "Date", "Time"),
                                 rowheight=60, height=7, font_size=12, font='Helvetica',
-                                tablecol_width=200)
-            # self.Table_.tree.column("Product ID", width = 90)
-            # self.Table_.tree.column("Quantity", width = 90)
-            # self.Table_.tree.column("Amount", width = 90)
+                                tablecol_width=420)
+            self.Table_.tree.column("Order ID", width = 90)
+            self.Table_.tree.column("Amount", width = 90)
+            self.Table_.tree.column("Date", width = 70)
+            self.Table_.tree.column("Time", width = 70)
+            self.Table_.tree.column("Customer", width = 150)
+  
+
 
             for x in self.list_or:
                 self.Table_.tree.insert('', 'end', values=(x))

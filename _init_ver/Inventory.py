@@ -32,33 +32,35 @@ class i_page(ttk.Frame, Tk):
 
         # Create frame for scrollpane/buttons and label
         self.labels = ttk.Frame(self.body)
-        self.labels.grid(column = 0, row = 0, rowspan=23, columnspan=6, sticky=N+S+E+W)
+        self.labels.grid(column = 0, row = 0, rowspan=23, columnspan=2, sticky=N+S+E+W)
 
         # Configure Grid system for scrollpane/buttons and label
         for i in range(0,23):
             self.labels.rowconfigure(i, weight=1)
       
-        for i in range(1,6):
+        for i in range(0,8):
             self.labels.columnconfigure(i, weight=1)
         # self.labels.columnconfigure(8, weight=1)
 
         #self.create_cat()
         
         self.Add_item_label = Button(self.labels, 
-                            text='Add an item', 
-                            font=('Helvetica', 30, 'bold'),
+                            width = 10,
+                            text='Add\nan item', 
+                            font=('Helvetica', 22, 'bold'),
                             command= lambda: self.add_update(1))
-        self.Add_item_label.grid(column=0, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
+        self.Add_item_label.grid(column=0, row=0 , columnspan=1, rowspan=1, sticky=N+S+E+W, pady=(10,10))
 
-        self.Update_item_label = Button(self.labels, 
-                                text='Update an item', 
-                                font=('Helvetica', 30, 'bold'),
+        self.Update_item_label = Button(self.labels,
+                                width = 10, 
+                                text='Update\nan item', 
+                                font=('Helvetica', 22, 'bold'),
                                 command= lambda: self.add_update(0))
-        self.Update_item_label.grid(column=3, row=0 , columnspan=3, rowspan=1, sticky=N+S+E, pady=(10,10))
+        self.Update_item_label.grid(column=1, row=0 , columnspan=1, rowspan=1, sticky=N+S+E+W, pady=(10,10))
         self.choose_item(0)
         # Create frame for scrollpane 
         self.tableframe = ttk.Frame(self.body)
-        self.tableframe.grid(column = 7, row = 1, rowspan=23, columnspan=8,sticky=N+S+E+W)
+        self.tableframe.grid(column = 2, row = 1, rowspan=23, columnspan=8,sticky=N+S+E+W)
 
 
         # Configure Grid system for scrollpane
@@ -74,11 +76,13 @@ class i_page(ttk.Frame, Tk):
         self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, 
                         column_id=("ID", "Item Name", "Category", "Price", "WS Price", "Min WS", "Stock"), 
                         rowheight = 80, height = 7, font_size = 18, font = 'Helvetica',
-                        tablecol_width = 120, headingfont= 30)
-        self.Table_.tree.column("Stock", width = 90)
-        self.Table_.tree.column("Price", width = 90)
-        self.Table_.tree.column("WS Price", width = 90)
-        self.Table_.tree.column("Min WS", width = 90)
+                        tablecol_width = 230, headingfont= 30)
+        self.Table_.tree.column("ID", width = 60)
+        self.Table_.tree.column("Price", width = 70)
+        self.Table_.tree.column("Category", width = 230)
+        self.Table_.tree.column("Stock", width = 70)
+        self.Table_.tree.column("WS Price", width = 70)
+        self.Table_.tree.column("Min WS", width = 70)
 
         for row in self._list_inv:
             self.Table_.tree.insert('', '0', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
@@ -118,7 +122,35 @@ class i_page(ttk.Frame, Tk):
         self.enter_minWSe.insert(0, self.Table_.tree.item(selected)['values'][5])
         self.current_ste.insert(0, self.Table_.tree.item(selected)['values'][6])
 
+    def treeview_sort_column(self, tv, col, reverse):
+        try:
+            l = [(tv.set(k, col), k) for k in tv.get_children('')]
+            l.sort(reverse=reverse)
+        except IndexError:
+            return
+        
+        try:
+            l = [(int(s[0]), s[1]) for s in l]
+            l.sort(reverse=reverse)
+        except ValueError:
+            pass
+
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(l):
+            tv.move(k, '', index)
+
+        # reverse sort next time
+        tv.heading(col, text=col, command=lambda _col=col: \
+                    self.treeview_sort_column(tv, _col, not reverse))
+
     def OnDoubleClick(self, event):
+        region = self.Table_.tree.identify("region", event.x, event.y)
+        if region == "heading":
+            columns = ('ID', 'Item Name', 'Category', 'Price', 'WS Price', 'Min WS', 'Stock')
+            for col in columns:
+                self.Table_.tree.heading(col, text=col, command=lambda _col=col: \
+                            self.treeview_sort_column(self.Table_.tree, _col, False))
+            return
         entryIndex = self.Table_.tree.index(self.Table_.tree.focus())
         print(entryIndex)
         try:
@@ -163,55 +195,55 @@ class i_page(ttk.Frame, Tk):
             self.Update_item_label.configure(background = '#f0f0f0')
             self.Add_item_label.configure(background = '#93c47d')
 
-        self.id = Label(self.labels, text = "ID", font = ("Helvetica", 25, 'bold'))
+        self.id = Label(self.labels, text = "ID", font = ("Helvetica", 21, 'bold'))
         self.id.grid(column=0, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
-        self.id_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
-        self.id_e.grid(column=1, row=1 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.id_e= Entry(self.labels, width=7, font = ("Helvetica", 21, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
+        self.id_e.grid(column=1, row=1 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.itemname = Label(self.labels, text = "Item name", font = ("Helvetica", 25, 'bold'))
+        self.itemname = Label(self.labels, text = "Item name", font = ("Helvetica", 21, 'bold'))
         self.itemname.grid(column=0, row=2 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.itemname_e= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'))
-        self.itemname_e.grid(column=1, row=2 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.itemname_e= Entry(self.labels, width = 12, font = ("Helvetica", 21, 'bold'))
+        self.itemname_e.grid(column=1, row=2 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
         self.item_cat_list = ["Ready to cook", "Cooked", "Pork", "Chicken"]
 
-        self.item_cate = ttk.Combobox(self.labels, width=12, values=self.item_cat_list, font = ("Helvetica", 21, 'bold'), state='readonly')
-        self.item_cate.grid(column=1, row=3 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.item_cate = ttk.Combobox(self.labels, width=12, values=self.item_cat_list, font = ("Helvetica", 20, 'bold'), state='readonly')
+        self.item_cate.grid(column=1, row=3 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
         
-        self.item_cat = Label(self.labels, text = "Category", font = ("Helvetica", 25, 'bold'))
+        self.item_cat = Label(self.labels, text = "Category", font = ("Helvetica", 21, 'bold'))
         self.item_cat.grid(column=0, row=3 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.current_st = Label(self.labels, text = "Current Stock", font = ("Helvetica", 25, 'bold'))
+        self.current_st = Label(self.labels, text = "Current Stock", font = ("Helvetica", 21, 'bold'))
         self.current_st.grid(column=0, row=4 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.current_ste = Entry(self.labels,width=12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
-        self.current_ste.grid(column=1, row=4 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.current_ste = Entry(self.labels,width=4, font = ("Helvetica", 21, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
+        self.current_ste.grid(column=1, row=4 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_prc = Label(self.labels, text = "Enter Price", font = ("Helvetica", 25, 'bold'))
+        self.enter_prc = Label(self.labels, text = "Enter Price", font = ("Helvetica", 21, 'bold'))
         self.enter_prc.grid(column=0, row=5 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_prce= Entry(self.labels, width = 12, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
-        self.enter_prce.grid(column=1, row=5 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.enter_prce= Entry(self.labels, width=7, font = ("Helvetica", 21, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
+        self.enter_prce.grid(column=1, row=5 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_WSprc = Label(self.labels, text = "WS Price", font = ("Helvetica", 25, 'bold'))
+        self.enter_WSprc = Label(self.labels, text = "WS Price", font = ("Helvetica", 21, 'bold'))
         self.enter_WSprc.grid(column=0, row=6 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_WSprce= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
-        self.enter_WSprce.grid(column=1, row=6 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.enter_WSprce= Entry(self.labels, width=7, font = ("Helvetica", 21, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
+        self.enter_WSprce.grid(column=1, row=6 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_minWS = Label(self.labels, text = "Min WS Qty", font = ("Helvetica", 25, 'bold'))
+        self.enter_minWS = Label(self.labels, text = "Min WS Qty", font = ("Helvetica", 21, 'bold'))
         self.enter_minWS.grid(column=0, row=7 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.enter_minWSe= Entry(self.labels, width = 15, font = ("Helvetica", 25, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
-        self.enter_minWSe.grid(column=1, row=7 , columnspan=5, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
+        self.enter_minWSe= Entry(self.labels, width=7, font = ("Helvetica", 21, 'bold'), validate='key', validatecommand=(self.vcmd, '%P'))
+        self.enter_minWSe.grid(column=1, row=7 , columnspan=1, rowspan=1, sticky=(E), pady=(10,10), padx=(10,10))
 
-        self.cancel_ = Button(self.labels, width=15, text='Delete', font=('Helvetica', 25, 'bold'), command = self.delete)
-        self.cancel_.grid(column=0, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
+        self.cancel_ = Button(self.labels, width=10, text='Delete', font=('Helvetica', 21, 'bold'), command = self.delete)
+        self.cancel_.grid(column=0, row=8 , columnspan=1, rowspan=1,  pady=(10,10), padx=(10,10))
 
-        self.confirm_ = Button(self.labels, width=15, text='Confirm', font=('Helvetica', 25, 'bold'), command= lambda: self.confirm(type))
-        self.confirm_.grid(column=3, row=8 , columnspan=3, rowspan=1,  pady=(10,10), padx=(10,10))
+        self.confirm_ = Button(self.labels, width=10, text='Confirm', font=('Helvetica', 21, 'bold'), command= lambda: self.confirm(type))
+        self.confirm_.grid(column=1, row=8 , columnspan=1, rowspan=1,  pady=(10,10), padx=(10,10))
 
 
 
