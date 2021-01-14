@@ -113,7 +113,7 @@ class cs_page(ttk.Frame, Tk):
        
             if self.entry.original_customerDetails:
                 if (self.entry.original_customerDetails != cs):
-                    if messagebox.askyesno("message", "Update info and proceed? To add New Customer instead, Press Clear"):
+                    if messagebox.askyesno("message", "Updating " + self.entry.original_customerDetails['customerFirst'] + " " + self.entry.original_customerDetails['customerLast'] + ". To add New Customer instead, Press No, then Clear"):
                         CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
                     else:
                         return
