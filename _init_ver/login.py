@@ -3,9 +3,10 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 from prompt import prompt_box
 from Window import window
+from datetime import date, datetime
 import os
 import CRUD
-
+import util
 class login_user(prompt_box):
 	def __init__(self, promptType):
 		self.promptWindow = Tk()
@@ -13,7 +14,9 @@ class login_user(prompt_box):
 		
 		super().__init__(promptType, self.promptWindow, self.promptWindow)
 
-		path = os.path.dirname(os.path.abspath(__file__)) + '\logo1.png'
+		path = os.path.dirname(os.path.abspath(__file__)) + '\\logo1.png'
+		path2 = os.path.dirname(os.path.abspath(__file__)) + '\\favicon.ico'
+		self.promptWindow.iconbitmap(r""+path2)
 		self.photo = Image.open(r""+path)
 		self.promptWindow.title("LOGIN SCREEN")
 		self.photo = self.photo.resize((489, 178), Image.ANTIALIAS)
@@ -62,6 +65,15 @@ class login_user(prompt_box):
 			if (username == key[1]):
 				if (Pass == key[2]):
 					self.promptWindow.destroy()
+
+					hid = util.history()
+					print(hid)
+					_time = datetime.now().strftime("%H:%M:%S")
+					_date = date.today().strftime("%m/%d/%y")
+					_date = util.date_split(_date)
+
+
+					CRUD.add_history(str(hid), 'sign', key[0], 'logged in ' + str(username), _date, _time)
 					home = window(key)
 					home.root.mainloop()
 				else:

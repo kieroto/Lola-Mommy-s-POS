@@ -1,6 +1,12 @@
 import CRUD
 import sqlite3
 
+def history():
+    if CRUD.retrieve_history():
+        hid = int(CRUD.retrieve_history_last()[0][0]) + 1  
+    else:
+        hid = 0
+    return str(hid)
 def delete_history_entry(pid):
     con = sqlite3.connect('history.db')
     c = con.cursor()

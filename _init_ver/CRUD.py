@@ -186,6 +186,14 @@ def retrieve_product():
     con.close()
     return rows
 
+def retrieve_productPrice(pid):
+    con = sqlite3.connect('product.db')
+    c = con.cursor()
+    c.execute("SELECT price FROM product WHERE productName = " + pid)
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 def retrieve_productName():
     con = sqlite3.connect('product.db')
     c = con.cursor()
@@ -260,6 +268,23 @@ def retrieve_history():
     con = sqlite3.connect('history.db')
     c = con.cursor()
     c.execute("SELECT * FROM history")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+def retrieve_history_byaction(ad):
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute("SELECT * FROM history WHERE action_type =" + '"' + ad +'"')
+    rows = c.fetchall()
+    con.close()
+    return rows
+
+
+def retrieve_history_byaction_exception(ad):
+    con = sqlite3.connect('history.db')
+    c = con.cursor()
+    c.execute(ad)
     rows = c.fetchall()
     con.close()
     return rows

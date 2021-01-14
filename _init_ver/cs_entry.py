@@ -21,7 +21,14 @@ def matches(fieldValue, acListEntry):
 class cs_page(ttk.Frame, Tk):
 
     # Populate listbox with _list
-    
+    def callback(self, event):
+        print("aa")
+        try:
+            pass
+            self.entry.listbox.destroy()
+            self.entry.listboxUp = False
+        except NameError:
+            print('listbox not destroyed')
 
     def __init__(self, root, body, Page_tracker):
 
@@ -38,6 +45,7 @@ class cs_page(ttk.Frame, Tk):
         # Customer Search Label and Autocomplete Entry
         self.Userlbl = Label(self.body, text="Search Customer", font=('Helvetica', 16))
         self.Userlbl.grid(column=4, row=2)
+        self.Userlbl.bind("<Destroy>", self.callback)
 
         # Create Label Objects
         self.Userlb2 = Label(self.body, text="Customer Details", font=('Helvetica', 30, 'bold'))
@@ -112,9 +120,11 @@ class cs_page(ttk.Frame, Tk):
                 return
        
             if self.entry.original_customerDetails:
-                if (self.entry.original_customerDetails != cs):
-                    if messagebox.askyesno("message", "Update info and proceed? To add New Customer instead, Press Clear"):
-                        CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
+                if (self.entry.original_customerDetails != cs): 
+                    if messagebox.askyesno("message", "Your autofilled entry has changed, this will create a new customer entry \n proceed?"):    
+                        pass
+                    # if messagebox.askyesno("message", "Update info and proceed? To add New Customer instead, Press Clear"):
+                    #     CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
                     else:
                         return
             confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
@@ -200,7 +210,7 @@ class AutocompleteEntry(Entry):
                 self.listboxUp = False
 
         else:
-            self.words = self.comparison()
+            self.comparison()
             if self.flat:
                 if not self.listboxUp:
                     self.listbox = Listbox(width=self["width"], height=self.listboxLength)

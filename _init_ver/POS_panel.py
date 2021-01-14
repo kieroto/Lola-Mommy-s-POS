@@ -5,6 +5,7 @@ from Sales import s_page
 from History import h_page
 from Inventory import i_page
 from Customers import c_page
+from datetime import date, datetime
 from Home import home_page
 from order import orderselect
 from Users import u_page
@@ -12,14 +13,26 @@ from Adj_Priv import adj_priv
 from cs_entry import cs_page
 from prompt import *
 from tkinter import messagebox 
+import os
+from pathlib import Path
 import util
+import CRUD
 class page_tracker():
     def __init__(self):
         self.pages = []
         self.confirm_flag = False
-        self.bin = []
+        self.bin_ = ''
+        
         self.user = []
 class main_(ttk.Frame, Tk):
+    def sign_out(self):
+        hid = util.history()
+                
+        _time = datetime.now().strftime("%H:%M:%S")
+        _date = date.today().strftime("%m/%d/%y")
+        _date = util.date_split(_date)
+
+        CRUD.add_history(str(hid), 'sign', self.Page_tracker.user[0], 'logged out ' + str(self.Page_tracker.user[1]), _date, _time)
 
     def callback_root(self):
         print("yes")
@@ -27,14 +40,20 @@ class main_(ttk.Frame, Tk):
             # order_exit(1, self.root, self.body, self.Page_tracker)
             #if(self.Page_tracker.confirm_flag == True):
             if messagebox.askyesno("askyesno", "Sign out and Discard order?"):
+                self.sign_out()
                 self.root.destroy()
+                path = os.path.dirname(os.path.abspath(__file__)) + '\Main.py'
+                exec(Path(path).read_text())
                 return
             else:
                 return
 
         if messagebox.askyesno("askyesno", "Sign out?"):
+            self.sign_out()
             self.root.destroy()
-    
+            path = os.path.dirname(os.path.abspath(__file__)) + '\Main.py'
+            exec(Path(path).read_text())
+
     def __init__(self, root, menu, body, user, menuFont):
        
         self.root = root
@@ -44,9 +63,13 @@ class main_(ttk.Frame, Tk):
         self.page_toggle = 0
         self.pages = [] 
         self.Page_tracker = page_tracker()
-        
+
+        path2 = os.path.dirname(os.path.abspath(__file__)) + '\\favicon.ico'
+        root.iconbitmap(r""+path2)
+
         self.Page_tracker.user = user
-        print(user)
+        self.Page_tracker.bin = CRUD.retrieve_privilege_bin('"' + str(user[3]) +'"')[0][1]
+        print(self.Page_tracker.bin)
         # Virtual pixels to help resize button in pixels
         # pixelVirtual = PhotoImage(width=1, height=1)
         # Font styles
@@ -94,9 +117,13 @@ class main_(ttk.Frame, Tk):
 
 
         # Create Label Objects
-        self.Userlbl = Label(self.menu, text='User : <name>', font=('Helvetica', 25, 'bold'))
-        self.Userlbl.grid(column=13, row=0, sticky=(N, E))
-        
+        # self.Userlbl = Label(self.menu, text='User :', font=('Helvetica', 20, 'bold'))
+        # self.Userlbl.grid(column=12, row=0, sticky=(N, E))
+        user_name = StringVar()
+        user_name.set(str(user[1]))
+        self.username_box = Entry(self.menu, width =10,text=user_name,font=('Helvetica', 20, 'bold'), state='readonly', justify='right')
+        self.username_box.grid(column=13, row=0, sticky=(N, S, E))
+
         # Create Home
         # Create pages list stack for tracking pages
         self.Page_tracker.pages.append(-1)
@@ -104,6 +131,39 @@ class main_(ttk.Frame, Tk):
         
    
     def click(self, i_):
+        print(i_)
+        if  (i_ == 0):
+            if self.Page_tracker.bin[3] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 1):
+            if self.Page_tracker.bin[5] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 2):
+            if self.Page_tracker.bin[0] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 3):
+            if self.Page_tracker.bin[2] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 4):
+            if self.Page_tracker.bin[4] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 5):
+            if self.Page_tracker.user[3] != 'Admin':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 6):
+            if self.Page_tracker.user[3] != 'Admin':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
+        elif (i_ == 9):
+            if self.Page_tracker.bin[4] == '0':
+                messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                return
         # Button color change
         if(self.Page_tracker.pages[-1]==10):
             #order_exit(1, self.root, self.body, self.Page_tracker)
@@ -142,20 +202,36 @@ class main_(ttk.Frame, Tk):
             self.reset_body()
             self.Page_tracker.pages.append(i)
             if (i == 0):
+                if self.Page_tracker.bin[3] == 0:
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
                 self.sales = s_page(self.root, self.body, 'Sales',self.Page_tracker)
             elif (i == 1):
+                if self.Page_tracker.bin[5] == 0:
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
                 self.customer = c_page(self.root, self.body, 'Customer', self.Page_tracker)
             elif (i == 2):
+                if self.Page_tracker.bin[0] == 0:
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
                 self.inventory = i_page(self.root, self.body, self.Page_tracker)
             elif (i == 3):
+                if self.Page_tracker.bin[2] == 0:
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
                 self.history = h_page(self.root, self.body, 'History', self.Page_tracker)
             elif (i == 4):
+                if self.Page_tracker.bin[4] == 0:
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
                 self.order_ = orderselect(self.root, self.body, self.Page_tracker)
                 pass
                 #self.sales = s_page(self.root, self.body, 'Sales')
             elif (i == 5):
+                if self.Page_tracker.user[3] != 'Admin':
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                    return
                 self.user = u_page(self.root, self.body, self.Page_tracker, 'Users')
             elif (i == 6):
+                if self.Page_tracker.user[3] != 'Admin':
+                    messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+                    return
                 self.adjpriv = adj_priv(self.root, self.body, self.Page_tracker, 'Adjust Privileges')
             elif (i == 7):
                 self.page_back()
@@ -164,7 +240,8 @@ class main_(ttk.Frame, Tk):
                 self.order_.click(0, self.Page_tracker)
                 pass
             elif (i == 9):
-                self.cspage_ = cs_page(self.root, self.body, self.Page_tracker)
+                if self.Page_tracker.bin[4] == 0:
+                    self.cspage_ = cs_page(self.root, self.body, self.Page_tracker)
                 pass
             # elif (i == 10):
             #     self.Page_tracker.pages.pop()

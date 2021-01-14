@@ -1,10 +1,12 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.font as font
+from datetime import date, datetime
 from tkinter import messagebox 
 from table import table
 import time
 from prompt import *
+import util
 import sqlite3
 import CRUD
 class i_page(ttk.Frame, Tk):
@@ -25,6 +27,7 @@ class i_page(ttk.Frame, Tk):
         self.root = root
         self.body = body
         self.vcmd = (self.body.register(self.callback_entry))
+        self.tracker=Page_tracker
 
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
@@ -248,6 +251,9 @@ class i_page(ttk.Frame, Tk):
 
 
     def confirm(self, type):
+        if(self.tracker.bin[1] == '0'):
+            messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+            return
         pid=self.id_e.get()
         name=self.itemname_e.get()
         itemcat=self.item_cate.get()
@@ -256,6 +262,12 @@ class i_page(ttk.Frame, Tk):
         minws=self.enter_minWSe.get()
         stock=self.current_ste.get()  
 
+        hid = util.history()
+        _time = datetime.now().strftime("%H:%M:%S")
+        _date = date.today().strftime("%m/%d/%y")
+        _date = util.date_split(_date)
+        jelly =  "ID " + str(pid) + "\n " + str(name) + "\n " +str(itemcat) + "\nReg price: P" + str(price) +"\nWholesale price: P" + str(wsprice) + "\nMinimum wholesale: "+ str(minws) + "\nStock : " + str(stock)
+        
         if (type == 1):
             #self.prompt_ = confirm_inv(1, self.body, self.labels, self.root)
             #if (self.prompt_.confirm_bool==TRUE):
@@ -268,6 +280,8 @@ class i_page(ttk.Frame, Tk):
                     return
                 #insert = [pid, name, itemcat, price, wsprice, minws, stock]
                 self.Table_.tree.insert('', '0', values=(pid, name, itemcat, price, wsprice, minws, stock))
+                jelly = "Added product\n" +jelly
+                CRUD.add_history(str(hid), 'inventory', self.tracker.user[0], jelly, _date, _time)
                 # self._list_inv.append(insert)
                 # self.invtable.set(self._list_inv)
             else:
@@ -278,6 +292,8 @@ class i_page(ttk.Frame, Tk):
                 CRUD.update_product(pid, name, itemcat, price, wsprice,
                             minws, stock)
                 self.Table_.tree.delete(self.Table_.tree.selection())
+                jelly = "Updated product\n" + jelly
+                CRUD.add_history(str(hid), 'inventory', self.tracker.user[0], jelly, _date, _time)
                 self.Table_.tree.insert('', entryIndex, values=(pid, name, itemcat, price, wsprice, minws, stock))
             else:
                 pass
@@ -290,10 +306,22 @@ class i_page(ttk.Frame, Tk):
         self.choose_item(type)
 
     def delete(self):
+        if(self.tracker.bin[1] == '0'):
+            messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
+            return
         selected_item = self.Table_.tree.selection() ## get selected item
         print(selected_item)
+        row=self.Table_.tree.item(selected_item)['values']
         if messagebox.askyesno("message", "Delete Product?"):
-            CRUD.delete_product(str(self.Table_.tree.item(selected_item)['values'][0]))
+            CRUD.delete_product(str(row[0]))
             self.Table_.tree.delete(selected_item)
+
+            _time = datetime.now().strftime("%H:%M:%S")
+            _date = date.today().strftime("%m/%d/%y")
+            _date = util.date_split(_date)
+
+            hid = util.history()
+            jelly = " Deleted Product\n" + "ID " + str(row[0]) + "\n " + str(row[1]) + "\n " +str(row[2])+"\nReg price: P" +str(row[3]) +"\nWholesale price: P" + str(row[4]) +"\nMinimum wholesale: "+ str(row[5]) + "\nStock : " + str(row[6])
+            CRUD.add_history(str(hid), 'inventory', self.tracker.user[0], jelly, _date, _time)
         else:
             pass

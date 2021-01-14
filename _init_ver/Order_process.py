@@ -47,6 +47,9 @@ class order_process(ttk.Frame, Tk):
         self.c_details = cdetails
         self._userID = Page_tracker.user[0]
     
+        self.csid = util.customer_check(self.c_details)
+        self.ids = util.extract_orderprev()
+        self.ids[1] = self.ids[1] + 1
         #################################################
         self.menuFont = font.Font(family='Helvetica', size=20)
 
@@ -101,8 +104,12 @@ class order_process(ttk.Frame, Tk):
         print(type(self.Table_))
         # self.Table_.tree.insert('', '0', values=('sddsd'))
        # Total
-        Total = Label(self.tableframe, text='Total:    <>', font=('Helvetica', 20, 'bold'))
-        Total.grid(column=2, row=23, columnspan=5, rowspan =1, sticky=N+S+E)
+        self.totala = StringVar()
+        self.totala.set(0)
+        # Totalu = Label(self.tableframe, text='Total: ', font=('Helvetica', 20, 'bold'))
+        # Totalu.grid(column=1, row=23, columnspan=1, rowspan =1, sticky=N+S+E)
+        Total = Entry(self.tableframe, text=self.totala, font=('Helvetica', 20, 'bold'), state = 'readonly')
+        Total.grid(column=2, row=23, columnspan=3, rowspan =1, sticky=N+S+E)
 
         self.Table_.tree.bind("<Double-1>", self.OnDoubleClick)
         
@@ -136,7 +143,6 @@ class order_process(ttk.Frame, Tk):
                     print(self._list)
                     break 
                 i = i + 1
-
     def page_id(self):
         return 10
 
@@ -145,9 +151,12 @@ class order_process(ttk.Frame, Tk):
 
     def create_cat(self):
          # Labels
-        ordernum = Label(self.labels, text='Order : #8000', font=('Helvetica', 25, 'bold'))
+        ordernum = Label(self.labels, text='Order : ' + str(self.ids[1]), font=('Helvetica', 25, 'bold'))
         ordernum.grid(column=0, row=0, rowspan=3, columnspan=6, sticky=N+W)
-        cust = Label(self.labels, text='Customer : Cole Ang', font=('Helvetica', 25, 'bold'))
+        if self.c_details['type'] == 'bulk':
+            cust = Label(self.labels, text='Customer : '  +self.c_details['customerFirst'] +' ' + self.c_details['customerLast'], font=('Helvetica', 25, 'bold'))
+        else:
+            cust = Label(self.labels, text='Customer : Short Order', font=('Helvetica', 25, 'bold'))
         cust.grid(column=0, row=3, rowspan=3,  columnspan=6,  sticky=N+W)
         Items = Label(self.labels, text='Items', font=('Helvetica', 25, 'bold'))
         Items.grid(column=0, row=7, rowspan=1, columnspan=3,  sticky=N+W)
@@ -283,21 +292,25 @@ class order_process(ttk.Frame, Tk):
         qty = self.Tracker.qty_change
         price = util.wholesale_check(qty, product_)
         total = price * qty
-        stock = self.Tracker.qty_s - (self.Tracker.qty_change - self.Tracker.qty_ref)
+        delta = self.Tracker.qty_change - self.Tracker.qty_ref
+        stock = self.Tracker.qty_s - delta
         CRUD.update_stock(str(product), int(stock))
         
         if(qty == 0):
             a = int(util.get_index(product, self.order_list))
-            self.order_list.pop(a)
-            self.order_qty.pop(a)
+            name=self.order_list.pop(a)
+            quan=self.order_qty.pop(a)
             # self.focus_item(a)
             # self.Table_.tree.delete(self.Table_.tree.selection())
         else:
             product=product.replace(" ", "")
+        
             product=(product+" "+str(qty)+" " + str(price) + " "+ str(total))
             self.Table_.tree.insert('', s, values=(product))
 
-        print(self.order_list)
+        total = sum(float(self.Table_.tree.set(item,3)) for item in self.Table_.tree.get_children())
+        self.totala.set(total)
+
 
     def place_order(self, Page_tracker):
         if not self.order_list:
@@ -308,7 +321,6 @@ class order_process(ttk.Frame, Tk):
         _time = datetime.now().strftime("%H:%M:%S")
         _date = date.today().strftime("%m/%d/%y")
         _date = util.date_split(_date)
-        self.csid = util.customer_check(self.c_details)
         sdetails={"id": self.csid, "date": _date, "time": _time}
 
         jelly_items=''
@@ -322,18 +334,16 @@ class order_process(ttk.Frame, Tk):
         #place_order(1, self.root, self.body, self.Tracker)
 
         if messagebox.askyesno("message", "Confirm order?"):
-            ids=util.extract_orderprev()
-            ids[1] = ids[1] + 1
             try:
                 for i in range(0, len(self.order_list)):
-                    ids[0] = ids[0] + 1
+                    self.ids[0] = self.ids[0] + 1
                     util.focus_item(0, self.Table_)
                     row=self.Table_.tree.item(self.Table_.tree.selection())['values']
                     pn = self.order_list.pop(0)
 
                     history_text.append(pn + ' (' + str(row[1]) + ') - P' + str(row[3]))
                     total = total + int(row[3])
-                    _order_cred = order_cred(ids, row, pn, sdetails, self._userID)
+                    _order_cred = order_cred(self.ids, row, pn, sdetails, self._userID)
                     util.update_order(_order_cred)
                     self.Table_.tree.delete(self.Table_.tree.selection())
     
@@ -348,13 +358,11 @@ class order_process(ttk.Frame, Tk):
                 else:
                      jelly = ('Short Order \n'+ jelly )
 
-                if CRUD.retrieve_history():
-                    hid = int(CRUD.retrieve_history_last()[0][0]) + 1  
-                else:
-                    hid = 0
                 
-                jelly = ( str(ids[1]) + '\n' + jelly + jelly_items[:-2]  +'\n' + str(total) )
-                CRUD.add_history(hid, 'order', ids[1], jelly, _date, _time)
+                
+                jelly = ( str(self.ids[1]) + '\n' + jelly + jelly_items[:-2]  +'\n' + str(total) )
+                hid = util.history()
+                CRUD.add_history(str(hid), 'order', self._userID, jelly, _date, _time)
 
 
                 for widget in self.body.winfo_children():
