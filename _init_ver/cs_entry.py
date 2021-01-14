@@ -120,11 +120,17 @@ class cs_page(ttk.Frame, Tk):
                 return
        
             if self.entry.original_customerDetails:
+<<<<<<< HEAD
                 if (self.entry.original_customerDetails != cs): 
                     if messagebox.askyesno("message", "Your autofilled entry has changed, this will create a new customer entry \n proceed?"):    
                         pass
                     # if messagebox.askyesno("message", "Update info and proceed? To add New Customer instead, Press Clear"):
                     #     CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
+=======
+                if (self.entry.original_customerDetails != cs):
+                    if messagebox.askyesno("message", "Updating " + self.entry.original_customerDetails['customerFirst'] + " " + self.entry.original_customerDetails['customerLast'] + ". To add New Customer instead, Press No, then Clear"):
+                        CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
+>>>>>>> eb11750f61fec01d8c3672b25cfd43874f12094a
                     else:
                         return
             confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
