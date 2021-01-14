@@ -25,7 +25,7 @@ def customer():
                 customerID INTEGER PRIMARY KEY,
                 customerFirst text,
                 customerLast text,
-                mobile int,
+                mobile text,
                 address text
             ) """)
     con.commit()

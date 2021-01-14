@@ -73,7 +73,7 @@ class cs_page(ttk.Frame, Tk):
         # Autocomplete class widget
         self.entry = AutocompleteEntry(customerList, self._list_cus, self.cfirst, self.clast, self.caddr, self.cmobile, self.body, listboxLength=6, width=20, matchesFunction=matches, font=('Helvetica', 16))
         self.entry.grid(column=5, row=2)
-
+        self.entry.original_customerDetails = []
 
         self.customerConfirmBtn = Button(self.body, text="Confirm", font = ("Helvetica", 16), command=lambda:self.confirm_click(Page_tracker))
         self.customerConfirmBtn.grid(column=4, row=10 , columnspan=6, rowspan=2, sticky=(N))
@@ -111,11 +111,12 @@ class cs_page(ttk.Frame, Tk):
                 self.error_lb.grid(column=5, row=14) 
                 return
        
-            if 'self.entry.original_customerDetails' in locals():
+            if self.entry.original_customerDetails:
                 if (self.entry.original_customerDetails != cs):
-                    if messagebox.askyesno("message", "Update info and proceed?"):
+                    if messagebox.askyesno("message", "Update info and proceed? To add New Customer instead, Press Clear"):
                         CRUD.update_customer2(self.entry.customer_id, self.customerDetails['customerFirst'], self.customerDetails['customerLast'], self.customerDetails['mobile'], self.customerDetails['address'])
-            
+                    else:
+                        return
             confirm_customer(1, self.customerConfirmBtn, self.customerDetails, self.root, self.body, Page_tracker)
             if(Page_tracker.confirm_flag == True):
                 from Order_process import order_process
@@ -132,6 +133,7 @@ class cs_page(ttk.Frame, Tk):
         self.clast.delete(0, END)
         self.caddr.delete(0, END)
         self.cmobile.delete(0, END)
+        self.entry.original_customerDetails = []
         
     def click(self, i):
         pass
@@ -204,7 +206,7 @@ class AutocompleteEntry(Entry):
                     self.listbox = Listbox(width=self["width"], height=self.listboxLength)
                     self.listbox.bind("<Button-1>", self.selection)
                     self.listbox.bind("<Right>", self.selection)
-                    self.listbox.place(relwidth = 0.10, relheight = 0.06, relx = 0.400, rely = 0.330)
+                    self.listbox.place(relwidth = 0.10, relheight = 0.10, relx = 0.400, rely = 0.330)
                     self.listboxUp = True
 
                     for row in self.flat:
