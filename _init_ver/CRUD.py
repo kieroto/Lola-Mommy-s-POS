@@ -3,7 +3,7 @@ import sqlite3
 # ----------------------------------------------- CREATE ----------------------------------------------------------------------------------------- #
 
 def product():
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS product (
             productID INTEGER PRIMARY KEY,
@@ -19,7 +19,7 @@ def product():
 
 
 def customer():
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS customer (
                 customerID INTEGER PRIMARY KEY,
@@ -32,7 +32,7 @@ def customer():
     con.close()
 
 def employee():
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS employee (
                 userID INTEGER PRIMARY KEY,
@@ -44,7 +44,7 @@ def employee():
     con.close()
 
 def order():
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS orderx (
                 primaryID INTEGER PRIMARY KEY,
@@ -62,7 +62,7 @@ def order():
     con.close()
 
 def history():
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS history (
                         historyID INTEGER PRIMARY KEY,
@@ -89,7 +89,7 @@ def adjust():
 
 
 def add_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("INSERT INTO product VALUES (:productID, :productName, :category, :price, :wholesaleprice, :minWholesale, :stock)",
             {
@@ -106,7 +106,7 @@ def add_product(productID, productName, category, price, wholesaleprice, minWhol
     con.close()
 
 def add_customer(customerID, customerFirst, customerLast, mobile, address):
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("INSERT INTO customer VALUES (:customerID, :customerFirst, :customerLast, :mobile, :address)",
             {
@@ -121,7 +121,7 @@ def add_customer(customerID, customerFirst, customerLast, mobile, address):
     con.close()
 
 def add_employee(username, password, role):
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     # c.execute("INSERT INTO employee VALUES (:username, :password, :role)",
     c.execute("INSERT INTO employee (username, password, role) VALUES (?, ?, ?)", (username, password, role))
@@ -140,7 +140,7 @@ def add_employee(username, password, role):
 
 
 def add_order(primaryID, orderID, userID, customerID, productID, productName, quantity, totalAmount, date, time):
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("INSERT INTO orderx VALUES (:primaryID, :orderID, :userID, :customerID, :productID, :productName, :quantity, :totalAmount, :date, :time)",
               {
@@ -160,7 +160,7 @@ def add_order(primaryID, orderID, userID, customerID, productID, productName, qu
     con.close()
 
 def add_history(historyID, action_type, userID, action, date, time):
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("INSERT INTO history VALUES (:historyID, :action_type, :userID, :action, :date, :time)",
               {
@@ -179,7 +179,7 @@ def add_history(historyID, action_type, userID, action, date, time):
 # ----------------------------------------------- RETRIEVE FOR VIEW ---------------------------------------------------------------------------------------- #
 
 def retrieve_product():
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM product")
     rows = c.fetchall()
@@ -187,7 +187,7 @@ def retrieve_product():
     return rows
 
 def retrieve_productPrice(pid):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT price FROM product WHERE productName = " + pid)
     rows = c.fetchall()
@@ -195,7 +195,7 @@ def retrieve_productPrice(pid):
     return rows
 
 def retrieve_productName():
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT productName FROM product")
     rows = c.fetchall()
@@ -213,7 +213,7 @@ def retrieve_Prod_Quantity(date):
 
     date = temp[0] + '/' + temp[1] + '/' + temp[2]
 
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT productName, quantity, totalAmount FROM orderx WHERE  date=:date""",
               {
@@ -224,7 +224,7 @@ def retrieve_Prod_Quantity(date):
     return rows
 
 def retrieve_category(cat):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM product WHERE category = " + cat +" AND stock > 0")
     rows = c.fetchall()
@@ -232,16 +232,18 @@ def retrieve_category(cat):
     return rows
 
 def retreive_name(pname):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
-    c.execute("SELECT * FROM product WHERE productName = " + pname)
+    query="SELECT * FROM product WHERE productName = " + pname
+    print(query)
+    c.execute(query)
     rows = c.fetchall()
     con.close()
     return rows
 
 
 def retrieve_customer():
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM customer")
     rows = c.fetchall()
@@ -249,15 +251,23 @@ def retrieve_customer():
     return rows
 
 def retrieve_employee():
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM employee")
     rows = c.fetchall()
     con.close()
     return rows
 
+def retrieve_usernames():
+    con = sqlite3.connect('pointofsale.db')
+    c = con.cursor()
+    c.execute("SELECT username FROM employee")
+    rows = c.fetchall()
+    con.close()
+    return rows
+
 def retrieve_order():
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM orderx")
     rows = c.fetchall()
@@ -265,7 +275,7 @@ def retrieve_order():
     return rows
 
 def retrieve_history():
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM history")
     rows = c.fetchall()
@@ -273,7 +283,7 @@ def retrieve_history():
     return rows
 
 def retrieve_history_byaction(ad):
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM history WHERE action_type =" + '"' + ad +'"')
     rows = c.fetchall()
@@ -282,7 +292,7 @@ def retrieve_history_byaction(ad):
 
 
 def retrieve_history_byaction_exception(ad):
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute(ad)
     rows = c.fetchall()
@@ -290,7 +300,7 @@ def retrieve_history_byaction_exception(ad):
     return rows
 
 def retrieve_history_last():
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM history ORDER BY historyID DESC LIMIT 1")
     rows = c.fetchall()
@@ -300,7 +310,7 @@ def retrieve_history_last():
 
 
 def retrieve_privileges():
-    con = sqlite3.connect('role_priv.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM privileges")
     rows = c.fetchall()
@@ -308,7 +318,7 @@ def retrieve_privileges():
     return rows
 
 def retrieve_privilege_bin(role):
-    con = sqlite3.connect('role_priv.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM privileges WHERE role = " + role)
     rows = c.fetchall()
@@ -316,7 +326,7 @@ def retrieve_privilege_bin(role):
     return rows
 
 def retrieve_lastorder():
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM orderx ORDER BY primaryID DESC LIMIT 1")
     rows = c.fetchall()
@@ -324,14 +334,14 @@ def retrieve_lastorder():
     return rows
 
 def retrieve_customer_search(key):
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM customer WHERE customerFirst || ' ' || customerLast IN(SELECT customerFirst || ' ' || customerLast AS customerName FROM customer WHERE customerName LIKE ?)", ('%'+key+'%',))
     rows=c.fetchall()
     return rows
 
 def retrieve_customer_search_whole(key):
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM customer WHERE " + key)
     rows = c.fetchall()
@@ -339,7 +349,7 @@ def retrieve_customer_search_whole(key):
     return rows
 
 def retrieve_lastcustomer():
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM customer ORDER BY customerID DESC LIMIT 1")
     rows = c.fetchall()
@@ -351,7 +361,7 @@ def retrieve_lastcustomer():
 # ----------------------------------------------- UPDATE ELEMENT ------------------------------------------------------------------------------------------ #
 
 def update_product(productID, productName, category, price, wholesaleprice, minWholesale, stock):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute(
         'UPDATE product SET productName=?, category=?, price=?, wholesaleprice=?, minWholesale=?, stock=? WHERE productID=?', 
@@ -362,7 +372,7 @@ def update_product(productID, productName, category, price, wholesaleprice, minW
     con.close()
 
 def update_stock(productName, stock):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute(
         'UPDATE product SET stock=? WHERE productName=?', 
@@ -372,7 +382,7 @@ def update_stock(productName, stock):
     con.close()
 
 def update_customer2(customerID, customerFirst, customerLast, mobile, address):
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""UPDATE customer SET
            customerFirst = :customerFirst,
@@ -394,7 +404,7 @@ def update_customer2(customerID, customerFirst, customerLast, mobile, address):
 
 
 def update_customer(customerID, customerFirst, customerLast, mobile, address):
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""UPDATE customer SET
            customerFirst = :customerFirst,
@@ -415,7 +425,7 @@ def update_customer(customerID, customerFirst, customerLast, mobile, address):
     con.close()
 
 def update_employee(userID, username, password, role):
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""UPDATE employee SET
                username = :username,
@@ -434,7 +444,7 @@ def update_employee(userID, username, password, role):
     con.close()
 
 def update_priv(role, privileges_bin):
-    con = sqlite3.connect('role_priv.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""UPDATE privileges SET
                 privileges_bin = :privileges_bin
@@ -456,43 +466,38 @@ def update_priv(role, privileges_bin):
 
 
 #TEMPLATE TO DELETE ENTRY
-def delete_database_name(id):
-    con = sqlite3.connect('database_name.db')
-    c = con.cursor()
-    c.execute("DELETE FROM table_name WHERE primary_id = " + id)
-    con.commit()
-    con.close()
+
 
 def delete_product(productID):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM product WHERE productID = " + productID)
     con.commit()
     con.close()
 
 def delete_records(productID):
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM orderx WHERE orderID = " + productID)
     con.commit()
     con.close()
 
 def delete_orders():
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM orderx")
     con.commit()
     con.close()
 
 def delete_customer():
-    con = sqlite3.connect('customer.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM customer ")
     con.commit()
     con.close()
 
 def delete_history():
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("""DROP TABLE IF EXISTS history""")
     con.commit()
@@ -500,7 +505,7 @@ def delete_history():
 
 
 def delete_employee(userID):
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM employee WHERE userID = " + userID)
     con.commit()
@@ -509,17 +514,8 @@ def delete_employee(userID):
 
 #---------MISC
 
-
-
-def sqlitequery():
-    con = sqlite3.connect('role_priv.db')
-    c = con.cursor()
-    c.execute("""DROP TABLE IF EXISTS privileges""")
-    con.commit()
-    con.close()
-	
 def delete_user():
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM employee ")
     con.commit()
@@ -527,7 +523,7 @@ def delete_user():
 
 
 def add_role(role, p):
-    con = sqlite3.connect('role_priv.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("INSERT INTO privileges VALUES (:role, :privilege_bin)",
               {
@@ -539,9 +535,18 @@ def add_role(role, p):
     con.close()
 
 def user_count():
-    con = sqlite3.connect('employee.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT count(*) FROM employee")
+    rows = c.fetchall()
+    con.commit()
+    con.close()
+    return rows
+
+def get_employee(id):
+    con = sqlite3.connect('pointofsale.db')
+    c = con.cursor()
+    c.execute("SELECT role FROM employee WHERE userID = " + str(id))
     rows = c.fetchall()
     con.commit()
     con.close()

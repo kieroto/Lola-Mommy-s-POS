@@ -99,7 +99,11 @@ class order_process(ttk.Frame, Tk):
         self.Table_ = table(frame= self.tableframe, tree_row=row_place, tree_col=col_place, 
                         column_id=("Item", "Quantity", "Price", "Total"), 
                         rowheight = 80, height = 5, font_size = 20, font = 'Helvetica',
-                        tablecol_width = 175, headingfont= 30)
+                        tablecol_width = 90, headingfont= 30)
+        self.Table_.tree.column("Item", width = 400)
+        # self.Table_.tree.column("Quantity", width = 150)
+        # self.Table_.tree.column("Price", width = 90)
+        # self.Table_.tree.column("Total", width = 90)
         #self.Table_.test()
         print(type(self.Table_))
         # self.Table_.tree.insert('', '0', values=('sddsd'))
@@ -119,7 +123,7 @@ class order_process(ttk.Frame, Tk):
         print(self.order_list[entryIndex])
         product = self.order_list[entryIndex]
 
-        product_ = CRUD.retreive_name("'"+product+"'")
+        product_ = CRUD.retreive_name('"'+product+'"')
         qty_s =  product_[0][6]
         self.Tracker = quantity_change(False, qty_s ,int(self.Table_.tree.item(selected_item)['values'][1]))
         quantity(1, self.root, self.body, self.Tracker)
@@ -277,8 +281,8 @@ class order_process(ttk.Frame, Tk):
             self.list_var.set(self._list)
 
     def add_to_cart(self, product):
-        product_ = CRUD.retreive_name("'"+product+"'")
-
+        product_ = CRUD.retreive_name('"'+product+'"')
+        print(product)
         if(util.check_if_exists(product, self.order_list)):
             index = util.get_index(product, self.order_list)
             self.order_qty[index] = self.Tracker.qty_change
@@ -289,6 +293,7 @@ class order_process(ttk.Frame, Tk):
             self.order_qty.append(self.Tracker.qty_change)
             s = 'end'
 
+        print(product_)
         qty = self.Tracker.qty_change
         price = util.wholesale_check(qty, product_)
         total = price * qty

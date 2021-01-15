@@ -5,6 +5,9 @@ import tkinter.font as font
 import CRUD
 from table import table
 from datetime import timedelta, date
+import calendar
+from babel.dates import format_date, parse_date, get_day_names, get_month_names
+from babel.numbers import * 
 
 class s_page(ttk.Frame, Tk):
     
@@ -68,7 +71,7 @@ class s_page(ttk.Frame, Tk):
 
             # Variables
             total, count = 0, 0
-            productNames, prod, quan, amount, list = [], [], [], [], []
+            productNames, prod, quan, amount, list_ = [], [], [], [], []
             dic = dict()
 
             #Convert List Compre to List
@@ -110,9 +113,9 @@ class s_page(ttk.Frame, Tk):
 
             #Final List for Insert
             for x in dic:
-                list.append(x)
-                list.append(dic[x][0])
-                list.append(dic[x][1])
+                list_.append(x)
+                list_.append(dic[x][0])
+                list_.append(dic[x][1])
 
             # Label for Total
             Total = Label(self.table_frame, text='Total: ' + str(total), font=('Helvetica', 20, 'bold'))
@@ -129,10 +132,11 @@ class s_page(ttk.Frame, Tk):
                                 tablecol_width=200)
 
             a, b, c = 0, 1, 2
-
-            for x in list:
-                if (a < len(list) or b < len(list or c < len(list))):
-                    self.Table_.tree.insert('', 'end', values=(list[a], list[b], list[c]))
+          
+            for x in list_:
+                if (a < len(list_) or b < len(list_ or c < len(list_))):
+                    if not (list_[b]==0):
+                        self.Table_.tree.insert('', 'end', values=(list_[a], list_[b], list_[c]))
                     a += 3
                     b += 3
                     c += 3
@@ -182,10 +186,10 @@ class s_page(ttk.Frame, Tk):
 
             #Variables
             total, count = 0, 0
-            productNames, prod, quan, amount, list, datesInBtwn, orderQuanRaw = [], [], [], [], [], [], []
+            productNames, prod, quan, amount, list_, datesInBtwn, orderQuanRaw = [], [], [], [], [], [], []
             dic = dict()
 
-            # Convert string to list with format 'List = [month, day, year]' for comparison
+            # Convert string to list_ with format 'List = [month, day, year]' for comparison
             datefromList = (datefrom.split('/'))
             datetoList = (dateto.split('/'))
 
@@ -197,7 +201,7 @@ class s_page(ttk.Frame, Tk):
             start_dt = date(int('20' + datefromList[2]), int(datefromList[0]), int(datefromList[1]))
             end_dt = date(int('20'+datetoList[2]), int(datetoList[0]), int(datetoList[1]))
 
-            #Append all dates to list
+            #Append all dates to list_
             for dt in daterange(start_dt, end_dt):
                 datesInBtwn.append(dt.strftime("%m/%d/%y"))
 
@@ -256,9 +260,9 @@ class s_page(ttk.Frame, Tk):
 
             # Final List for Insert
             for x in dic:
-                list.append(x)
-                list.append(dic[x][0])
-                list.append(dic[x][1])
+                list_.append(x)
+                list_.append(dic[x][0])
+                list_.append(dic[x][1])
 
 
             # Label for Total
@@ -278,10 +282,11 @@ class s_page(ttk.Frame, Tk):
                                 tablecol_width=200)
 
             a, b, c = 0, 1, 2
-
-            for x in list:
-                if (a < len(list) or b < len(list or c < len(list))):
-                    self.Table_.tree.insert('', 'end', values=(list[a], list[b], list[c]))
+            print(list_)
+            for x in list_:
+                if (a < len(list_) or b < len(list_ or c < len(list_))):
+                    if not (list_[b]==0):
+                        self.Table_.tree.insert('', 'end', values=(list_[a], list_[b], list_[c]))
                     a += 3
                     b += 3
                     c += 3

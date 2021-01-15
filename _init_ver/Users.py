@@ -121,6 +121,12 @@ class u_page(ttk.Frame, Tk):
         password_confirm=self.cpass_en.get()
 
         self.userDetails={"username":us, "password": pw1, "role": role}
+        row=CRUD.retrieve_usernames()
+        us=" ".join(us.split())
+        for name in row:
+            if name[0] == us:
+                messagebox.showwarning("showwarning", "Username already exists!")
+                return
 
         if(us == '' or pw1 == '' or pw2 == '' or role == ''):
             self.error_lb.configure(text="Please fill up all fields")		# Displays error if incomplete
@@ -166,6 +172,10 @@ class u_page(ttk.Frame, Tk):
             return
 
         if(int(CRUD.user_count()[0][0])==1):
+            messagebox.showwarning("showwarning", "Can't delete current account") 
+            return
+
+        if(CRUD.get_employee(userid)[0][0]=='Admin'):
             messagebox.showwarning("showwarning", "Can't delete current account") 
             return
         if messagebox.askyesno("message", "Are you sure\n"+"you want to remove\n"+username+" from the list?"):

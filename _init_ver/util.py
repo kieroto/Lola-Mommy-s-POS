@@ -8,7 +8,7 @@ def history():
         hid = 0
     return str(hid)
 def delete_history_entry(pid):
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("DELETE FROM history WHERE historyID = " + '"'+ str(pid) +'"')
     con.commit()
@@ -16,7 +16,7 @@ def delete_history_entry(pid):
 
 
 def add_stock(pid, n):
-    con = sqlite3.connect('product.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT stock FROM product WHERE productName = " + '"'+ str(pid) +'"')
     stock = c.fetchall()
@@ -25,7 +25,7 @@ def add_stock(pid, n):
     con.close()
 
 def void_order(pid):
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT productName, quantity FROM orderx WHERE orderID = " + '"'+ pid +'"')
     s = c.fetchall()
@@ -36,14 +36,14 @@ def void_order(pid):
     con.close()
 
 def retrieve_orderids():
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     rows = [row[0] for row in c.execute("SELECT orderID FROM orderx")]
     con.close()
     return rows
 
 def retrieve_order_single(oid):
-    con = sqlite3.connect('order.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM orderx WHERE orderID = " + str(oid))
     rows = c.fetchall()
@@ -51,7 +51,7 @@ def retrieve_order_single(oid):
     return rows
 
 def retrieve_order_from_history():
-    con = sqlite3.connect('history.db')
+    con = sqlite3.connect('pointofsale.db')
     c = con.cursor()
     c.execute("SELECT * FROM history WHERE action_type = 'order'" )
     rows = c.fetchall()

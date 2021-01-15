@@ -35,15 +35,16 @@ class main_(ttk.Frame, Tk):
         CRUD.add_history(str(hid), 'sign', self.Page_tracker.user[0], 'logged out ' + str(self.Page_tracker.user[1]), _date, _time)
 
     def callback_root(self):
-        print("yes")
+        path = os.path.dirname(os.path.abspath(__file__)) + '\LolaMommy.exe'
+        path=path.split('\\')
+        path="\\\\".join(path) 
         if(self.Page_tracker.pages[-1]==10):
             # order_exit(1, self.root, self.body, self.Page_tracker)
             #if(self.Page_tracker.confirm_flag == True):
             if messagebox.askyesno("askyesno", "Sign out and Discard order?"):
                 self.sign_out()
                 self.root.destroy()
-                path = os.path.dirname(os.path.abspath(__file__)) + '\Main.py'
-                exec(Path(path).read_text())
+                os.system(str(path))
                 return
             else:
                 return
@@ -51,8 +52,7 @@ class main_(ttk.Frame, Tk):
         if messagebox.askyesno("askyesno", "Sign out?"):
             self.sign_out()
             self.root.destroy()
-            path = os.path.dirname(os.path.abspath(__file__)) + '\Main.py'
-            exec(Path(path).read_text())
+            os.system(str(path))
 
     def __init__(self, root, menu, body, user, menuFont):
        

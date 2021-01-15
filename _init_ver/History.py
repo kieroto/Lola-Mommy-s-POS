@@ -184,7 +184,7 @@ class h_page(ttk.Frame, Tk):
             messagebox.showwarning("showwarning", "Your account doesn't have this privilege")
             return
             
-        for widget in self.body.winfo_children():
+        for widget in self.table_frame.winfo_children():
             widget.destroy()
 
         ids = (util.retrieve_orderids())
@@ -192,14 +192,6 @@ class h_page(ttk.Frame, Tk):
         
         # for oid in ids:
         #     util.retrieve_order_single(oid)
-        self.table_frame = ttk.Frame(self.body)
-        self.table_frame.grid(row=7, column=0, columnspan=14, rowspan=8, sticky=N + S + E + W)
-
-        for i in range(0, 13):
-            self.table_frame.columnconfigure(i, weight=1)
-
-        for i in range(0, 18):
-            self.table_frame.rowconfigure(i, weight=1)
 
         list_ = util.retrieve_order_from_history()
         self.list_or = []
